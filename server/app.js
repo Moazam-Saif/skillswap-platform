@@ -1,8 +1,9 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
-
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import skillRoutes from './routes/skillRoutes.js';
@@ -10,7 +11,6 @@ import scheduleRoutes from './routes/scheduleRoutes.js';
 import matchRoutes from './routes/matchRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 
-dotenv.config();
 
 const app = express();
 

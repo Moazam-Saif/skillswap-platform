@@ -1,5 +1,6 @@
 // models/Session.js
 import mongoose from "mongoose";
+import { skillSchema } from "./User.js";
 
 const sessionSchema = new mongoose.Schema({
   userA: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
