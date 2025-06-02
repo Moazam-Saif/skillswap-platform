@@ -12,17 +12,17 @@ export default function LandingPage() {
       {/* Content Container */}
       <div className="relative z-10 min-h-screen p-8 flex flex-col">
         {/* Text Content */}
-        <div className="flex justify-between items-start pt-20">
+        <div className="flex justify-center items-start pt-20 gap-x-50">
           {/* SKILL text on left */}
-          <div>
-            <h1 style={{ fontFamily: "Kranky, cursive" }} className="text-5xl text-white">Kranky</h1>
+          <div className="-mt-11 mr-22">
+            <h1 style={{ fontFamily: "Kranky, cursive" }} className="text-7xl text-white">SKILL</h1>
           </div>
 
           {/* SWAP text on right */}
-          <div className="mt-12">
+          <div className="-mt-8">
             <h1
             style={{ fontFamily: "Lemon, serif" }}
-            className="text-5xl text-white"
+            className="text-7xl text-white"
           >SWAP</h1>
           </div>
         </div>
