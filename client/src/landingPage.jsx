@@ -5,7 +5,7 @@ export default function LandingPage() {
       <div
         className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: "url('/assets/background.svg')",
+          backgroundImage: "url('/background.svg')",
         }}
       />
 
@@ -15,12 +15,15 @@ export default function LandingPage() {
         <div className="flex justify-between items-start pt-20">
           {/* SKILL text on left */}
           <div>
-            <h1 className="text-5xl font-kranky text-white">SKILL</h1>
+            <h1 style={{ fontFamily: "Kranky, cursive" }} className="text-5xl text-white">Kranky</h1>
           </div>
 
           {/* SWAP text on right */}
           <div className="mt-12">
-            <h1 className="text-5xl font-lemon text-white">SWAP</h1>
+            <h1
+            style={{ fontFamily: "Lemon, serif" }}
+            className="text-5xl text-white"
+          >SWAP</h1>
           </div>
         </div>
 

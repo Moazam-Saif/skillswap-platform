@@ -1,5 +1,8 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Kranky&family=Lemon&display=swap');
 @import "tw-animate-css";
+@import "tailwindcss";
+@tailwind utilities;
+
 
 @custom-variant dark (&:is(.dark *));
 
