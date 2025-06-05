@@ -4,8 +4,8 @@ import AnimationStroke from "./animationstroke"
  
 function App() {
   return (
-    // <LandingPage/>
-    <AnimationStroke/>
+    <LandingPage/>
+    
   )
 }
  

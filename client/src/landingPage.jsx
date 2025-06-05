@@ -1,3 +1,4 @@
+import AnimationStroke from "./animationstroke"
 export default function LandingPage() {
   return (
     <div className="relative h-screen w-full overflow-hidden">
@@ -28,6 +29,9 @@ export default function LandingPage() {
         {/* Left Circle */}
         <div className="col-start-3 col-span-4 row-start-5 flex items-center justify-center">
           <div className="w-45 h-45 rounded-full" style={{ backgroundColor: "#F4A261" }}></div>
+        </div>
+        <div className="col-start-7 col-span-8 row-start-5 mt-8">
+          <AnimationStroke/>
         </div>
 
         {/* Right Circle */}
