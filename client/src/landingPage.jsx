@@ -1,7 +1,12 @@
-import AnimationStroke from "./animationstroke"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGuitar,faTableTennisPaddleBall } from "@fortawesome/free-solid-svg-icons";
+// ...existing imports...
+import React, { useRef, useEffect, useState } from "react";
+import AnimationStroke from "./animationstroke";
+import IconAnimation from "./iconAnimation";
+
+
 export default function LandingPage() {
+
+
   return (
     <div className="relative h-screen w-full overflow-hidden">
       {/* SVG Background */}
@@ -30,31 +35,36 @@ export default function LandingPage() {
 
         {/* Left Circle */}
         <div className="col-start-3 col-span-4 row-start-5 flex items-center justify-center">
-          <div className="flex items-center justify-center w-45 h-45 rounded-full" style={{ backgroundColor: "#F4A261" }}>
-            <FontAwesomeIcon icon={faGuitar} className="text-white text-7xl" />
+          <div
+            className="flex items-center justify-center w-45 h-45 rounded-full shadow-md"
+            style={{ backgroundColor: "#F4A261" }}
+          >
+           <IconAnimation direction="left"/>
           </div>
         </div>
         <div className="col-start-7 col-span-8 row-start-5 mt-8">
-          <AnimationStroke/>
+          <AnimationStroke />
         </div>
 
         {/* Right Circle */}
         <div className="col-start-14 col-span-4 row-start-5 flex items-center justify-center">
-          <div className="flex items-center justify-center w-45 h-45 rounded-full" style={{ backgroundColor: "#E9C46A" }}>
-            <FontAwesomeIcon icon={faTableTennisPaddleBall} className="text-white text-7xl" />
-          </div>
+          <div
+            className="flex items-center justify-center w-45 h-45 rounded-full shadow-md"
+            style={{ backgroundColor: "#E9C46A" }}
+          >
+         <IconAnimation direction="right"/>
+         </div>
         </div>
 
         {/* Login and Signup Buttons */}
-        {/* <div className="col-start-8 col-span-6 row-start-8 flex justify-center items-center gap-6"> */}
-          <button className="col-start-6 col-span-2 row-start-9 bg-[#E76F51] text-white px-5 py-3 rounded-3xl text-lg font-medium transition-all duration-300 hover:border-2 hover:border-white">
-            Login
-          </button>
-          <button className="col-start-14 col-span-2 row-start-9 bg-[#264653] text-white px-5 py-3 rounded-3xl text-lg font-medium transition-all duration-300 hover:border-2 hover:border-white">
-            Sign Up
-          </button>
-        {/* </div> */}
+        <button className="col-start-6 col-span-2 row-start-9 bg-[#E76F51] text-white px-5 py-3 rounded-3xl text-lg font-medium transition-all duration-300 border border-white/20 shadow-md hover:border-white hover:shadow-lg">
+  Login
+</button>
+
+        <button className="col-start-14 col-span-2 row-start-9 bg-[#264653] text-white px-5 py-3 rounded-3xl text-lg font-medium transition-all duration-300 border border-white/20 shadow-md hover:border-white hover:shadow-lg">
+          Sign Up
+        </button>
       </div>
     </div>
-  )
+  );
 }

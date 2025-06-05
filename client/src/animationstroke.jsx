@@ -75,7 +75,7 @@ useEffect(() => {
       }, 0.3 * 5 * 1000 + 2000); // animation duration + 2s wait
     };
 
-    setTimeout(loop, 2000);
+    setTimeout(loop, 3000);
 
     return () => {
       // Clean up timeouts if component unmounts
