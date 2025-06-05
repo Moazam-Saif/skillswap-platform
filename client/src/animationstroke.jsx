@@ -23,34 +23,66 @@ const DrawingLines = () => {
   const mPath4Ref = useRef(null);
   const mPath5Ref = useRef(null);
 
-  useEffect(() => {
-    const animatePath = (path, delay = 0) => {
+useEffect(() => {
+    const allRefs = [
+      path1Ref, path2Ref, path3Ref, path4Ref, path5Ref,
+      mPath1Ref, mPath2Ref, mPath3Ref, mPath4Ref, mPath5Ref
+    ];
+
+    // Hide all paths immediately on mount
+    allRefs.forEach(ref => {
+      const path = ref.current;
+      if (!path) return;
       const length = path.getTotalLength();
       gsap.set(path, {
         strokeDasharray: length,
         strokeDashoffset: length
       });
-      gsap.to(path, {
-        strokeDashoffset: 0,
-        duration: 0.4,
-        delay,
-        ease: "power2.inOut"
+    });
+
+    const animateAll = () => {
+      allRefs.forEach((ref, i) => {
+        const path = ref.current;
+        if (!path) return;
+        const length = path.getTotalLength();
+        gsap.set(path, {
+          strokeDasharray: length,
+          strokeDashoffset: length
+        });
+        gsap.to(path, {
+          strokeDashoffset: 0,
+          duration: 0.5,
+          delay: 0.1 * (i % 5),
+          ease: "power2.inOut"
+        });
       });
     };
 
-    animatePath(path1Ref.current, 0);
-    animatePath(path2Ref.current, 0.2);
-    animatePath(path3Ref.current, 0.4);
-    animatePath(path4Ref.current, 0.6);
-    animatePath(path5Ref.current, 0.8);
+    const loop = () => {
+      animateAll();
+      setTimeout(() => {
+        // Reset all paths to hidden after animation
+        allRefs.forEach(ref => {
+          const path = ref.current;
+          if (!path) return;
+          const length = path.getTotalLength();
+          gsap.set(path, {
+            strokeDasharray: length,
+            strokeDashoffset: length
+          });
+        });
+        setTimeout(loop, 100); // Small delay before replaying
+      }, 0.3 * 5 * 1000 + 2000); // animation duration + 2s wait
+    };
 
-    animatePath(mPath1Ref.current, 0);
-    animatePath(mPath2Ref.current, 0.2);
-    animatePath(mPath3Ref.current, 0.4);
-    animatePath(mPath4Ref.current, 0.6);
-    animatePath(mPath5Ref.current, 0.8);
+    setTimeout(loop, 2000);
 
-
+    return () => {
+      // Clean up timeouts if component unmounts
+      allRefs.forEach(ref => {
+        if (ref.current) gsap.killTweensOf(ref.current);
+      });
+    };
   }, []);
 
   return (
@@ -65,7 +97,6 @@ const DrawingLines = () => {
         <defs>
           <linearGradient id="mainGradient" x1="0" y1="0" x2="256" y2="0" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#f4a261" />
-            {/* <stop offset="25%" stopColor="f2a863" /> */}
             <stop offset="50%" stopColor="#ebbe69" />
             <stop offset="75%" stopColor="#edb967" />
             <stop offset="100%" stopColor="#e9c46a" />
@@ -88,11 +119,22 @@ const DrawingLines = () => {
           transform: "scale(-1, -1)"
         }}
       >
-        <path ref={mPath1Ref} d={paths[1]} fill="none" stroke="#fff" strokeWidth="1" />
-        <path ref={mPath2Ref} d={paths[2]} fill="none" stroke="#fff" strokeWidth="1" />
-        <path ref={mPath3Ref} d={paths[3]} fill="none" stroke="#fff" strokeWidth="1" />
-        <path ref={mPath4Ref} d={paths[4]} fill="none" stroke="#fff" strokeWidth="1" />
-        <path ref={mPath5Ref} d={paths[5]} fill="none" stroke="#fff" strokeWidth="1" />
+        <defs>
+          <linearGradient id="mirrorGradient" x1="0" y1="0" x2="256" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#e9c46a" />
+          <stop offset="25%" stopColor="#edb967" />
+          <stop offset="50%" stopColor="#ebbe69" />
+          <stop offset="100%" stopColor="#f4a261" />
+          
+          
+          
+          </linearGradient>
+          </defs>
+        <path ref={mPath2Ref} d={paths[2]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
+        <path ref={mPath4Ref} d={paths[4]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
+        <path ref={mPath5Ref} d={paths[5]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
+        <path ref={mPath1Ref} d={paths[1]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
+        <path ref={mPath3Ref} d={paths[3]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
          </svg>
     </div>
   );

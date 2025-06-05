@@ -1,4 +1,6 @@
 import AnimationStroke from "./animationstroke"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGuitar,faTableTennisPaddleBall } from "@fortawesome/free-solid-svg-icons";
 export default function LandingPage() {
   return (
     <div className="relative h-screen w-full overflow-hidden">
@@ -28,7 +30,9 @@ export default function LandingPage() {
 
         {/* Left Circle */}
         <div className="col-start-3 col-span-4 row-start-5 flex items-center justify-center">
-          <div className="w-45 h-45 rounded-full" style={{ backgroundColor: "#F4A261" }}></div>
+          <div className="flex items-center justify-center w-45 h-45 rounded-full" style={{ backgroundColor: "#F4A261" }}>
+            <FontAwesomeIcon icon={faGuitar} className="text-white text-7xl" />
+          </div>
         </div>
         <div className="col-start-7 col-span-8 row-start-5 mt-8">
           <AnimationStroke/>
@@ -36,7 +40,9 @@ export default function LandingPage() {
 
         {/* Right Circle */}
         <div className="col-start-14 col-span-4 row-start-5 flex items-center justify-center">
-          <div className="w-45 h-45 rounded-full" style={{ backgroundColor: "#E9C46A" }}></div>
+          <div className="flex items-center justify-center w-45 h-45 rounded-full" style={{ backgroundColor: "#E9C46A" }}>
+            <FontAwesomeIcon icon={faTableTennisPaddleBall} className="text-white text-7xl" />
+          </div>
         </div>
 
         {/* Login and Signup Buttons */}
