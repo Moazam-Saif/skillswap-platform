@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { useDispatch, useSelector } from "react-redux";
+import { setIconAnimationActive } from "../store/animationSlice.jsx";
 
 const paths = [
   "M1.03143 62.6745C1.12779 62.9333 1.41569 63.0649 1.67447 62.9686L5.89162 61.3983C6.1504 61.302 6.28207 61.0141 6.18571 60.7553C6.08936 60.4965 5.80145 60.3648 5.54267 60.4612L1.7941 61.857L0.398315 58.1084C0.301956 57.8496 0.0140556 57.7179 -0.244729 57.8143C-0.503514 57.9106 -0.635187 58.1985 -0.538828 58.4573L1.03143 62.6745ZM64.5 0.5L64.496 0.999984L64.5 0.5ZM126.5 62.5L126.492 62.9999L126.5 62.5ZM1.5 62.5C1.9547 62.708 1.95476 62.7078 1.95493 62.7075C1.95513 62.707 1.95541 62.7064 1.95582 62.7055C1.95662 62.7038 1.95786 62.7011 1.95953 62.6974C1.96287 62.6902 1.96793 62.6792 1.97472 62.6645C1.98828 62.6351 2.00871 62.591 2.03591 62.5327C2.09032 62.416 2.17184 62.2424 2.27978 62.0155C2.49566 61.5619 2.81723 60.8956 3.23899 60.0472C4.08256 58.3502 5.32677 55.9249 6.92777 53.0147C10.1304 47.1932 14.7577 39.4372 20.4585 31.6929C26.1613 23.9457 32.9259 16.2273 40.3993 10.467C47.8749 4.70495 56.02 0.932176 64.496 0.999984L64.5 0.5L64.504 1.61094e-05C55.7211 -0.0702474 47.3617 3.83794 39.7888 9.67499C32.2136 15.5138 25.3856 23.3126 19.6532 31.1C13.9187 38.8902 9.26806 46.686 6.0516 52.5327C4.44306 55.4566 3.19242 57.8944 2.34353 59.602C1.91907 60.4559 1.595 61.1273 1.37681 61.5858C1.26772 61.8151 1.18509 61.9911 1.12961 62.11C1.10187 62.1695 1.08092 62.2148 1.06684 62.2452C1.0598 62.2605 1.05447 62.2721 1.05088 62.2799C1.04908 62.2838 1.04772 62.2868 1.04679 62.2888C1.04632 62.2898 1.04595 62.2906 1.04572 62.2911C1.04545 62.2917 1.0453 62.292 1.5 62.5ZM64.5 0.5L64.496 0.999984C72.8751 1.06702 78.7599 4.84759 83.4315 10.5437C88.1241 16.2654 91.5681 23.8897 95.0454 31.6044C98.5083 39.2874 102.004 47.0604 106.796 52.9377C111.608 58.8401 117.752 62.8612 126.492 62.9999L126.5 62.5L126.508 62.0001C118.129 61.8671 112.244 58.0366 107.571 52.3058C102.878 46.5499 99.4343 38.9083 95.957 31.1935C92.494 23.5103 88.9976 15.7536 84.2047 9.90957C79.3908 4.03993 73.2452 0.0699458 64.504 1.61094e-05L64.5 0.5ZM126.5 62.5L126.492 62.9999C135.373 63.1409 141.681 59.2422 146.666 53.3691C151.63 47.5217 155.308 39.6882 158.951 31.9194C162.609 24.119 166.233 16.3823 171.095 10.5865C175.937 4.81543 181.982 1 190.5 1V0.5V1.10129e-07C181.619 1.10129e-07 175.313 4.00361 170.329 9.94379C165.366 15.8593 161.689 23.7262 158.046 31.4948C154.388 39.295 150.765 46.996 145.904 52.7219C141.065 58.4221 135.024 62.1352 126.508 62.0001L126.5 62.5ZM190.5 0.5V1C199.049 1 207.294 4.80915 214.878 10.5853C222.459 16.3595 229.34 24.0703 235.15 31.8004C240.958 39.5279 245.684 47.2583 248.958 53.0583C250.595 55.9578 251.868 58.3735 252.732 60.0635C253.164 60.9085 253.493 61.5719 253.715 62.0236C253.825 62.2495 253.909 62.4224 253.964 62.5385C253.992 62.5966 254.013 62.6405 254.027 62.6698C254.034 62.6844 254.039 62.6953 254.043 62.7026C254.044 62.7062 254.046 62.7089 254.047 62.7106C254.047 62.7115 254.047 62.7121 254.047 62.7125C254.048 62.7129 254.048 62.713 254.5 62.5C254.952 62.287 254.952 62.2866 254.952 62.286C254.952 62.2855 254.951 62.2847 254.951 62.2837C254.95 62.2817 254.948 62.2787 254.947 62.2748C254.943 62.2671 254.937 62.2555 254.93 62.2404C254.916 62.21 254.894 62.165 254.866 62.1058C254.809 61.9873 254.724 61.8121 254.613 61.5838C254.389 61.1273 254.057 60.4587 253.622 59.6084C252.753 57.9078 251.473 55.4797 249.829 52.5667C246.541 46.7417 241.791 38.9721 235.949 31.1996C230.109 23.4297 223.165 15.6405 215.484 9.78974C207.805 3.94085 199.35 1.10129e-07 190.5 1.10129e-07V0.5Z",
@@ -11,6 +13,10 @@ const paths = [
 ];
 
 const DrawingLines = () => {
+
+  const dispatch = useDispatch();
+  const iconAnimationActive = useSelector(state => state.animation.iconAnimationActive);
+
   const path1Ref = useRef(null);
   const path2Ref = useRef(null);
   const path3Ref = useRef(null);
@@ -23,67 +29,61 @@ const DrawingLines = () => {
   const mPath4Ref = useRef(null);
   const mPath5Ref = useRef(null);
 
-useEffect(() => {
+  // ...existing code...
+
+  useEffect(() => {
+    if (iconAnimationActive) return;
+
     const allRefs = [
       path1Ref, path2Ref, path3Ref, path4Ref, path5Ref,
       mPath1Ref, mPath2Ref, mPath3Ref, mPath4Ref, mPath5Ref
     ];
 
-    // Hide all paths immediately on mount
-    allRefs.forEach(ref => {
+    let completed = 0;
+    allRefs.forEach((ref, i) => {
       const path = ref.current;
       if (!path) return;
+      gsap.set(path, { opacity: 1 });
       const length = path.getTotalLength();
-      gsap.set(path, {
-        strokeDasharray: length,
-        strokeDashoffset: length
+      gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+      gsap.to(path, {
+        strokeDashoffset: 0,
+        duration: 0.5,
+        delay: 0.2 * (i % 5),
+        ease: "power2.inOut",
+        onComplete: () => {
+          completed++;
+          if (completed === allRefs.length) {
+            // Animation complete, trigger icon animation
+            setTimeout(() => {
+              dispatch(setIconAnimationActive(true));
+              // Hide lines after 0.1s
+              // Hide lines after 0.1s
+              setTimeout(() => {
+                allRefs.forEach(ref => {
+                  const path = ref.current;
+                  if (!path) return;
+                  gsap.to(path, {
+                    opacity: 0,
+                    duration: 0.5,
+                    ease: "power1.out"
+                  });
+                });
+              }, 700); // 0.1s after setting iconAnimationActive to true // 0.1s after setting iconAnimationActive to true
+            }, 200); // 0.2s after complete
+          }
+        }
       });
     });
 
-    const animateAll = () => {
-      allRefs.forEach((ref, i) => {
-        const path = ref.current;
-        if (!path) return;
-        const length = path.getTotalLength();
-        gsap.set(path, {
-          strokeDasharray: length,
-          strokeDashoffset: length
-        });
-        gsap.to(path, {
-          strokeDashoffset: 0,
-          duration: 0.5,
-          delay: 0.1 * (i % 5),
-          ease: "power2.inOut"
-        });
-      });
-    };
-
-    const loop = () => {
-      animateAll();
-      setTimeout(() => {
-        // Reset all paths to hidden after animation
-        allRefs.forEach(ref => {
-          const path = ref.current;
-          if (!path) return;
-          const length = path.getTotalLength();
-          gsap.set(path, {
-            strokeDasharray: length,
-            strokeDashoffset: length
-          });
-        });
-        setTimeout(loop, 100); // Small delay before replaying
-      }, 0.3 * 5 * 1000 + 2000); // animation duration + 2s wait
-    };
-
-    setTimeout(loop, 3000);
-
     return () => {
-      // Clean up timeouts if component unmounts
       allRefs.forEach(ref => {
         if (ref.current) gsap.killTweensOf(ref.current);
       });
     };
-  }, []);
+  }, [iconAnimationActive, dispatch]);
+
+  // ...existing code...
 
   return (
     <div className="w-[90%] h-[80%] bg-transparent relative overflow-hidden">
@@ -102,11 +102,11 @@ useEffect(() => {
             <stop offset="100%" stopColor="#e9c46a" />
           </linearGradient>
         </defs>
-        <path ref={path1Ref} d={paths[1]} fill="none" stroke="url(#mainGradient)"  strokeWidth="1"/>
-        <path ref={path2Ref} d={paths[2]} fill="none" stroke="url(#mainGradient)"  strokeWidth="1"/>
-        <path ref={path3Ref} d={paths[3]} fill="none" stroke="url(#mainGradient)"  strokeWidth="1"/>
-        <path ref={path4Ref} d={paths[4]} fill="none" stroke="url(#mainGradient)"  strokeWidth="1"/>
-        <path ref={path5Ref} d={paths[5]} fill="none" stroke="url(#mainGradient)"  strokeWidth="1"/>
+        <path ref={path1Ref} d={paths[1]} fill="none" stroke="url(#mainGradient)" strokeWidth="1" />
+        <path ref={path2Ref} d={paths[2]} fill="none" stroke="url(#mainGradient)" strokeWidth="1" />
+        <path ref={path3Ref} d={paths[3]} fill="none" stroke="url(#mainGradient)" strokeWidth="1" />
+        <path ref={path4Ref} d={paths[4]} fill="none" stroke="url(#mainGradient)" strokeWidth="1" />
+        <path ref={path5Ref} d={paths[5]} fill="none" stroke="url(#mainGradient)" strokeWidth="1" />
       </svg>
 
       <svg
@@ -121,21 +121,21 @@ useEffect(() => {
       >
         <defs>
           <linearGradient id="mirrorGradient" x1="0" y1="0" x2="256" y2="0" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#e9c46a" />
-          <stop offset="25%" stopColor="#edb967" />
-          <stop offset="50%" stopColor="#ebbe69" />
-          <stop offset="100%" stopColor="#f4a261" />
-          
-          
-          
+            <stop offset="0%" stopColor="#e9c46a" />
+            <stop offset="25%" stopColor="#edb967" />
+            <stop offset="50%" stopColor="#ebbe69" />
+            <stop offset="100%" stopColor="#f4a261" />
+
+
+
           </linearGradient>
-          </defs>
+        </defs>
         <path ref={mPath2Ref} d={paths[2]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
         <path ref={mPath4Ref} d={paths[4]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
         <path ref={mPath5Ref} d={paths[5]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
         <path ref={mPath1Ref} d={paths[1]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
         <path ref={mPath3Ref} d={paths[3]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
-         </svg>
+      </svg>
     </div>
   );
 };

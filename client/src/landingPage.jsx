@@ -1,12 +1,11 @@
-// ...existing imports...
-import React, { useRef, useEffect, useState } from "react";
-import AnimationStroke from "./animationstroke";
-import IconAnimation from "./iconAnimation";
+
+import AnimationStroke from "./animations/animationstroke.jsx";
+import IconAnimation from "./animations/iconAnimation.jsx";
 
 
 export default function LandingPage() {
 
-
+  
   return (
     <div className="relative h-screen w-full overflow-hidden">
       {/* SVG Background */}
