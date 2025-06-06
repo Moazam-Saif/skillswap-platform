@@ -121,3 +121,29 @@
     @apply bg-background text-foreground;
   }
 }
+@keyframes slideInLeft {
+  0% {
+    transform:  translateX(-100%);
+  }
+  100% {
+    transform: translateX(270%);
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform:  translateX(-270%);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 1s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 1s ease-out forwards;
+}
+

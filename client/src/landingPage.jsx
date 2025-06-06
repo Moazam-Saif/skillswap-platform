@@ -7,6 +7,7 @@ export default function LandingPage() {
 
   
   return (
+    <>
     <div className="relative h-screen w-full overflow-hidden">
       {/* SVG Background */}
       <div
@@ -65,5 +66,31 @@ export default function LandingPage() {
         </button>
       </div>
     </div>
+    <div className="relative w-full h-screen overflow-hidden" style={{ backgroundImage: "url('/background3.svg')" }}>
+        {/* Left CirScle */}
+  <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-full md:-translate-x-3/4 lg:-translate-x-1/2 animate-slide-in-left">
+    <div
+      className="flex items-center justify-center w-[13rem] h-[13rem] rounded-full shadow-md"
+      style={{
+        backgroundColor: "rgba(42,157,143,0.75)",
+        opacity: 0.9,
+      }}
+    />
+  </div>
+
+  {/* Right Circle */}
+  <div className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-full md:translate-x-3/4 lg:translate-x-1/2 animate-slide-in-right">
+    <div
+      className="flex items-center justify-center w-[13rem] h-[13rem] rounded-full shadow-md"
+      style={{
+        backgroundColor: "rgba(233,196,106,0.75)",
+        opacity: 0.9,
+      }}
+    />
+  </div>
+  </div>
+
+
+    </>
   );
 }
