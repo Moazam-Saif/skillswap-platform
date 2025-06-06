@@ -72,8 +72,8 @@ export default function LandingPage() {
     <div
       className="flex items-center justify-center w-[13rem] h-[13rem] rounded-full shadow-md"
       style={{
-        backgroundColor: "rgba(42,157,143,0.75)",
-        opacity: 0.9,
+        backgroundColor: "rgba(233,196,106,0.75)",
+      
       }}
     />
   </div>
@@ -83,8 +83,8 @@ export default function LandingPage() {
     <div
       className="flex items-center justify-center w-[13rem] h-[13rem] rounded-full shadow-md"
       style={{
-        backgroundColor: "rgba(233,196,106,0.75)",
-        opacity: 0.9,
+        backgroundColor: "rgba(42,157,143,0.75)",
+      
       }}
     />
   </div>
