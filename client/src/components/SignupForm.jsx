@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { signup } from '../api/auth';
 
 export default function SignUpForm() {
   const [name, setName] = useState('');
@@ -33,19 +34,25 @@ export default function SignUpForm() {
     }
     
     try {
-      // Simulate API call
+      const response = await signup({ name, email, password });
+      setIsLoading(false);
+      setSuccess('Account created successfully! Redirecting to login...');
+      
+      // Reset form
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      
+      // Redirect to login page after 2 seconds
       setTimeout(() => {
-        console.log('Sign up attempted with:', { name, email, password });
-        setIsLoading(false);
-        setSuccess('Account created successfully! You can now sign in.');
-        // Reset form
-        setName('');
-        setEmail('');
-        setPassword('');
-        setConfirmPassword('');
-      }, 1500);
+        // Replace with your actual navigation logic
+        // navigate('/login'); // Uncomment this when using in your project
+        window.location.href = '/login'; // Or use your preferred routing method
+      }, 2000);
+      
     } catch (err) {
-      setError('Sign up failed. Please try again.');
+      setError(err.response?.data?.message || 'Sign up failed. Please try again.');
       console.error('Sign up error:', err);
       setIsLoading(false);
     }
@@ -69,10 +76,11 @@ export default function SignUpForm() {
           </div>
 
           {/* Form */}
-          <div className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSignUp}>
             {/* Success Message */}
             {success && (
-              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg text-sm">
+              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg text-sm flex items-center">
+                <div className="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin mr-3"></div>
                 {success}
               </div>
             )}
@@ -191,8 +199,7 @@ export default function SignUpForm() {
 
             {/* Submit Button */}
             <button
-              type="button"
-              onClick={handleSignUp}
+              type="submit"
               disabled={isLoading}
               className="w-full bg-[#264653] text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
@@ -205,7 +212,7 @@ export default function SignUpForm() {
                 'Create Account'
               )}
             </button>
-          </div>
+          </form>
 
           {/* Sign in link */}
           <p className="text-center text-white/70 text-sm mt-6">
