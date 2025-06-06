@@ -1,6 +1,6 @@
 
-import AnimationStroke from "./animations/animationstroke.jsx";
-import IconAnimation from "./animations/iconAnimation.jsx";
+import AnimationStroke from "../animations/animationstroke.jsx";
+import IconAnimation from "../animations/iconAnimation.jsx";
 
 
 export default function LandingPage() {
@@ -21,14 +21,14 @@ export default function LandingPage() {
       <div className="relative z-10 h-screen w-full grid grid-cols-20 grid-rows-[repeat(10,1fr)] gap-0">
         {/* SKILL text on left */}
         <div className="col-start-3 col-span-3 row-start-1 flex items-center justify-center mt-5">
-          <h1 style={{ fontFamily: "Kranky, cursive" }} className="text-8xl text-white tracking-wider">
+          <h1 style={{ fontFamily: "Kranky, cursive" }} className="text-[7vw] text-white tracking-wider">
             SKILL
           </h1>
         </div>
 
         {/* SWAP text on right */}
         <div className="col-start-14 col-span-3 row-start-1 flex items-center justify-center mt-11">
-          <h1 style={{ fontFamily: "Lemon, serif" }} className="text-8xl text-white tracking-wider">
+          <h1 style={{ fontFamily: "Lemon, serif" }} className="text-[7vw] text-white tracking-wider">
             SWAP
           </h1>
         </div>
@@ -57,13 +57,15 @@ export default function LandingPage() {
         </div>
 
         {/* Login and Signup Buttons */}
-        <button className="col-start-6 col-span-2 row-start-9 bg-[#E76F51] text-white px-5 py-3 rounded-3xl text-lg font-medium transition-all duration-300 border border-white/20 shadow-md hover:border-white hover:shadow-lg">
+        <Link to="/login"><button className="col-start-6 col-span-2 row-start-9 bg-[#E76F51] text-white px-5 py-3 rounded-3xl text-lg font-medium transition-all duration-300 border border-white/20 shadow-md hover:border-white hover:shadow-lg">
   Login
 </button>
+</Link>
 
-        <button className="col-start-14 col-span-2 row-start-9 bg-[#264653] text-white px-5 py-3 rounded-3xl text-lg font-medium transition-all duration-300 border border-white/20 shadow-md hover:border-white hover:shadow-lg">
+        <Link to="/signup"><button className="col-start-14 col-span-2 row-start-9 bg-[#264653] text-white px-5 py-3 rounded-3xl text-lg font-medium transition-all duration-300 border border-white/20 shadow-md hover:border-white hover:shadow-lg">
           Sign Up
         </button>
+        </Link>
       </div>
     </div>
     <div className="relative w-full h-screen overflow-hidden" style={{ backgroundImage: "url('/background3.svg')" }}>
