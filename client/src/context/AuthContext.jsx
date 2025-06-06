@@ -1,32 +1,37 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { refreshToken } from '../api/auth';
+// AuthContext.jsx
+import React, { createContext, useEffect, useState } from 'react';
+import axios from 'axios';
 
-const AuthContext = createContext();
-
-export const useAuth = () => useContext(AuthContext);
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Auto-refresh token on page load
   useEffect(() => {
     const tryRefresh = async () => {
       try {
-        const { accessToken } = await refreshToken();
-        setAccessToken(accessToken);
+        const res = await axios.post(
+          'http://localhost:5000/api/auth/refresh-token',
+          {},
+          { withCredentials: true }
+        );
+        setAccessToken(res.data.accessToken);
       } catch (err) {
-        console.log('Refresh failed');
+        setAccessToken(null); // Don't redirect!
       } finally {
         setLoading(false);
       }
     };
+
     tryRefresh();
   }, []);
 
+  if (loading) return <div>Loading...</div>;
+
   return (
     <AuthContext.Provider value={{ accessToken, setAccessToken }}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
