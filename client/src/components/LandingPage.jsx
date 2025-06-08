@@ -73,7 +73,7 @@ export default function LandingPage() {
       </div>
     </div>
     <div className="relative w-full h-screen overflow-hidden" style={{ backgroundImage: "url('/background3.svg')" }}>
-        {/* Left CirScle */}
+        {/* Left Circle */}
   <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-full md:-translate-x-3/4 lg:-translate-x-1/2 animate-slide-in-left">
     <div
       className="flex items-center justify-center w-[13rem] h-[13rem] rounded-full shadow-md"
