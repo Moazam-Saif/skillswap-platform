@@ -36,8 +36,10 @@ export default function LandingPage() {
         {/* Left Circle */}
         <div className="col-start-3 col-span-4 row-start-5 flex items-center justify-center">
           <div
-            className="flex items-center justify-center w-45 h-45 rounded-full shadow-md"
-            style={{ backgroundColor: "#F4A261" }}
+            className="flex items-center justify-center w-45 h-45 rounded-full"
+            style={{ backgroundColor: "#F4A261",
+              boxShadow: "0 8px 24px 0 rgba(0,0,0,0.25), 0 1.5px 4px 0 rgba(244,162,97,0.25) inset"
+             }}
           >
            <IconAnimation direction="left"/>
           </div>
@@ -49,8 +51,10 @@ export default function LandingPage() {
         {/* Right Circle */}
         <div className="col-start-14 col-span-4 row-start-5 flex items-center justify-center">
           <div
-            className="flex items-center justify-center w-45 h-45 rounded-full shadow-md"
-            style={{ backgroundColor: "#E9C46A" }}
+            className="flex items-center justify-center w-45 h-45 rounded-full"
+            style={{ backgroundColor: "#E9C46A",
+              boxShadow: "0 8px 24px 0 rgba(0,0,0,0.25), 0 1.5px 4px 0 rgba(244,162,97,0.25) inset"
+             }}
           >
          <IconAnimation direction="right"/>
          </div>
