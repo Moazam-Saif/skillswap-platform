@@ -61,10 +61,7 @@ export default function LandingPage() {
         </div>
 
         {/* Login and Signup Buttons */}
-        <Link to="/login"><button className="col-start-6 col-span-2 row-start-9 bg-[#E76F51] text-white px-5 py-3 rounded-3xl text-lg font-medium transition-all duration-300 border border-white/20 shadow-md hover:border-white hover:shadow-lg">
-  Login
-</button>
-</Link>
+       
 
         <Link to="/register"><button className="col-start-14 col-span-2 row-start-9 bg-[#264653] text-white px-5 py-3 rounded-3xl text-lg font-medium transition-all duration-300 border border-white/20 shadow-md hover:border-white hover:shadow-lg">
           Sign Up
