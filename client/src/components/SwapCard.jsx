@@ -1,4 +1,5 @@
 import React from 'react';
+import CurvedText from 'react-curved-text';
 
 export const SwapCard = () => {
     return (
@@ -6,24 +7,57 @@ export const SwapCard = () => {
             {/* Top Section */}
             <div className="w-full h-[122px] rounded-t-[17px] bg-[#E76F51] border-b-2 border-white relative overflow-hidden flex items-center justify-center">
                 {/* SVG placeholders */}
-                <div className="absolute left-0 top-0 h-[122px] w-[126px] flex items-center justify-center"
+                <div className="absolute left-[-2px] top-0 h-[122px] w-[126px] flex items-center justify-center"
                     style={{
                         backgroundImage: "url('/LEllipse.svg')",
                         backgroundRepeat: "no-repeat",
                         backgroundSize: "contain",
                     }}
                 >
+                    <CurvedText
+                        width={126}
+                        height={122}
+                        cx={20}
+                        cy={60}
+                        rx={35} // <- Instead of r
+                        ry={40}
+                        startOffset={80}
+                        reversed={true}
+                        text="Wants to Teach"
+                        textProps={{ style: { fontSize: 11, fill: "white" } }}
+                        textPathProps={null}
+                        tspanProps={null}
+                        ellipseProps={null}
+                        svgProps={null}
+                    />
                     {/* Replace with your left SVG */}
                     {/* <YourLeftSVG /> */}
                 </div>
                 <div className='absolute left-0 bottom-0 h-[8px] w-[8px] bg-[#F4A261]'></div>
-                <div className="absolute right-0 top-0 h-[122px] w-[126px] flex items-center justify-center"
+                <div className="absolute right-[-2px] top-0 h-[122px] w-[126px] flex items-center justify-center"
                     style={{
                         backgroundImage: "url('/REllipse.svg')",
                         backgroundRepeat: "no-repeat",
                         backgroundSize: "contain",
-                        backgroundPositionX:"right"
+                        backgroundPositionX: "right"
                     }}>
+                    <CurvedText
+                        width={126}
+                        height={122}
+                        cx={106}       // 126 (width) - 20 (left cx) = 106 for mirroring
+                        cy={60}        // same vertical center
+                        rx={35}
+                        ry={40}
+                        startOffset={0}
+                        reversed={true} // now curves toward center
+                        text="Wants to Learn"
+                        textProps={{ style: { fontSize: 11, fill: "white" } }}
+                        textPathProps={null}
+                        tspanProps={null}
+                        ellipseProps={null}
+                        svgProps={null}
+                    />
+
                     {/* Replace with your right SVG */}
                     {/* <YourRightSVG /> */}
 

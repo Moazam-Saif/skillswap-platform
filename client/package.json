@@ -22,6 +22,7 @@
     "gsap": "^3.13.0",
     "lucide-react": "^0.511.0",
     "react": "^19.1.0",
+    "react-curved-text": "^3.0.1",
     "react-dom": "^19.1.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.2",
