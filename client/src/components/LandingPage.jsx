@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import AnimationStroke from "../animations/animationstroke.jsx";
 import IconAnimation from "../animations/iconAnimation.jsx";
+import {SwapCard} from './SwapCard.jsx';
 
 
 export default function LandingPage() {
@@ -93,6 +94,9 @@ export default function LandingPage() {
       
       }}
     />
+     <div className="flex items-center justify-center min-h-screen bg-gray-200">
+      <SwapCard />
+    </div>
   </div>
   </div>
 
