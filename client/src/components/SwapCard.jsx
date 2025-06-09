@@ -4,21 +4,30 @@ export const SwapCard = () => {
   return (
     <div className="w-[186px] h-[202px] relative bg-transparent">
       {/* Top Section */}
-      <div className="w-full h-[70%] rounded-t-[30px] bg-[#E76F51] border-b-4 border-white relative overflow-hidden flex items-center justify-center">
+      <div className="w-full h-[133px] rounded-t-[17px] bg-[#E76F51] border-b-2 border-white relative overflow-hidden flex items-center justify-center">
         {/* SVG placeholders */}
-        <div className="absolute left-0 top-0 h-full w-1/2 flex items-center justify-center">
+        <div className="absolute left-0 top-0 h-[134px] w-[136px] flex items-center justify-center" 
+        style={{
+          backgroundImage: "url('/left Ellipse.svg')",
+        }}>
           {/* Replace with your left SVG */}
           {/* <YourLeftSVG /> */}
         </div>
-        <div className="absolute right-0 top-0 h-full w-1/2 flex items-center justify-center">
+        <div className='absolute left-0 bottom-0 h-[8px] w-[8px] bg-[#F4A261]'></div>
+        <div className="absolute right-0 top-0 h-[134px] w-[136px] flex items-center justify-center" 
+        style={{
+          backgroundImage: "url('/right Ellipse.svg')",
+        }}>
           {/* Replace with your right SVG */}
           {/* <YourRightSVG /> */}
+
         </div>
+        <div className='absolute right-0 bottom-0 h-[8px] w-[8px] bg-[#E9C46A]'></div>
         <div className="text-white text-4xl">↔</div>
       </div>
 
       {/* Bottom Section */}
-      <div className="w-full h-[30%] flex bg-white rounded-b-[30px] overflow-hidden">
+      <div className="w-full h-[67px] flex bg-[#E76F51] rounded-b-[30px] overflow-hidden">
         {/* Left: Image */}
         <div className="w-1/2 flex items-center justify-center border-r-2 border-white">
           <img
