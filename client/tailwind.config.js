@@ -8,6 +8,7 @@ export default {
       fontFamily: {
         kranky: ['Kranky', 'cursive'],
         lemon: ['Lemon', 'serif'],
+        josefin: ['Josefin Sans', 'sans-serif']
       },
     },
   },
