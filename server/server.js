@@ -1,7 +1,7 @@
 
 import dotenv from 'dotenv';
 dotenv.config();
-
+import { getAutocompleteSuggestions } from "./lightcast.js";
 import mongoose from 'mongoose';
 import app from './app.js';
 
