@@ -1,4 +1,5 @@
 import React from "react";
+import { SwapCard } from "./SwapCard";
 
 const Dashboard = () => {
     return (
@@ -23,7 +24,7 @@ const Dashboard = () => {
 
                 {/* Content */}
                 <section className="w-[80%] flex-1 overflow-y-auto bg-[#264653]">
-                    <div className="space-y-6" >
+                    <div>
                         <img
                             src="/Top.svg"
                             alt="Dashboard SVG"
@@ -31,7 +32,31 @@ const Dashboard = () => {
                             style={{ aspectRatio: '1380 / 98' }}
                         />
                     </div>
-                    <div className="h-[150px] w-full bg-[#fff8f8] rounded-tl-[30px]"></div>
+                    <div className="h-[193px] w-full bg-[#fff8f8] rounded-tl-[30px] pl-8 pt-[10px] pb-[10px]">
+                        <div><SwapCard/></div>
+                    </div>
+                     <div>
+                        <img
+                            src="/Mid.svg"
+                            alt="Dashboard SVG2"
+                            className="w-full max-w-[1380px] h-auto"
+                            style={{ aspectRatio: '1380 / 98' }}
+                        />
+                    </div>
+                     <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px]">
+                        <div><SwapCard/></div>
+                    </div>
+                     <div>
+                        <img
+                            src="/Bottom.svg"
+                            alt="Dashboard SVG2"
+                            className="w-full max-w-[1380px] h-auto"
+                            style={{ aspectRatio: '1380 / 98' }}
+                        />
+                    </div>
+                     <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px]">
+                        <div><SwapCard/></div>
+                    </div>
                 </section>
                
             </main>
