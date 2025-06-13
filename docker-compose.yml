@@ -1,0 +1,13 @@
+name: skillswap
+
+services:
+  api:
+    build:
+      context: ./server
+      dockerfile: DockerFile
+    restart: unless-stopped
+    env_file: ./server/.env
+    ports:
+      - 5000:5000
+      
+
