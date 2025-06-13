@@ -4,7 +4,7 @@ services:
   api:
     build:
       context: ./server
-      dockerfile: DockerFile
+      dockerfile: Dockerfile
     platform: linux/amd64
     restart: unless-stopped
     env_file: ./server/.env
