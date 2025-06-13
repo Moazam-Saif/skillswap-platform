@@ -26,11 +26,11 @@ async function fetchToken() {
 export async function autocompleteSkills(query) {
   const token = await fetchToken();
 
-  const response = await axios.get("https://skills.emsicloud.com/versions/latest/skills/autocomplete", {
+  const response = await axios.get("https://emsiservices.com/skills/versions/latest/skills", {
     headers: {
       Authorization: `Bearer ${token}`
     },
-    params: { q: query }
+    params: { q: query}
   });
 
   return response.data;
