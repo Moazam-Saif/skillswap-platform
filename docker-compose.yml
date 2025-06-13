@@ -21,8 +21,7 @@ services:
       context: ./client
       dockerfile: Dockerfile
     platform: linux/amd64
-    restart: unless-stopped
-    env_file: ./client/.env  
+    restart: unless-stopped  
     volumes:
       - ./client:/app
       - /app/node_modules
