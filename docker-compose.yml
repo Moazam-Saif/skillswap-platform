@@ -13,5 +13,23 @@ services:
       - /app/node_modules
     ports:
       - 5000:5000
+    networks:
+      - skillswap
      
+  frontend:
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    restart: unless-stopped
+    env_file: ./client/.env  
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - 5173:5173
+    networks:
+      - skillswap
+    depends_on:
+      - api
 
