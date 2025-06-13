@@ -8,7 +8,10 @@ services:
     platform: linux/amd64
     restart: unless-stopped
     env_file: ./server/.env
+    volumes:
+      - ./server:/app
+      - /app/node_modules
     ports:
       - 5000:5000
-      
+     
 
