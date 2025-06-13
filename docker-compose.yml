@@ -28,8 +28,12 @@ services:
       - /app/node_modules
     ports:
       - 5173:5173
+    command: npm run dev -- --host
     networks:
       - skillswap
     depends_on:
       - api
 
+networks:
+  skillswap:
+    driver: bridge
