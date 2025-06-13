@@ -5,6 +5,7 @@ services:
     build:
       context: ./server
       dockerfile: DockerFile
+    platform: linux/amd64
     restart: unless-stopped
     env_file: ./server/.env
     ports:
