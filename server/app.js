@@ -29,6 +29,7 @@ app.use('/api/skills', skillRoutes);
 app.use('/api/schedule', scheduleRoutes);
 app.use('/api/match', matchRoutes);
 app.use('/api/chat', chatRoutes);
+app.use("/api/skills", skillRoutes);
 
 // Error Handler
 app.use((err, req, res, next) => {
