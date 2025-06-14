@@ -17,11 +17,11 @@ services:
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
-    depends_on:
-      - redis
     networks:
       - skillswap
-     
+    depends_on:
+      - redis
+
   frontend:
     build: 
       context: ./client
@@ -45,6 +45,8 @@ services:
       - "6379:6379" # Expose Redis port if you need to access it from your host (e.g., for debugging)
     volumes:
       - redis_data:/data # Optional: Persist Redis data
+    networks:
+      - skillswap
 
 volumes:
   redis_data:
