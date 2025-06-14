@@ -40,7 +40,7 @@ export default function ProfileUploadPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Left Half */}
-      <div className="w-1/2 p-8 flex flex-col">
+      <div className="w-3/4 p-8 flex flex-col">
         {/* Upper Half - Image Uploader */}
         <div className="flex-1 flex flex-col items-center justify-center mb-8">
           <div className="w-full max-w-md">
@@ -137,7 +137,7 @@ export default function ProfileUploadPage() {
       </div>
 
       {/* Right Half - Empty Div */}
-      <div className="w-1/2 bg-white border-l border-gray-200">
+      <div className="w-1/4 bg-white border-l border-gray-200">
         {/* This div is intentionally left empty as requested */}
         <SkillSearch/>
       </div>

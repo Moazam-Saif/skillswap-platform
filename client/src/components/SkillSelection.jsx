@@ -97,7 +97,7 @@ const skillSearch = () => {
         {selectedSkills.map(skill => (
           <div
             key={skill.id}
-            className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full"
+            className="flex items-center bg-[#dfdbdb] text-black px-3 py-1 rounded-full"
           >
             <span>{skill.name}</span>
             <button
