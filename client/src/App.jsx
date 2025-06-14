@@ -5,7 +5,7 @@ import LoginForm from './components/LoginForm.jsx';
 import SignupForm from './components/SignupForm.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx';
 import Dashboard from './components/Dashboard.jsx';
-import Profile from './components/Profile.jsx';
+import ProfileUpdate from './components/ProfileUpdate.jsx';
 
 function App() {
   return (
@@ -31,7 +31,7 @@ function App() {
             path="/profile"
             element={
               <PrivateRoute>
-                <Profile />
+                <ProfileUpdate />
               </PrivateRoute>
             }
           />
