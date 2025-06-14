@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { searchSkills } from "../api/auth";
 
 const Profile = () => {
   const [query, setQuery] = useState("");
@@ -14,11 +14,10 @@ const Profile = () => {
     }
     setLoading(true);
     try {
-      const res = await axios.get("/api/skills/find", {
-        params: { query }
-      });
-      setSkills(res.data.suggestions);
-      console.log(skills)
+      const res = await searchSkills(query);
+      console.log(res)
+      setSkills(res);
+      
     } catch (err) {
       setSkills([]);
     }

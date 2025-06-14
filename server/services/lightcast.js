@@ -41,9 +41,7 @@ export async function autocompleteSkills(query) {
     params: { q: query }
   });
 
-  // Extract the array at suggestions.data
-  const foundData =response.data.suggestions.data;
-
+  const foundData =response.data.data;
   await redis.set(cacheKey, JSON.stringify(foundData), "EX", 3600);
 
   return foundData;

@@ -18,3 +18,10 @@ export const refreshToken = async () => {
 export const logout = async () => {
   await api.post('/auth/logout');
 };
+
+export const searchSkills = async (query) => {
+  const res = await api.get('/skills/find', {
+    params: { query }
+  });
+  return res.data;
+};
