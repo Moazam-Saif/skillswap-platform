@@ -8,7 +8,6 @@ export async function findSkills(req, res) {
 
   try {
     const suggestions = await autocompleteSkills(query);
-    console.log(suggestions,"hello")
     res.json(suggestions);
   } catch (error) {
     console.error("Error:", error.message);
