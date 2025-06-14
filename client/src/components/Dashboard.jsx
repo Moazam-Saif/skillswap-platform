@@ -1,5 +1,6 @@
 import React from "react";
 import { SwapCard } from "./SwapCard";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
     return (
@@ -18,7 +19,9 @@ const Dashboard = () => {
                     <ul className="space-y-2">
                         <li>Dashboard</li>
                         <li>Settings</li>
-                        <li>Profile</li>
+                        <li>
+                            <Link to="/profile" className="hover:underline">Profile</Link>
+                        </li>
                     </ul>
                 </aside>
 
@@ -33,9 +36,9 @@ const Dashboard = () => {
                         />
                     </div>
                     <div className="h-[193px] w-full bg-[#fff8f8] rounded-tl-[30px] pl-8 pt-[10px] pb-[10px]">
-                        <div><SwapCard/></div>
+                        <div><SwapCard /></div>
                     </div>
-                     <div>
+                    <div>
                         <img
                             src="/Mid.svg"
                             alt="Dashboard SVG2"
@@ -43,10 +46,10 @@ const Dashboard = () => {
                             style={{ aspectRatio: '1380 / 98' }}
                         />
                     </div>
-                     <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px]">
-                        <div><SwapCard/></div>
+                    <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px]">
+                        <div><SwapCard /></div>
                     </div>
-                     <div>
+                    <div>
                         <img
                             src="/Bottom.svg"
                             alt="Dashboard SVG2"
@@ -54,11 +57,11 @@ const Dashboard = () => {
                             style={{ aspectRatio: '1380 / 98' }}
                         />
                     </div>
-                     <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px]">
-                        <div><SwapCard/></div>
+                    <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px]">
+                        <div><SwapCard /></div>
                     </div>
                 </section>
-               
+
             </main>
         </div>
     );

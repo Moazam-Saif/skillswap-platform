@@ -28,7 +28,7 @@ export async function autocompleteSkills(query) {
   const cacheKey = `skills:${query}`;
   const cached = await redis.get(cacheKey);
   if (cached) {
-    console.log("returned cached data")
+    console.log("returned cached data");
     return JSON.parse(cached);
   }
 
@@ -41,7 +41,10 @@ export async function autocompleteSkills(query) {
     params: { q: query }
   });
 
-  await redis.set(cacheKey, JSON.stringify(response.data), "EX", 3600);
+  // Extract the array at suggestions.data
+  const foundData =response.data.suggestions.data;
 
-  return response.data;
+  await redis.set(cacheKey, JSON.stringify(foundData), "EX", 3600);
+
+  return foundData;
 }

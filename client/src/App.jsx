@@ -5,6 +5,7 @@ import LoginForm from './components/LoginForm.jsx';
 import SignupForm from './components/SignupForm.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx';
 import Dashboard from './components/Dashboard.jsx';
+import Profile from './components/Profile.jsx';
 
 function App() {
   return (
@@ -22,6 +23,15 @@ function App() {
             element={
               <PrivateRoute>
                 <Dashboard />
+              </PrivateRoute>
+            }
+
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
               </PrivateRoute>
             }
           />

@@ -8,7 +8,7 @@ export async function findSkills(req, res) {
 
   try {
     const suggestions = await autocompleteSkills(query);
-    res.json({ suggestions });
+    res.json(suggestions);
   } catch (error) {
     console.error("Error:", error.message);
     res.status(500).json({ message: "Internal server error." });

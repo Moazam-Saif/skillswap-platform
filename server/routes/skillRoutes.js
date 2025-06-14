@@ -6,6 +6,6 @@ import { findSkills } from '../controllers/skillfinderController.js';
 const router = express.Router();
 
 router.post('/set', verifyToken, setSkills);
-router.get("/find", verifyToken,findSkills);
+router.get("/find", findSkills);
 
 export default router;
