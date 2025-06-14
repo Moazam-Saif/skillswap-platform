@@ -1,5 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
+import redis from "./redisClient.js";
 dotenv.config();
 
 let accessToken = null;
@@ -24,14 +25,23 @@ async function fetchToken() {
 }
 
 export async function autocompleteSkills(query) {
+  const cacheKey = `skills:${query}`;
+  const cached = await redis.get(cacheKey);
+  if (cached) {
+    console.log("returned cached data")
+    return JSON.parse(cached);
+  }
+
   const token = await fetchToken();
 
   const response = await axios.get("https://emsiservices.com/skills/versions/latest/skills", {
     headers: {
       Authorization: `Bearer ${token}`
     },
-    params: { q: query}
+    params: { q: query }
   });
+
+  await redis.set(cacheKey, JSON.stringify(response.data), "EX", 3600);
 
   return response.data;
 }
