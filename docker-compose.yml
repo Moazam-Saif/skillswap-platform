@@ -13,6 +13,12 @@ services:
       - /app/node_modules
     ports:
       - 5000:5000
+    
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - redis
     networks:
       - skillswap
      
@@ -32,6 +38,16 @@ services:
       - skillswap
     depends_on:
       - api
+  
+  redis:
+    image: redis:latest # Use the latest official Redis image
+    ports:
+      - "6379:6379" # Expose Redis port if you need to access it from your host (e.g., for debugging)
+    volumes:
+      - redis_data:/data # Optional: Persist Redis data
+
+volumes:
+  redis_data:
 
 networks:
   skillswap:
