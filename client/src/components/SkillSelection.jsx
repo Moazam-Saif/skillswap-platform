@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
+import { X } from "lucide-react";
 import { searchSkills } from "../api/auth";
 
-const skillSearch = () => {
+const SkillSearch = () => {
   const [query, setQuery] = useState("");
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const inputRef = useRef(null);
+  const containerRef = useRef(null);
 
   // Debounce logic
   useEffect(() => {
@@ -16,7 +18,7 @@ const skillSearch = () => {
       setShowDropdown(false);
       return;
     }
-
+    
     setLoading(true);
     const handler = setTimeout(async () => {
       try {
@@ -29,7 +31,7 @@ const skillSearch = () => {
       }
       setLoading(false);
     }, 150);
-
+    
     return () => clearTimeout(handler);
   }, [query]);
 
@@ -37,12 +39,13 @@ const skillSearch = () => {
   useEffect(() => {
     function handleClickOutside(event) {
       if (
-        inputRef.current &&
-        !inputRef.current.contains(event.target)
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
       ) {
         setShowDropdown(false);
       }
     }
+    
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -61,58 +64,80 @@ const skillSearch = () => {
   };
 
   return (
-    <div className="p-8">
-      <h2 className="text-2xl mb-4">Select the Skill you want</h2>
-      <div className="mb-4 flex flex-col gap-2" ref={inputRef} style={{ position: "relative" }}>
-        <input
-          type="text"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          placeholder="Type a skill..."
-          className="border p-2 rounded"
-          onFocus={() => { if (skills.length > 0) setShowDropdown(true); }}
-        />
-        {showDropdown && skills.length > 0 && (
-          <ul
-            className="absolute z-10 bg-white border rounded w-full mt-10 shadow"
-            style={{
-              maxHeight: "180px", // ~5 items at 36px each
-              overflowY: "auto"
+    <div className="relative w-full h-[50vh] bg-gray-50 p-6 flex flex-col">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+        Select the Skills you want
+      </h2>
+      
+      {/* Search Input Container */}
+      <div className="relative mb-6 flex items-center justify-center w-full" ref={containerRef}>
+        <div className="relative w-full flex items-center justify-center">
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Search"
+            className="relative w-1/2 px-3 py-2 text-sm border-2 border-gray-300 rounded-[100px] bg-white focus:outline-none focus:border-blue-500 transition-colors"
+            onFocus={() => { 
+              if (skills.length > 0) setShowDropdown(true); 
             }}
-          >
-            {skills.map(skill => (
-              <li
-                key={skill.id || skill.name}
-                className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleSelectSkill(skill)}
-              >
-                {skill.name}
-              </li>
-            ))}
-          </ul>
+          />
+          
+          {loading && (
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+            </div>
+          )}
+        </div>
+
+        {/* Dropdown */}
+        {showDropdown && skills.length > 0 && (
+          <div className="absolute z-20 w-full mt-2 bg-white border-2 border-gray-200 rounded-lg shadow-lg">
+            <div 
+              className="max-h-32 overflow-y-auto" 
+              style={{ maxHeight: "128px" }} // Exactly 3 items height
+            >
+              {skills.map((skill, index) => (
+                <div
+                  key={skill.id || skill.name}
+                  className={`px-4 py-3 cursor-pointer hover:bg-gray-100 transition-colors ${
+                    index !== skills.length - 1 ? 'border-b border-gray-100' : ''
+                  }`}
+                  onClick={() => handleSelectSkill(skill)}
+                >
+                  <span className="text-gray-800 font-medium">{skill.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
       </div>
-      {/* Skill tags */}
-      <div className="flex flex-wrap gap-2 mt-4">
-        {selectedSkills.map(skill => (
-          <div
-            key={skill.id}
-            className="flex items-center bg-[#dfdbdb] text-black px-3 py-1 rounded-full"
-          >
-            <span>{skill.name}</span>
-            <button
-              className="ml-2 text-blue-500 hover:text-red-500"
-              onClick={() => handleRemoveSkill(skill.id)}
-              aria-label="Remove skill"
-              type="button"
-            >
-              &times;
-            </button>
+
+      <div className="absolute bottom-0 flex-1">
+        <div className="overflow-x-auto pb-2">
+          <div className="flex gap-3 min-w-max">
+            {selectedSkills.map(skill => (
+              <div
+                key={skill.id}
+                className="flex items-center gap-2 bg-gray-300 text-gray-800 px-4 py-2 rounded-full whitespace-nowrap flex-shrink-0"
+              >
+                <span className="font-medium">{skill.name}</span>
+                <button
+                  className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-gray-400 transition-colors"
+                  onClick={() => handleRemoveSkill(skill.id)}
+                  aria-label={`Remove ${skill.name}`}
+                  type="button"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
 };
 
-export default skillSearch;
+export default SkillSearch;
