@@ -28,7 +28,13 @@ export default function ProfileUploadPage() {
       </div>
 
       {/* Right Half - Empty Div */}
-      <div className="w-1/2 h-screen bg-white border-l border-gray-200">
+      <div className="w-1/2 h-screen border-gray-200" style={{
+        background: 'linear-gradient(to right, #FFF8F8 0%, #E76F51 15%)',
+        opacity: 0.8, // Total opacity of 80%
+     // Example width
+       // Example height
+        // Add any other styles you need for your div
+      }}>
         {/* This div is intentionally left empty as requested */}
         <UserInfo/>
       </div>
