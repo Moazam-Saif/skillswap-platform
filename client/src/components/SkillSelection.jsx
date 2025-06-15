@@ -92,9 +92,9 @@ const SkillSearch = () => {
   };
 
   return (
-    <div className="relative w-full h-1/2 bg-gray-50 p-3 flex flex-col justify-between">
+    <div className="relative w-full h-1/2 p-3 flex flex-col gap-[30%]">
       {/* Search Input Container */}
-       <h3 className="mx-auto">Select the skills you want</h3>
+       <h1 className="mx-auto text-2xl font-bold">SELECT THE SKILLS YOU WANT</h1>
       <div className="relative flex flex-col gap-0" ref={containerRef}>
         <div className="relative w-full flex items-center justify-center">
           <input

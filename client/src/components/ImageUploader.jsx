@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Plus } from "lucide-react";
+import { Plus, User } from "lucide-react";
 
 const ImageUploader = ({ image, onChange }) => {
   const fileInput = useRef();
@@ -16,12 +16,17 @@ const ImageUploader = ({ image, onChange }) => {
   };
 
   return (
-    <div className="relative flex items-center justify-center sm:w-56 sm:h-56 md:w-[250px] md:h-[250px]">
-      <img
-        src={image || "/defaultImage.png"}
-        alt="Profile"
-        className="w-full h-full object-cover rounded-full aspect-square"
-      />
+    <div className="relative flex items-center justify-center sm:w-56 sm:h-56 md:w-[180px] md:h-[180px] mx-auto">
+        {image ? (
+        <img
+          src={image}
+          alt="Profile"
+          className="w-full h-full object-cover rounded-full aspect-square"
+        />
+      ) : (
+        
+          <User className="text-[#264653] w-full h-full bg-gray-200 rounded-full" />
+      )}
       <button
         type="button"
         onClick={handleClick}

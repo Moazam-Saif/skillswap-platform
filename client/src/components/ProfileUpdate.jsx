@@ -15,12 +15,12 @@ export default function ProfileUploadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="h-full min-h-screen bg-gray-50 flex"style={{fontFamily: "'Josefin Sans', sans-serif" }}>
       {/* Left Half */}
-      <div className="w-1/2 p-8 flex flex-col gap-10">
+      <div className="w-1/2 p-8 flex flex-col gap-10 bg-[#fff8f8] ">
         {/* Upper Half - Image Uploader */}
-        <div className='h-1/2 mx-auto'>
-          <ImageUploader image={imagePreview} onChange={handleImageChange} />
+        <div className='relative h-1/2 w-full mx-auto border-b-1 border-black'>
+          <ImageUploader image={imagePreview} onChange={handleImageChange}/>
         </div>
         
         <SkillSearch/>
@@ -28,12 +28,9 @@ export default function ProfileUploadPage() {
       </div>
 
       {/* Right Half - Empty Div */}
-      <div className="w-1/2 h-screen border-gray-200" style={{
+      <div className="w-1/2 min-h-screen border-gray-200" style={{
         background: 'linear-gradient(to right, #FFF8F8 0%, #E76F51 15%)',
-        opacity: 0.8, // Total opacity of 80%
-     // Example width
-       // Example height
-        // Add any other styles you need for your div
+        opacity: 0.8,
       }}>
         {/* This div is intentionally left empty as requested */}
         <UserInfo/>

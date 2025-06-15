@@ -11,7 +11,7 @@ export default function UserInfo() {
     };
 
     return (
-        <form className="w-full h-[96vh] mx-auto py-0 mt-5 flex flex-col justify-between text-white" style={{ fontFamily: "'Josefin Sans', sans-serif" }} onSubmit={handleSubmit}>
+        <form className="w-full h-full mx-auto py-0 mt-5 flex flex-col justify-between text-white" style={{ fontFamily: "'Josefin Sans', sans-serif" }} onSubmit={handleSubmit}>
             <div className="w-sm mx-auto">
                 <label htmlFor="name" className="block text-2xl mb-2 text-center">
                     Enter Your Name:
