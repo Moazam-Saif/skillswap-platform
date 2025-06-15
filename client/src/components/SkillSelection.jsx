@@ -1,6 +1,34 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
-import { searchSkills } from "../api/auth";
+// import { searchSkills } from "../api/auth";
+
+const searchSkills = async (query) => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 100));
+
+  // Mock data
+  const mockSkills = [
+    { id: 1, name: "JavaScript" },
+    { id: 2, name: "React" },
+    { id: 3, name: "Node.js" },
+    { id: 4, name: "Python" },
+    { id: 5, name: "Django" },
+    { id: 6, name: "PostgreSQL" },
+    { id: 7, name: "MongoDB" },
+    { id: 8, name: "TypeScript" },
+    { id: 9, name: "Vue.js" },
+    { id: 10, name: "Angular" },
+    { id: 11, name: "Express.js" },
+    { id: 12, name: "Redis" },
+    { id: 13, name: "Docker" },
+    { id: 14, name: "AWS" },
+    { id: 15, name: "GraphQL" }
+  ];
+
+  return mockSkills.filter(skill =>
+    skill.name.toLowerCase().includes(query.toLowerCase())
+  );
+};
 
 const SkillSearch = () => {
   const [query, setQuery] = useState("");
@@ -18,7 +46,7 @@ const SkillSearch = () => {
       setShowDropdown(false);
       return;
     }
-    
+
     setLoading(true);
     const handler = setTimeout(async () => {
       try {
@@ -31,7 +59,7 @@ const SkillSearch = () => {
       }
       setLoading(false);
     }, 150);
-    
+
     return () => clearTimeout(handler);
   }, [query]);
 
@@ -45,7 +73,7 @@ const SkillSearch = () => {
         setShowDropdown(false);
       }
     }
-    
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -64,13 +92,10 @@ const SkillSearch = () => {
   };
 
   return (
-    <div className="relative w-full h-[50vh] bg-gray-50 p-6 flex flex-col">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-        Select the Skills you want
-      </h2>
-      
+    <div className="relative w-full h-1/2 bg-gray-50 p-3 flex flex-col justify-between">
       {/* Search Input Container */}
-      <div className="relative mb-6 flex items-center justify-center w-full" ref={containerRef}>
+       <h3 className="mx-auto">Select the skills you want</h3>
+      <div className="relative flex flex-col gap-0" ref={containerRef}>
         <div className="relative w-full flex items-center justify-center">
           <input
             ref={inputRef}
@@ -78,12 +103,15 @@ const SkillSearch = () => {
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search"
-            className="relative w-1/2 px-3 py-2 text-sm border-2 border-gray-300 rounded-[100px] bg-white focus:outline-none focus:border-blue-500 transition-colors"
-            onFocus={() => { 
-              if (skills.length > 0) setShowDropdown(true); 
+            className={
+              `relative w-1/2 px-3 py-2 text-sm border-2 border-gray-300 bg-white focus:outline-none  rounded-[30px]` +
+              (showDropdown && skills.length > 0 ? " rounded-b-none" : "")
+            }
+            onFocus={() => {
+              if (skills.length > 0) setShowDropdown(true);
             }}
           />
-          
+
           {loading && (
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
@@ -93,17 +121,16 @@ const SkillSearch = () => {
 
         {/* Dropdown */}
         {showDropdown && skills.length > 0 && (
-          <div className="absolute z-20 w-full mt-2 bg-white border-2 border-gray-200 rounded-lg shadow-lg">
-            <div 
-              className="max-h-32 overflow-y-auto" 
+          <div className="relative mx-auto z-20 w-1/2 bg-white border-2 border-gray-200 rounded-t-none rounded-b-lg shadow-lg">
+            <div
+              className="max-h-32 overflow-y-auto"
               style={{ maxHeight: "128px" }} // Exactly 3 items height
             >
               {skills.map((skill, index) => (
                 <div
                   key={skill.id || skill.name}
-                  className={`px-4 py-3 cursor-pointer hover:bg-gray-100 transition-colors ${
-                    index !== skills.length - 1 ? 'border-b border-gray-100' : ''
-                  }`}
+                  className={`px-4 py-3 cursor-pointer hover:bg-gray-100 transition-colors ${index !== skills.length - 1 ? 'border-b border-gray-100' : ''
+                    }`}
                   onClick={() => handleSelectSkill(skill)}
                 >
                   <span className="text-gray-800 font-medium">{skill.name}</span>
@@ -114,17 +141,18 @@ const SkillSearch = () => {
         )}
       </div>
 
-      <div className="absolute bottom-0 flex-1">
-        <div className="overflow-x-auto pb-2">
-          <div className="flex gap-3 min-w-max">
+      <div>
+       
+        <div className="overflow-x-auto">
+          <div className="flex gap-5 min-w-max">
             {selectedSkills.map(skill => (
               <div
                 key={skill.id}
-                className="flex items-center gap-2 bg-gray-300 text-gray-800 px-4 py-2 rounded-full whitespace-nowrap flex-shrink-0"
+                className="flex items-center gap-3 bg-[#DFDBDB] text-black py-1 rounded-full whitespace-nowrap flex-shrink-0"
               >
-                <span className="font-medium">{skill.name}</span>
+                <span className=" ml-3 text-sm">{skill.name}</span>
                 <button
-                  className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-gray-400 transition-colors"
+                  className="flex items-center justify-center w-4 h-4 rounded-full bg-gray-300  hover:bg-red-600 transition-colors mr-2"
                   onClick={() => handleRemoveSkill(skill.id)}
                   aria-label={`Remove ${skill.name}`}
                   type="button"
