@@ -16,7 +16,15 @@ const ImageUploader = ({ image, onChange }) => {
   };
 
   return (
-    <div className="relative flex items-center justify-center sm:w-56 sm:h-56 md:w-[180px] md:h-[180px] mx-auto">
+    
+    <div className="relative flex items-center justify-center sm:w-64 sm:h-64 md:w-[210px] md:h-[210px] mx-auto" style={{
+        backgroundImage: `url(/circleFrame.png)`, // frame is the PNG path
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "contain"
+      }}>
+    <div className="relative flex items-center justify-center sm:w-56 sm:h-56 md:w-[180px] md:h-[180px] mx-auto"
+      >
         {image ? (
         <img
           src={image}
@@ -43,6 +51,7 @@ const ImageUploader = ({ image, onChange }) => {
         onChange={handleChange}
         className="hidden"
       />
+    </div>
     </div>
   );
 };
