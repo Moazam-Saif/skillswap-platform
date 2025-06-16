@@ -17,6 +17,14 @@ export default function ProfileUploadPage() {
   return (
     <div className="h-full min-h-screen bg-gray-50 flex"style={{fontFamily: "'Josefin Sans', sans-serif" }}>
       {/* Left Half */}
+      <div className='absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[50%] w-[12%] flex flex-col justify-between'>
+        <span className='bg-[#E76F51] text-transparent relative px-3 py-2 rounded-full font-medium'>Set Availability</span>
+        <span className=' bg-[#E76F51] text-transparent font-medium relative px-3 py-2  rounded-full'>Save Details</span>
+      </div>
+      <div className='z-50 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[50%] w-[12%] flex flex-col justify-between bg-transparent'>
+        <button className='bg-transparent text-[#264653] relative px-3 py-2 rounded-full font-medium'>Set Availability</button>
+        <button className=' bg-transparent text-[#264653] font-medium relative px-3 py-2  rounded-full'>Save Details</button>
+      </div>
       <div className="w-1/2 p-8 flex flex-col gap-10 bg-[#fff8f8] ">
         {/* Upper Half - Image Uploader */}
         <div className='relative h-1/2 w-full mx-auto border-b-1 border-black'>
