@@ -4,11 +4,16 @@ import SkillSearch from './SkillSelection';
 import UserInfo from './Info';
 import Nav from './Nav';
 import WeekBar from './WeekBar';
+import { useDispatch, useSelector } from 'react-redux';
+import { openPopup, closePopup } from '../store/popupSlice';
 
 export default function ProfileUploadPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const dispatch = useDispatch();
+  const isPopupOpen = useSelector(state => state.popup.isPopupOpen);
+
 
 
 
@@ -19,7 +24,7 @@ export default function ProfileUploadPage() {
 
 
   const handleButtonClick = () => {
-    setIsPopupOpen(!isPopupOpen);
+    dispatch(openPopup());
   };
 
   return (
