@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <AuthContext.Provider value={{ accessToken, setAccessToken }}>
+    <AuthContext.Provider value={{ accessToken, setAccessToken,userId, setUserId }}>
       {children}
     </AuthContext.Provider>
   );
