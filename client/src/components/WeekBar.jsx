@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { closePopup } from '../store/popupSlice'; 
 
 const WeekScheduler = () => {
+    const dispatch = useDispatch();
+
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
     const [selectedDay, setSelectedDay] = useState(null);
@@ -103,7 +107,7 @@ const WeekScheduler = () => {
                 </div>
                 <div className="mt-4 flex justify-end">
                     <button
-                        onClick={() => console.log('Close button clicked')}
+                        onClick={() => dispatch(closePopup())}
                         className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition w-full sm:w-auto"
                     >
                         Close
