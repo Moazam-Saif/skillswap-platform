@@ -6,19 +6,21 @@ import Nav from './Nav';
 import WeekBar from './WeekBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { openPopup, closePopup } from '../store/popupSlice';
+import { useParams } from "react-router-dom";
 
 export default function ProfileUploadPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [timeSlots, setTimeSlots] = useState({});
   const [userName, setUserName] = useState('');
+  const { userId } = useParams();
 
     useEffect(() => {
     const fetchUser = async () => {
       try {
         // Replace with actual user ID logic
-        const userId = "USER_ID_HERE";
-        const res = await axios.get(`/api/profile/${userId}`);
+        const userID = userId;
+        const res = await axios.get(`/api/profile/${userID}`);
         const user = res.data;
         if (user.imageUrl) {
           setImagePreview(user.imageUrl);

@@ -11,7 +11,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { setAccessToken } = useContext(AuthContext);
+  const { setAccessToken, setUserId } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -20,8 +20,9 @@ export default function LoginForm() {
     setError('');
     
     try {
-      const { accessToken } = await login({ email, password });
+      const { accessToken,userId } = await login({ email, password });
       setAccessToken(accessToken);
+      setUserId(userId);
       navigate('/dashboard');
     } catch (err) {
       setError('Login failed. Please check your credentials.');

@@ -2,8 +2,11 @@ import React from "react";
 import { SwapCard } from "./SwapCard";
 import { Link } from "react-router-dom";
 import Nav from "./Nav";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const Dashboard = () => {
+    const { userId } = useContext(AuthContext);
     return (
         <div className="flex flex-col min-h-screen">
             {/* Navbar */}
@@ -18,7 +21,7 @@ const Dashboard = () => {
                         <li>Dashboard</li>
                         <li>Settings</li>
                         <li>
-                            <Link to="/profile" className="hover:underline">Profile</Link>
+                            <Link to={`/profile/${userId}`} className="hover:underline">Profile</Link>
                         </li>
                     </ul>
                 </aside>
