@@ -7,37 +7,36 @@ import WeekBar from './WeekBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { openPopup, closePopup } from '../store/popupSlice';
 import { useParams } from "react-router-dom";
+import { getUser } from '../api/auth';
+import { useEffect,useContext } from 'react';
+import { AuthContext } from '@/context/AuthContext';
 
 export default function ProfileUploadPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [timeSlots, setTimeSlots] = useState({});
   const [userName, setUserName] = useState('');
+  const [bio, setBio] = useState('');
+  const [contact, setContact] = useState('');
   const { userId } = useParams();
+  const { accessToken } = useContext(AuthContext);
 
-    useEffect(() => {
+     useEffect(() => {
     const fetchUser = async () => {
       try {
-        // Replace with actual user ID logic
-        const userID = userId;
-        const res = await axios.get(`/api/profile/${userID}`);
-        const user = res.data;
-        if (user.imageUrl) {
-          setImagePreview(user.imageUrl);
-        }
-        if (user.name) {
-          setUserName(user.name);
-        }
-        if (user.availability) {
-          setTimeSlots(user.availability);
-        }
-        // Set other fields as needed
+        console.log(accessToken);
+        const user = await getUser(userId,accessToken);
+        if (user.imageUrl) setImagePreview(user.imageUrl);
+        if (user.name) setUserName(user.name);
+        if (user.bio) setBio(user.bio);
+        if (user.contact) setContact(user.contact);
+        if (user.availability) setTimeSlots(user.availability);
       } catch (err) {
         console.error("Failed to fetch user:", err);
       }
     };
     fetchUser();
-  }, []);
+  }, [userId,accessToken]);
 
   const dispatch = useDispatch();
   const isPopupOpen = useSelector(state => state.popup.isPopupOpen);
@@ -94,7 +93,14 @@ export default function ProfileUploadPage() {
           opacity: 0.8,
         }}>
           {/* This div is intentionally left empty as requested */}
-          <UserInfo />
+           <UserInfo
+            name={userName}
+            setName={setUserName}
+            bio={bio}
+            setBio={setBio}
+            contact={contact}
+            setContact={setContact}
+          />
         </div>
       </div>
     </>

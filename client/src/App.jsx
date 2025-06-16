@@ -19,7 +19,7 @@ function App() {
 
           {/* Protected Routes */}
           <Route
-            path="/dashboard"
+            path="/dashboard/:userId"
             element={
               <PrivateRoute>
                 <Dashboard />
@@ -28,7 +28,7 @@ function App() {
 
           />
           <Route
-            path="/profile"
+            path="/profile/:userId"
             element={
               <PrivateRoute>
                 <ProfileUpdate />

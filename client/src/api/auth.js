@@ -25,3 +25,12 @@ export const searchSkills = async (query) => {
   });
   return res.data;
 };
+
+export const getUser = async (userId, accessToken) => {
+  const res = await api.get(`/users/profile/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return res.data;
+};

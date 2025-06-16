@@ -23,7 +23,7 @@ export default function LoginForm() {
       const { accessToken,userId } = await login({ email, password });
       setAccessToken(accessToken);
       setUserId(userId);
-      navigate('/dashboard');
+      navigate(`/dashboard/${userId}`);
     } catch (err) {
       setError('Login failed. Please check your credentials.');
       console.error('Login error:', err);

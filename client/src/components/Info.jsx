@@ -1,10 +1,6 @@
-import { useState } from "react";
+import React from "react";
 
-export default function UserInfo() {
-    const [name, setName] = useState('');
-    const [bio, setBio] = useState('');
-    const [contact, setContact] = useState('');
-
+export default function UserInfo({ name, setName, bio, setBio, contact, setContact }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         // Handle form submission logic here
@@ -19,7 +15,7 @@ export default function UserInfo() {
                 <input
                     id="name"
                     type="text"
-                    value={name}
+                    value={name || ""}
                     onChange={e => setName(e.target.value)}
                     className="w-full mt-8 outline-none border-b-1 border-white text-center"
                 />
@@ -31,7 +27,7 @@ export default function UserInfo() {
                 <input
                     id="contact"
                     type="text"
-                    value={contact}
+                    value={contact || ""}
                     onChange={e => setContact(e.target.value)}
                     className="w-full mt-8 outline-none text-center border-b-1 border-white"
                 />
@@ -42,22 +38,16 @@ export default function UserInfo() {
                 </label>
                 <textarea
                     id="bio"
-                    value={bio}
+                    value={bio || ""}
                     onChange={e => setBio(e.target.value)}
                     rows={4}
                     className=" w-full px-3 py-2 border-2 border-t-white border-l-white border-r-white border-b-0 rounded-tl-[30px] rounded-tr-[30px] focus:outline-none resize-none"
                     placeholder="Tell us about yourself..."
                     style={{
-                       background: 'linear-gradient(to right, rgba(255,248,248,0.2) 0%, rgba(233,196,106,0.2) 15%)'
+                        background: 'linear-gradient(to right, rgba(255,248,248,0.2) 0%, rgba(233,196,106,0.2) 15%)'
                     }}
                 />
             </div>
-            {/* <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-        >
-          Save Profile
-        </button> */}
         </form>
     );
 }
