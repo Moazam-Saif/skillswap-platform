@@ -10,12 +10,18 @@ import { openPopup, closePopup } from '../store/popupSlice';
 export default function ProfileUploadPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [timeSlots, setTimeSlots] = useState({});
 
   const dispatch = useDispatch();
   const isPopupOpen = useSelector(state => state.popup.isPopupOpen);
 
 
 
+  const handleSave = () => {
+    console.log("Saving profile with timeSlots:", timeSlots);
+  // timeSlots is in the format { Monday: [{start, end}, ...], ... }
+  // Send timeSlots to your backend/database here
+};
 
   const handleImageChange = (file) => {
     setSelectedImage(file);
@@ -38,10 +44,13 @@ export default function ProfileUploadPage() {
         </div>
         <div className='z-20 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[50%] w-[12%] flex flex-col justify-between bg-transparent'>
           <button onClick={handleButtonClick} className='bg-transparent text-[#264653] relative px-3 py-2 rounded-full font-medium shadow-md'>Set Availability</button>
-          <button className=' bg-transparent text-[#264653] font-medium relative px-3 py-2  rounded-full shadow-md'>Save Details</button>
+          <button onClick={handleSave} className=' bg-transparent text-[#264653] font-medium relative px-3 py-2  rounded-full shadow-md'>Save Details</button>
         </div>
-        {isPopupOpen && (<div className='backdrop-blur-lg z-50 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[80%] w-[50%] bg-[rgb(38,70,83,0.6)] rounded-2xl'>
-          <WeekBar /></div>)}
+        {isPopupOpen && (
+          <div className='backdrop-blur-lg z-50 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[80%] w-[50%] bg-[rgb(38,70,83,0.6)] rounded-2xl'>
+            <WeekBar timeSlots={timeSlots} setTimeSlots={setTimeSlots} />
+          </div>
+        )}
         <div className="w-1/2 p-8 flex flex-col gap-10 bg-[#fff8f8] ">
           {/* Upper Half - Image Uploader */}
           <div className='relative h-1/2 w-full mx-auto border-b-1 border-black'>

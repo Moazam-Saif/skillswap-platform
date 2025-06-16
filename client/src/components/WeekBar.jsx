@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { closePopup } from '../store/popupSlice'; 
+import { closePopup } from '../store/popupSlice';
 
-const WeekScheduler = () => {
+const WeekScheduler = ({ timeSlots, setTimeSlots }) => {
     const dispatch = useDispatch();
 
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -10,7 +10,6 @@ const WeekScheduler = () => {
     const [selectedDay, setSelectedDay] = useState(null);
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
-    const [timeSlots, setTimeSlots] = useState({});
 
     const scrollRef = useRef(null);
 
@@ -85,6 +84,7 @@ const WeekScheduler = () => {
                 )}
 
                 {/* Scrollable Summary with Responsive Height */}
+                {/* Scrollable Summary with Responsive Height */}
                 <div
                     ref={scrollRef}
                     className="bg-[rgb(255,255,255,0.7)] border p-4 rounded-md shadow-sm overflow-y-auto max-h-30"
@@ -96,15 +96,35 @@ const WeekScheduler = () => {
                             const slots = timeSlots[day];
                             if (!slots || slots.length === 0) return null;
 
-                            const times = slots.map((slot) => `${slot.start}-${slot.end}`).join(', ');
                             return (
-                                <div key={day} className="text-sm text-black mb-1">
-                                    <span className="font-bold">{day}:</span> {times}
+                                <div key={day} className="text-sm text-black mb-2">
+                                    <span className="font-bold">{day}:</span>{' '}
+                                    {slots.map((slot, index) => (
+                                        <span key={index} className="inline-flex items-center mr-2 bg-gray-200 px-2 py-0.5 rounded-md">
+                                            {slot.start}-{slot.end}
+                                            <button
+                                                onClick={() => {
+                                                    setTimeSlots((prev) => {
+                                                        const updated = { ...prev };
+                                                        updated[day] = updated[day].filter((_, i) => i !== index);
+                                                        // If the day's array becomes empty, remove the key entirely (optional)
+                                                        if (updated[day].length === 0) delete updated[day];
+                                                        return updated;
+                                                    });
+                                                }}
+                                                className="ml-1 text-red-500 hover:text-red-700 font-bold"
+                                                title="Delete"
+                                            >
+                                                ×
+                                            </button>
+                                        </span>
+                                    ))}
                                 </div>
                             );
                         })
                     )}
                 </div>
+
                 <div className="mt-4 flex justify-end">
                     <button
                         onClick={() => dispatch(closePopup())}
