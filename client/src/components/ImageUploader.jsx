@@ -33,12 +33,12 @@ const ImageUploader = ({ image, onChange }) => {
         />
       ) : (
         
-          <User className="text-[#264653] w-full h-full bg-gray-200 rounded-full" />
+          <User className="text-[#264653] w-full h-full rounded-full" />
       )}
       <button
         type="button"
         onClick={handleClick}
-        className="absolute inset-0 m-auto bg-gray-400 text-white rounded-full p-1 shadow hover:bg-blue-600 transition-colors flex items-center justify-center"
+        className="absolute inset-0 m-auto bg-white opacity-50 text-gray-400 rounded-full p-1 shadow hover:bg-blue-600 transition-colors flex items-center justify-center"
         style={{ width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center" }}
         aria-label="Upload image"
       >

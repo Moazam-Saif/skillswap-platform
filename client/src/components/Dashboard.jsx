@@ -1,15 +1,13 @@
 import React from "react";
 import { SwapCard } from "./SwapCard";
 import { Link } from "react-router-dom";
+import Nav from "./Nav";
 
 const Dashboard = () => {
     return (
         <div className="flex flex-col min-h-screen">
             {/* Navbar */}
-            <nav className="w-full bg-[#FFFAFA] p-2 flex items-center justify-center gap-3 text-5xl text-[#e76f51]">
-                <h1 style={{ fontFamily: "Kranky, cursive" }}>SKILL</h1>
-                <h1 style={{ fontFamily: "Lemon, sans" }}>SWAP</h1>
-            </nav>
+           <Nav/>
 
             {/* Main Content Area */}
             <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
