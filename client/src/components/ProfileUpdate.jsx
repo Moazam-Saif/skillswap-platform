@@ -11,6 +11,31 @@ export default function ProfileUploadPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [timeSlots, setTimeSlots] = useState({});
+  const [userName, setUserName] = useState('');
+
+    useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        // Replace with actual user ID logic
+        const userId = "USER_ID_HERE";
+        const res = await axios.get(`/api/profile/${userId}`);
+        const user = res.data;
+        if (user.imageUrl) {
+          setImagePreview(user.imageUrl);
+        }
+        if (user.name) {
+          setUserName(user.name);
+        }
+        if (user.availability) {
+          setTimeSlots(user.availability);
+        }
+        // Set other fields as needed
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const dispatch = useDispatch();
   const isPopupOpen = useSelector(state => state.popup.isPopupOpen);

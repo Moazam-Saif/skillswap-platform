@@ -52,7 +52,7 @@ export const loginUser = async (req, res) => {
         sameSite: 'Strict',
         maxAge: REFRESH_TOKEN_EXPIRY_DAYS * 86400000,
       })
-      .json({ accessToken });
+      .json({ accessToken,userId: user._id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -72,7 +72,7 @@ export const refreshAccessToken = async (req, res) => {
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     const accessToken = generateAccessToken(user);
-    res.json({ accessToken });
+    res.json({ accessToken,userId: user._id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

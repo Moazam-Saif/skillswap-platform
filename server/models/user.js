@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
   bio: String,
   rating: { type: Number, default: 0 },
   ratingCount: { type: Number, default: 0 },
-
+  imageUrl:[String],
   skillsHave: [skillSchema],
   skillsWant: [skillSchema],
   categoriesHave: [String],

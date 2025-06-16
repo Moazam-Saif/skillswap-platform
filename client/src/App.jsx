@@ -30,9 +30,9 @@ function App() {
           <Route
             path="/profile"
             element={
-         
+              <PrivateRoute>
                 <ProfileUpdate />
-            
+              </PrivateRoute>
             }
           />
         </Routes>
