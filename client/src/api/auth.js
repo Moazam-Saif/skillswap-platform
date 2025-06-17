@@ -34,3 +34,11 @@ export const getUser = async (userId, accessToken) => {
   });
   return res.data;
 };
+export const updateUser = async (userId, data, accessToken) => {
+  const res = await api.put(`/users/profile/${userId}`, data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return res.data;
+};

@@ -34,8 +34,8 @@ export default function ProfileUploadPage() {
         if (user.bio) setBio(user.bio);
         if (user.contact) setContact(user.contact);
         if (user.availability) setTimeSlots(user.availability);
-      if (user.skillsWant) setSkillsWant(user.skillsWant);
-      if (user.skillsHave) setSkillsHave(user.skillsHave);
+        if (user.skillsWant) setSkillsWant(user.skillsWant);
+        if (user.skillsHave) setSkillsHave(user.skillsHave);
       } catch (err) {
         console.error("Failed to fetch user:", err);
       }
@@ -106,37 +106,37 @@ export default function ProfileUploadPage() {
             <ImageUploader image={imagePreview} onChange={handleImageChange} />
           </div>
 
-           <div className="flex flex-col gap-4">
-        <div className="flex justify-center gap-4 mb-2">
-          <button
-            className={`px-4 py-2 rounded-full font-semibold transition-colors ${
-              activeSkillType === "want"
-                ? "bg-[#e76f51] text-white"
-                : "bg-gray-200 text-[#264653]"
-            }`}
-            onClick={() => setActiveSkillType("want")}
-            type="button"
-          >
-            Skills I Want
-          </button>
-          <button
-            className={`px-4 py-2 rounded-full font-semibold transition-colors ${
-              activeSkillType === "have"
-                ? "bg-[#e76f51] text-white"
-                : "bg-gray-200 text-[#264653]"
-            }`}
-            onClick={() => setActiveSkillType("have")}
-            type="button"
-          >
-            Skills I Have
-          </button>
-        </div>
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-center mb-2">
+              <div className="inline-flex w-80 rounded-full bg-gray-200 overflow-hidden">
+                <button
+                  className={`flex-1 px-4 py-2 font-semibold transition-colors focus:outline-none ${activeSkillType === "want"
+                      ? "bg-[#264653] text-white"
+                      : "bg-gray-200 text-black"
+                    } rounded-l-full`}
+                  onClick={() => setActiveSkillType("want")}
+                  type="button"
+                >
+                  Skills You Want
+                </button>
+                <button
+                  className={`flex-1 px-4 py-2 font-semibold transition-colors focus:outline-none ${activeSkillType === "have"
+                      ? "bg-[#E76F51] text-white"
+                      : "bg-gray-200 text-black"
+                    } rounded-r-full`}
+                  onClick={() => setActiveSkillType("have")}
+                  type="button"
+                >
+                  Skills You Have
+                </button>
+              </div>
+            </div>
 
-        <SkillSearch
-          selectedSkills={activeSkillType === "want" ? skillsWant : skillsHave}
-          setSelectedSkills={activeSkillType === "want" ? setSkillsWant : setSkillsHave}
-        />
-      </div>
+            <SkillSearch
+              selectedSkills={activeSkillType === "want" ? skillsWant : skillsHave}
+              setSelectedSkills={activeSkillType === "want" ? setSkillsWant : setSkillsHave}
+            />
+          </div>
           {/* Lower Half - Form Fields */}
         </div>
 
