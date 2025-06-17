@@ -147,3 +147,6 @@
   animation: slideInRight 1s ease-out forwards;
 }
 
+.transparent-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}

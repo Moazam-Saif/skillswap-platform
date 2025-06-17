@@ -64,7 +64,7 @@ export default function () {
                         Available TimeSlots
                     </div>
                     <div className='relative w-full h-[75%] pl-[2px] pr-[2px overflow-y-auto'>
-                    <div className="relative w-full h-full max-h-full flex flex-col items-center justify-center overflow-y-auto p-2 border-1 bg-[#fddede] opacity-90 rounded-[15px]">
+                    <div className="relative w-full h-full max-h-full flex flex-col items-center justify-center overflow-y-auto p-2 border-1 bg-[#F4A26133] opacity-90 rounded-[15px]">
                         <ul className="text-sm text-gray-700 space-y-1 w-full">
                             {timeSlots.map((slot, index) => (
                                 <li

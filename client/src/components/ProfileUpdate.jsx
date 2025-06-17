@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { openPopup, closePopup } from '../store/popupSlice';
 import { useParams } from "react-router-dom";
 import { getUser } from '../api/auth';
-import { useEffect,useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { AuthContext } from '@/context/AuthContext';
 
 export default function ProfileUploadPage() {
@@ -18,36 +18,59 @@ export default function ProfileUploadPage() {
   const [userName, setUserName] = useState('');
   const [bio, setBio] = useState('');
   const [contact, setContact] = useState('');
+  const [skillsWant, setSkillsWant] = useState([]);
+  const [skillsHave, setSkillsHave] = useState([]);
+  const [activeSkillType, setActiveSkillType] = useState("want");
   const { userId } = useParams();
   const { accessToken } = useContext(AuthContext);
 
-     useEffect(() => {
+  useEffect(() => {
     const fetchUser = async () => {
       try {
         console.log(accessToken);
-        const user = await getUser(userId,accessToken);
-        if (user.imageUrl && user.imageUrl!=="") setImagePreview(user.imageUrl);
+        const user = await getUser(userId, accessToken);
+        if (user.imageUrl && user.imageUrl !== "") setImagePreview(user.imageUrl);
         if (user.name) setUserName(user.name);
         if (user.bio) setBio(user.bio);
         if (user.contact) setContact(user.contact);
         if (user.availability) setTimeSlots(user.availability);
+      if (user.skillsWant) setSkillsWant(user.skillsWant);
+      if (user.skillsHave) setSkillsHave(user.skillsHave);
       } catch (err) {
         console.error("Failed to fetch user:", err);
       }
     };
     fetchUser();
-  }, [userId,accessToken]);
+  }, [userId, accessToken]);
 
   const dispatch = useDispatch();
   const isPopupOpen = useSelector(state => state.popup.isPopupOpen);
 
-
+  function convertTimeSlotsToAvailability(timeSlots) {
+    const availability = [];
+    for (const [day, slots] of Object.entries(timeSlots)) {
+      if (Array.isArray(slots)) {
+        slots.forEach(slot => {
+          availability.push({
+            day,
+            startTime: slot.start,
+            endTime: slot.end
+          });
+        });
+      }
+    }
+    return availability;
+  }
 
   const handleSave = () => {
-    console.log("Saving profile with timeSlots:", timeSlots);
-  // timeSlots is in the format { Monday: [{start, end}, ...], ... }
-  // Send timeSlots to your backend/database here
-};
+    const availability = convertTimeSlotsToAvailability(timeSlots);
+    console.log({
+      availability,
+      skills: selectedSkills,
+      // ...other fields...
+    });
+    // Now send { ...otherUserFields, availability } to your backend
+  };
 
   const handleImageChange = (file) => {
     setSelectedImage(file);
@@ -83,7 +106,37 @@ export default function ProfileUploadPage() {
             <ImageUploader image={imagePreview} onChange={handleImageChange} />
           </div>
 
-          <SkillSearch />
+           <div className="flex flex-col gap-4">
+        <div className="flex justify-center gap-4 mb-2">
+          <button
+            className={`px-4 py-2 rounded-full font-semibold transition-colors ${
+              activeSkillType === "want"
+                ? "bg-[#e76f51] text-white"
+                : "bg-gray-200 text-[#264653]"
+            }`}
+            onClick={() => setActiveSkillType("want")}
+            type="button"
+          >
+            Skills I Want
+          </button>
+          <button
+            className={`px-4 py-2 rounded-full font-semibold transition-colors ${
+              activeSkillType === "have"
+                ? "bg-[#e76f51] text-white"
+                : "bg-gray-200 text-[#264653]"
+            }`}
+            onClick={() => setActiveSkillType("have")}
+            type="button"
+          >
+            Skills I Have
+          </button>
+        </div>
+
+        <SkillSearch
+          selectedSkills={activeSkillType === "want" ? skillsWant : skillsHave}
+          setSelectedSkills={activeSkillType === "want" ? setSkillsWant : setSkillsHave}
+        />
+      </div>
           {/* Lower Half - Form Fields */}
         </div>
 
@@ -93,7 +146,7 @@ export default function ProfileUploadPage() {
           opacity: 0.8,
         }}>
           {/* This div is intentionally left empty as requested */}
-           <UserInfo
+          <UserInfo
             name={userName}
             setName={setUserName}
             bio={bio}

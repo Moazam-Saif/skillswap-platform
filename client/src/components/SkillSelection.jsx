@@ -1,40 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
-// import { searchSkills } from "../api/auth";
+import { searchSkills } from "../api/auth"; // <-- Use your real API
 
-const searchSkills = async (query) => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 100));
-
-  // Mock data
-  const mockSkills = [
-    { id: 1, name: "JavaScript" },
-    { id: 2, name: "React" },
-    { id: 3, name: "Node.js" },
-    { id: 4, name: "Python" },
-    { id: 5, name: "Django" },
-    { id: 6, name: "PostgreSQL" },
-    { id: 7, name: "MongoDB" },
-    { id: 8, name: "TypeScript" },
-    { id: 9, name: "Vue.js" },
-    { id: 10, name: "Angular" },
-    { id: 11, name: "Express.js" },
-    { id: 12, name: "Redis" },
-    { id: 13, name: "Docker" },
-    { id: 14, name: "AWS" },
-    { id: 15, name: "GraphQL" }
-  ];
-
-  return mockSkills.filter(skill =>
-    skill.name.toLowerCase().includes(query.toLowerCase())
-  );
-};
-
-const SkillSearch = () => {
+const SkillSearch = ({ selectedSkills, setSelectedSkills }) => {
   const [query, setQuery] = useState("");
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedSkills, setSelectedSkills] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const inputRef = useRef(null);
   const containerRef = useRef(null);
@@ -94,7 +65,7 @@ const SkillSearch = () => {
   return (
     <div className="relative w-full h-1/2 p-3 flex flex-col gap-[30%]">
       {/* Search Input Container */}
-       <h1 className="mx-auto text-2xl font-bold text-[#264653]">INTERESTED IN LEARNING:</h1>
+      <h1 className="mx-auto text-2xl font-bold text-[#264653]">INTERESTED IN LEARNING:</h1>
       <div className="relative flex flex-col gap-0" ref={containerRef}>
         <div className="relative w-full flex items-center justify-center">
           <input
@@ -142,7 +113,6 @@ const SkillSearch = () => {
       </div>
 
       <div>
-       
         <div className="overflow-x-auto">
           <div className="flex gap-5 min-w-max">
             {selectedSkills.map(skill => (
