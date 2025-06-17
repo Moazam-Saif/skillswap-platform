@@ -3,6 +3,7 @@ import { Plus, User } from "lucide-react";
 
 const ImageUploader = ({ image, onChange }) => {
   const fileInput = useRef();
+  console.log(image);
 
   const handleClick = () => {
     fileInput.current.click();
@@ -25,7 +26,7 @@ const ImageUploader = ({ image, onChange }) => {
       }}>
     <div className="relative flex items-center justify-center sm:w-56 sm:h-56 md:w-[180px] md:h-[180px] mx-auto"
       >
-        {image ? (
+        {image && image !== "" ? (
         <img
           src={image}
           alt="Profile"

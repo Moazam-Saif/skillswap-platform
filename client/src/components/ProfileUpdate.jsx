@@ -26,7 +26,7 @@ export default function ProfileUploadPage() {
       try {
         console.log(accessToken);
         const user = await getUser(userId,accessToken);
-        if (user.imageUrl) setImagePreview(user.imageUrl);
+        if (user.imageUrl && user.imageUrl!=="") setImagePreview(user.imageUrl);
         if (user.name) setUserName(user.name);
         if (user.bio) setBio(user.bio);
         if (user.contact) setContact(user.contact);
