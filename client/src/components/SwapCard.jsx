@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-export const SwapCard = () => {
+export const SwapCard = ({name,imageUrl}) => {
     return (
         <div className="w-[179px] h-[173px] relative bg-transparent">
 
@@ -47,15 +47,14 @@ export const SwapCard = () => {
                 {/* Left: Image */}
                 <div className="w-1/2 flex items-center justify-center border-r-2 border-white">
                     <img
-                        src="/userImage.png"
+                        src={imageUrl||"/userImage.png"}
                         alt="Profile"
                         className="w-[35px] h-[35px] rounded-full object-cover"
                     />
                 </div>
                 {/* Right: Name */}
                 <div className="w-1/2 flex flex-col items-center justify-center text-white text-sm px-2 text-center" style={{fontFamily: "'Josefin Sans', sans-serif" }}>
-                    <p>Moazam</p>
-                    <p>Saif</p>
+                    <p className='flex flex-wrap'>{name || "User"}</p>
                 </div>
             </div>
         </div >

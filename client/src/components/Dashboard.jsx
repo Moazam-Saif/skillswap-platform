@@ -4,9 +4,25 @@ import { Link } from "react-router-dom";
 import Nav from "./Nav";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { getAllUsers } from "../api/auth";
+import { useState,useEffect } from "react";
 
 const Dashboard = () => {
     const { userId } = useContext(AuthContext);
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const data = await getAllUsers();
+                setUsers(data);
+            } catch (err) {
+                console.error("Failed to fetch users:", err);
+            }
+        };
+        fetchUsers();
+    }, []);
+    
     return (
         <div className="flex flex-col min-h-screen">
             {/* Navbar */}
@@ -36,8 +52,14 @@ const Dashboard = () => {
                             style={{ aspectRatio: '1380 / 98' }}
                         />
                     </div>
-                    <div className="h-[193px] w-full bg-[#fff8f8] rounded-tl-[30px] pl-8 pt-[10px] pb-[10px]">
-                        <div><SwapCard /></div>
+                    <div className="h-[193px] w-full bg-[#fff8f8] rounded-tl-[30px] pl-8 pt-[10px] pb-[10px] flex gap-4 overflow-x-auto">
+                        {users.map(user => (
+                            <SwapCard
+                                key={user._id}
+                                name={user.name}
+                                imageUrl={user.imageUrl}
+                            />
+                        ))}
                     </div>
                     <div>
                         <img

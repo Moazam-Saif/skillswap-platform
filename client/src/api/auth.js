@@ -42,3 +42,8 @@ export const updateUser = async (userId, data, accessToken) => {
   });
   return res.data;
 };
+
+export const getAllUsers = async () => {
+  const res = await api.get('/users/all');
+  return res.data;
+};

@@ -63,7 +63,7 @@ const SkillSearch = ({ selectedSkills, setSelectedSkills }) => {
   };
 
   return (
-    <div className="relative w-full h-1/2 p-3 flex flex-col gap-[30%]">
+    <div className="relative w-full h-1/2 p-3 flex flex-col gap-10">
       {/* Search Input Container */}
       <div className="relative flex flex-col gap-0" ref={containerRef}>
         <div className="relative w-full flex items-center justify-center">

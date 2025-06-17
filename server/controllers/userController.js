@@ -40,3 +40,13 @@ export const addRating = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    // Only select fields you need for the dashboard
+    const users = await User.find({}, 'name imageUrl');
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
