@@ -40,8 +40,8 @@ export default function UserInfo({ name, setName, bio, setBio, contact, setConta
                     id="bio"
                     value={bio || ""}
                     onChange={e => setBio(e.target.value)}
-                    rows={4}
-                    className=" w-full px-3 py-2 border-2 border-t-white border-l-white border-r-white border-b-0 rounded-tl-[30px] rounded-tr-[30px] focus:outline-none resize-none"
+                    rows={5}
+                    className=" w-full px-3 py-2 border-2 border-white border-b-0 rounded-tl-[30px] rounded-tr-[30px] focus:outline-none resize-none"
                     placeholder="Tell us about yourself..."
                     style={{
                         background: 'linear-gradient(to right, rgba(255,248,248,0.2) 0%, rgba(233,196,106,0.2) 15%)'

@@ -12,7 +12,7 @@ export const getUserProfile = async (req, res) => {
 
 export const updateUserProfile = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.userId, req.body, { new: true });
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(user);
   } catch (err) {
     res.status(500).json({ error: err.message });
