@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { getSkillMatches } from "../api/auth";
+import { getSkillMatches,getPartialSkillMatches } from "../api/auth";
 import { SwapCard } from "./SwapCard";
 import { AuthContext } from "../context/AuthContext";
 import Nav from "./Nav";
@@ -8,12 +8,17 @@ import { Link } from "react-router-dom";
 const Dashboard = () => {
     const { userId, accessToken } = useContext(AuthContext);
     const [matches, setMatches] = useState([]);
+    const [matches2,setMatches2]=useState([])
 
     useEffect(() => {
         const fetchMatches = async () => {
             try {
-                const data = await getSkillMatches(accessToken);
-                setMatches(data);
+                const [mutualMatches, partialMatches] = await Promise.all([
+                    getSkillMatches(accessToken),
+                    getPartialSkillMatches(accessToken)
+                ]);
+                setMatches(mutualMatches);
+                setMatches2(partialMatches);
             } catch (err) {
                 console.error("Failed to fetch matches:", err);
             }
@@ -71,7 +76,20 @@ const Dashboard = () => {
                         />
                     </div>
                     <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px]">
-                        <div><SwapCard /></div>
+                        {matches2.length === 0 ? (
+                            <div className="text-gray-500 flex items-center">No matches found.</div>
+                        ) : (
+                            (
+                                matches2.map(user => (
+                                    <SwapCard
+                                        key={user.userId}
+                                        name={user.name}
+                                        imageUrl={user.imageUrl}
+                                        skillsTheyOffer={user.skillsTheyOffer}
+                                        skillsTheyWant={user.skillsTheyWant}
+                                    />
+                                ))
+                            ))}
                     </div>
                     <div>
                         <img
