@@ -2,9 +2,10 @@ import { useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { logout } from "../api/auth";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Nav() {
-    const { setAccessToken, setUserId } = useContext(AuthContext);
+    const { setAccessToken, setUserId,userId } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleLogout = async () => {
