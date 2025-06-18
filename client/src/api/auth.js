@@ -47,3 +47,10 @@ export const getAllUsers = async () => {
   const res = await api.get('/users/all');
   return res.data;
 };
+
+export const getSkillMatches = async (accessToken) => {
+  const res = await api.get(`/users/matches/${userId}`, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  return res.data;
+};
