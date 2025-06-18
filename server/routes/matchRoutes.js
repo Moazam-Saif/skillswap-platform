@@ -1,9 +1,9 @@
 import express from 'express';
-import { getMatches } from '../controllers/matchController.js';
+import { getSkillMatches } from '../controllers/matchController.js';
 import { verifyToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', verifyToken, getMatches);
+router.get('/', verifyToken, getSkillMatches);
 
 export default router;
