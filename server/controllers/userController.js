@@ -51,6 +51,58 @@ export const addRating = async (req, res) => {
   }
 };
 
+export const getPartialSkillMatches = async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.userId);
+    if (!currentUser) return res.status(404).json({ message: "User not found" });
+
+    const pipeline = [
+      // 1. Exclude the current user
+      {
+        $match: {
+          _id: { $ne: currentUser._id }
+        }
+      },
+      // 2. Find intersection arrays
+      {
+        $addFields: {
+          skillsTheyOffer: {
+            $setIntersection: ["$skillsHave", currentUser.skillsWant]
+          },
+          skillsTheyWant: {
+            $setIntersection: ["$skillsWant", currentUser.skillsHave]
+          }
+        }
+      },
+      // 3. Only keep users who have at least one match in either direction,
+      //    but NOT both (no mutual matches)
+      {
+        $match: {
+          $or: [
+            { skillsTheyOffer: { $ne: [] }, skillsTheyWant: { $eq: [] } },
+            { skillsTheyWant: { $ne: [] }, skillsTheyOffer: { $eq: [] } }
+          ]
+        }
+      },
+      // 4. Project the relevant fields
+      {
+        $project: {
+          userId: "$_id",
+          name: 1,
+          imageUrl: 1,
+          skillsTheyOffer: 1,
+          skillsTheyWant: 1
+        }
+      }
+    ];
+
+    const matches = await User.aggregate(pipeline);
+    res.json(matches);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 export const getAllUsers = async (req, res) => {
   try {
     // Only select fields you need for the dashboard

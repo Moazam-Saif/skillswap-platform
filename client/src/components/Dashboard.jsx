@@ -50,20 +50,17 @@ const Dashboard = () => {
                         {matches.length === 0 ? (
                             <div className="text-gray-500 flex items-center">No matches found.</div>
                         ) : (
-                            matches.flatMap(user =>
-                                user.skillsTheyOffer.flatMap(offer =>
-                                    user.skillsTheyWant.map(want => (
-                                        <SwapCard
-                                            key={`${user.userId}-${offer.name}-${want.name}`}
-                                            name={user.name}
-                                            imageUrl={user.imageUrl}
-                                            skillTheyOffer={offer}
-                                            skillTheyWant={want}
-                                        />
-                                    ))
-                                )
-                            )
-                        )}
+                            (
+                                matches.map(user => (
+                                    <SwapCard
+                                        key={user.userId}
+                                        name={user.name}
+                                        imageUrl={user.imageUrl}
+                                        skillsTheyOffer={user.skillsTheyOffer}
+                                        skillsTheyWant={user.skillsTheyWant}
+                                    />
+                                ))
+                            ))}
                     </div>
                     <div>
                         <img
