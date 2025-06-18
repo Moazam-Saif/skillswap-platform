@@ -17,6 +17,6 @@ router.post('/availability', verifyToken, setAvailability);
 router.post('/rating', verifyToken, addRating);
 router.post('/change-password', verifyToken, changePassword);
 router.get('/all', getAllUsers);
-router.get('/matches/:id', verifyToken, getSkillMatches);
+router.get('/matches', verifyToken, getSkillMatches);
 
 export default router;

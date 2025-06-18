@@ -49,7 +49,7 @@ export const getAllUsers = async () => {
 };
 
 export const getSkillMatches = async (accessToken) => {
-  const res = await api.get(`/users/matches/${userId}`, {
+  const res = await api.get('/users/matches', {
     headers: { Authorization: `Bearer ${accessToken}` }
   });
   return res.data;

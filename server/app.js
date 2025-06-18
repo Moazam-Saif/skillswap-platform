@@ -8,7 +8,6 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import skillRoutes from './routes/skillRoutes.js';
 import scheduleRoutes from './routes/scheduleRoutes.js';
-import matchRoutes from './routes/matchRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 
 
@@ -28,7 +27,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/schedule', scheduleRoutes);
-app.use('/api/match', matchRoutes);
 app.use('/api/chat', chatRoutes);
 
 // Error Handler

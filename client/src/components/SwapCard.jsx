@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-export const SwapCard = ({name,imageUrl}) => {
+export const SwapCard = ({name,imageUrl,skillTheyOffer,skillTheyWant}) => {
     return (
         <div className="w-[179px] h-[173px] relative bg-transparent">
 
@@ -14,12 +14,12 @@ export const SwapCard = ({name,imageUrl}) => {
               
                 <div className="absolute left-1 top-3 z-50 w-[31px] h-[100px] flex items-center justify-center overflow-hidden">
                     <span className="text-center z-50 transform rotate-90 origin-center text-[min(0.9rem,100%)] text-[#264653] leading-3 font-bold" style={{fontFamily: "'Josefin Sans', sans-serif" }}>
-                        Guitar
+                        {skillTheyOffer?.name}
                     </span>
                 </div>
                 <div className="absolute right-1 top-3 z-50 w-[32px] h-[100px] flex items-center justify-center overflow-hidden">
                     <span className="text-center z-50 transform -rotate-90 origin-center text-[min(0.9rem,100%)] text-[#264653] leading-3 font-bold" style={{fontFamily: "'Josefin Sans', sans-serif" }} >
-                        Cycling
+                        {skillTheyWant?.name}
                     </span>
                 </div>
 

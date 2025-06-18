@@ -1,48 +1,41 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { getSkillMatches } from "../api/auth";
 import { SwapCard } from "./SwapCard";
-import { Link } from "react-router-dom";
-import Nav from "./Nav";
-import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { getAllUsers } from "../api/auth";
-import { useState,useEffect } from "react";
+import Nav from "./Nav";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
-    const { userId } = useContext(AuthContext);
-    const [users, setUsers] = useState([]);
+    const { userId, accessToken } = useContext(AuthContext);
+    const [matches, setMatches] = useState([]);
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchMatches = async () => {
             try {
-                const data = await getAllUsers();
-                setUsers(data);
+                const data = await getSkillMatches(accessToken);
+                setMatches(data);
             } catch (err) {
-                console.error("Failed to fetch users:", err);
+                console.error("Failed to fetch matches:", err);
             }
         };
-        fetchUsers();
-    }, []);
-    
+        fetchMatches();
+    }, [accessToken]);
+
     return (
         <div className="flex flex-col min-h-screen">
-            {/* Navbar */}
-           <Nav/>
-
-            {/* Main Content Area */}
+            <Nav />
             <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
-                {/* Sidebar */}
                 <aside className="w-[20%] sticky top-0 h-screen bg-[#264653] pt-20 p-6 text-white rounded-tl-[30px] ">
                     <h2 className="font-semibold mb-2">Sidebar</h2>
                     <ul className="space-y-2">
-                        <li>Dashboard</li>
-                        <li>Settings</li>
                         <li>
-                            <Link to={`/profile/${userId}`} className="hover:underline">Profile</Link>
+                            <Link to={`/dashboard/${userId}`}>Dashboard</Link>
+                        </li>
+                        <li>
+                            <Link to={`/profile/${userId}`}>Profile</Link>
                         </li>
                     </ul>
                 </aside>
-
-                {/* Content */}
                 <section className="w-[80%] flex-1 overflow-y-auto bg-[#264653]">
                     <div>
                         <img
@@ -52,14 +45,25 @@ const Dashboard = () => {
                             style={{ aspectRatio: '1380 / 98' }}
                         />
                     </div>
+                    {/* SwapCard list for mutual skill matches */}
                     <div className="h-[193px] w-full bg-[#fff8f8] rounded-tl-[30px] pl-8 pt-[10px] pb-[10px] flex gap-4 overflow-x-auto">
-                        {users.map(user => (
-                            <SwapCard
-                                key={user._id}
-                                name={user.name}
-                                imageUrl={user.imageUrl}
-                            />
-                        ))}
+                        {matches.length === 0 ? (
+                            <div className="text-gray-500 flex items-center">No matches found.</div>
+                        ) : (
+                            matches.flatMap(user =>
+                                user.skillsTheyOffer.flatMap(offer =>
+                                    user.skillsTheyWant.map(want => (
+                                        <SwapCard
+                                            key={`${user.userId}-${offer.name}-${want.name}`}
+                                            name={user.name}
+                                            imageUrl={user.imageUrl}
+                                            skillTheyOffer={offer}
+                                            skillTheyWant={want}
+                                        />
+                                    ))
+                                )
+                            )
+                        )}
                     </div>
                     <div>
                         <img
