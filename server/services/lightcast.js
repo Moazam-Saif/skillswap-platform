@@ -56,10 +56,8 @@ export async function fetchSkill(skillId){
       Authorization: `Bearer ${token}`
     }
   });
-  console.log(response,"this is response");
   const result=response.data;
-  console.log(result.subcategory,"hello after result")
-  return result;
+  return result.data.subcategory.name;
   }
   catch{
     console.error();
