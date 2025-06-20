@@ -5,8 +5,7 @@ category they selected or the specific skills the want.
 import mongoose from "mongoose";
 
 export const skillSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  category: { type: String, required: true }
+  name: { type: String, required: true }
 }, { _id: false });
 
 const availabilitySlotSchema = new mongoose.Schema({
