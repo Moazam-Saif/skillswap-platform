@@ -22,6 +22,11 @@ export const SwapCard = ({ name, imageUrl, skillsTheyOffer = [], skillsTheyWant 
         };
     }, [skillsTheyOffer, skillsTheyWant]);
 
+    function getNameBeforeBracket(str = "") {
+        const idx = str.search(/[\(\[\{]/);
+        return idx === -1 ? str : str.slice(0, idx).trim();
+    }
+
     return (
         <div className="w-[179px] h-[173px] relative bg-transparent">
             <div className="w-full h-[122px] rounded-t-[17px] bg-[#E76F51] border-b-2 border-white relative overflow-hidden flex items-center justify-center">
@@ -43,7 +48,7 @@ export const SwapCard = ({ name, imageUrl, skillsTheyOffer = [], skillsTheyWant 
                             className="text-center z-50 transform rotate-90 origin-center text-[min(0.8rem,100%)] text-[#264653] leading-3 font-bold"
                             style={{ fontFamily: "'Josefin Sans', sans-serif" }}
                         >
-                            {skillsTheyOffer?.[offerIndex]?.name || ""}
+                            {getNameBeforeBracket(skillsTheyOffer?.[offerIndex]?.name) || ""}
                         </motion.span>
                     </AnimatePresence>
                 </div>
