@@ -23,7 +23,38 @@ export const updateUserProfile = async (req, res) => {
       err.status = 403;
       throw err;
     }
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+    // Fetch categories for each skill in skillsHave and skillsWant
+    const skillsHave = req.body.skillsHave || [];
+    const skillsWant = req.body.skillsWant || [];
+
+    // Fetch categories for skillsHave
+    const categoriesHave = await Promise.all(
+      skillsHave.map(async (skill) => {
+        const skillInfo = await fetchSkill(skill.id);
+        console.log("1."+skill.id);
+        console.log("2."+skillInfo)
+        // Adjust the path below if your skillInfo structure is different
+        return skillInfo;
+      })
+    );
+
+    // Fetch categories for skillsWant
+    const categoriesWant = await Promise.all(
+      skillsWant.map(async (skill) => {
+        const skillInfo = await fetchSkill(skill.id);
+        return skillInfo;
+      })
+    );
+
+    // Add categories to the update payload
+    const updatePayload = {
+      ...req.body,
+      categoriesHave,
+      categoriesWant,
+    };
+
+    const user = await User.findByIdAndUpdate(req.params.id, updatePayload, { new: true });
     res.json(user);
   } catch (err) {
     res.status(err.status || 500).json({ message: err.message });
