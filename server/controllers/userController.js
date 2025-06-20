@@ -15,6 +15,7 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
+
 export const updateUserProfile = async (req, res) => {
   try {
     if (req.userId !== req.params.id) {
@@ -22,7 +23,32 @@ export const updateUserProfile = async (req, res) => {
       err.status = 403;
       throw err;
     }
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+    // Get skillsHave and skillsWant from the request
+    const { skillsHave = [], skillsWant = [] } = req.body;
+
+    // Fetch titles for each skill in skillsHave and skillsWant
+    const titlesHave = await Promise.all(
+      skillsHave.map(async (skill) => {
+        if (!skill._id && !skill.id) return [];
+        return await fetchSkillTitles(skill._id || skill.id);
+      })
+    );
+    const titlesWant = await Promise.all(
+      skillsWant.map(async (skill) => {
+        if (!skill._id && !skill.id) return [];
+        return await fetchSkillTitles(skill._id || skill.id);
+      })
+    );
+
+    // Add titlesHave and titlesWant to the update payload
+    const updatePayload = {
+      ...req.body,
+      titlesHave,
+      titlesWant,
+    };
+
+    const user = await User.findByIdAndUpdate(req.params.id, updatePayload, { new: true });
     res.json(user);
   } catch (err) {
     res.status(err.status || 500).json({ message: err.message });
