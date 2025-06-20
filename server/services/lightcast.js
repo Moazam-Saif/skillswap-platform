@@ -48,7 +48,16 @@ export async function autocompleteSkills(query) {
 }
 
 export async function fetchSkill(skillId){
+  const cacheKey = `skill:${skillId}`;
+  // Try to get from Redis cache first
+  const cached = await redis.get(cacheKey);
+  if (cached) {
+    console.log("cached");
+    return JSON.parse(cached); // Return the whole skill object/info
+  }
+
   const token = await fetchToken();
+
   console.log("start")
   try{
   const response = await axios.get(`https://emsiservices.com/skills/versions/latest/skills/${skillId}`, {
@@ -56,11 +65,13 @@ export async function fetchSkill(skillId){
       Authorization: `Bearer ${token}`
     }
   });
-  const result=response.data;
-  return result.data.subcategory.name;
+  const result=response.data.data.subcategory.name;
+  await redis.set(cacheKey, JSON.stringify(result), "EX", 86400);
+  return result;
   }
   catch{
     console.error();
+    return null;
   
   }
 }
