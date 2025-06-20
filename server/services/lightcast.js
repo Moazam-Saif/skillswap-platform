@@ -46,3 +46,23 @@ export async function autocompleteSkills(query) {
 
   return foundData;
 }
+
+export async function fetchSkill(skillId){
+  const token = await fetchToken();
+  console.log("start")
+  try{
+  const response = await axios.get(`https://emsiservices.com/skills/versions/latest/skills/${skillId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  console.log(response,"this is response");
+  const result=response.data;
+  console.log(result.subcategory,"hello after result")
+  return result;
+  }
+  catch{
+    console.error();
+  
+  }
+}

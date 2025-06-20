@@ -1,4 +1,5 @@
 import User from '../models/User.js';
+import { fetchSkill } from '../services/lightcast.js';
 
 export const getUserProfile = async (req, res) => {
   try {
@@ -61,3 +62,15 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getSkillInfo = async (req, res) => {
+  try {
+    const skilllId = req.params.skillId;
+    console.log(skilllId,"recieved")
+    const skillInfo = await fetchSkill(skilllId);
+    res.json(skillInfo);
+  }
+  catch(err){
+    res.status(500).json({ error: err.message });
+  }
+}
