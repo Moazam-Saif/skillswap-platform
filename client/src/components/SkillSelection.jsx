@@ -58,8 +58,8 @@ const SkillSearch = ({ selectedSkills, setSelectedSkills }) => {
     setShowDropdown(false);
   };
 
-  const handleRemoveSkill = (id) => {
-    setSelectedSkills(selectedSkills.filter(skill => skill.id !== id));
+  const handleRemoveSkill = (name) => {
+    setSelectedSkills(selectedSkills.filter(skill => skill.name !== name));
   };
 
   return (
@@ -122,7 +122,7 @@ const SkillSearch = ({ selectedSkills, setSelectedSkills }) => {
                 <span className=" ml-3 text-sm">{skill.name}</span>
                 <button
                   className="flex items-center justify-center w-4 h-4 rounded-full bg-gray-300  hover:bg-red-600 transition-colors mr-2"
-                  onClick={() => handleRemoveSkill(skill.id)}
+                  onClick={() => handleRemoveSkill(skill.name)}
                   aria-label={`Remove ${skill.name}`}
                   type="button"
                 >
