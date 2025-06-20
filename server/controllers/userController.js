@@ -32,6 +32,7 @@ export const updateUserProfile = async (req, res) => {
     const categoriesHave = await Promise.all(
       skillsHave.map(async (skill) => {
         const skillInfo = await fetchSkill(skill.id);
+        console.log(skill);
         console.log("1."+skill.id);
         console.log("2."+skillInfo)
         // Adjust the path below if your skillInfo structure is different
