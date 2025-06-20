@@ -1,4 +1,5 @@
 import User from '../models/User.js';
+import { fetchSkillTitles } from "../services/lightcast.js"
 
 export const getUserProfile = async (req, res) => {
   try {
@@ -14,7 +15,6 @@ export const getUserProfile = async (req, res) => {
     res.status(err.status || 500).json({ message: err.message });
   }
 };
-
 
 export const updateUserProfile = async (req, res) => {
   try {
