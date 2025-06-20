@@ -3,11 +3,13 @@ import {
   getUserProfile,
   updateUserProfile,
   setAvailability,
-  addRating,getAllUsers
+  addRating,getAllUsers,
+  getTitles
 } from '../controllers/userController.js';
 import { verifyToken } from '../middleware/authMiddleware.js';
 import { changePassword } from '../controllers/authController.js';
 import { getSkillMatches,getPartialSkillMatches } from '../controllers/matchController.js';
+
 
 const router = express.Router();
 
@@ -19,5 +21,8 @@ router.post('/change-password', verifyToken, changePassword);
 router.get('/all', getAllUsers);
 router.get('/matches', verifyToken, getSkillMatches);
 router.get('/partial-matches', verifyToken, getPartialSkillMatches);
+router.get('/fetchCat/:skillId',getTitles);
+
+
 
 export default router;

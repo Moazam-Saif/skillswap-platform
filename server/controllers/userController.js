@@ -30,16 +30,17 @@ export const updateUserProfile = async (req, res) => {
     // Fetch titles for each skill in skillsHave and skillsWant
     const titlesHave = await Promise.all(
       skillsHave.map(async (skill) => {
-        if (!skill._id && !skill.id) return [];
-        return await fetchSkillTitles(skill._id || skill.id);
+        if (!skill.id) return [];
+        return await fetchSkillTitles(skill.id);
       })
     );
     const titlesWant = await Promise.all(
       skillsWant.map(async (skill) => {
-        if (!skill._id && !skill.id) return [];
-        return await fetchSkillTitles(skill._id || skill.id);
+        if (!skill.id) return [];
+        return await fetchSkillTitles(skill.id);
       })
     );
+    console.log(titlesHave,titlesWant);
 
     // Add titlesHave and titlesWant to the update payload
     const updatePayload = {
@@ -87,3 +88,12 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getTitles= async (req, res) => {
+  try {
+    const titles = await fetchSkillTitles(req.params.skillId);
+    res.json(titles);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
