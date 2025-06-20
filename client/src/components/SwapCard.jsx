@@ -45,7 +45,7 @@ export const SwapCard = ({ name, imageUrl, skillsTheyOffer = [], skillsTheyWant 
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: 70, opacity: 0 }}
                             transition={{ duration: 0.3 }}
-                            className="text-center z-50 transform rotate-90 origin-center text-[min(0.8rem,100%)] text-[#264653] leading-3 font-bold"
+                            className="text-center z-50 transform rotate-90 origin-center text-[min(0.9rem,100%)] text-[#264653] leading-3 font-bold"
                             style={{ fontFamily: "'Josefin Sans', sans-serif" }}
                         >
                             {getNameBeforeBracket(skillsTheyOffer?.[offerIndex]?.name) || ""}
@@ -62,7 +62,7 @@ export const SwapCard = ({ name, imageUrl, skillsTheyOffer = [], skillsTheyWant 
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: 70, opacity: 0 }}
                             transition={{ duration: 0.3 }}
-                            className="text-center z-50 transform -rotate-90 origin-center text-[min(0.8rem,100%)] text-[#264653] leading-3 font-bold"
+                            className="text-center z-50 transform -rotate-90 origin-center text-[min(0.9rem,100%)] text-[#264653] leading-3 font-bold"
                             style={{ fontFamily: "'Josefin Sans', sans-serif" }}
                         >
                             {getNameBeforeBracket(skillsTheyWant?.[wantIndex]?.name) || ""}
