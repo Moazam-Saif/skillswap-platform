@@ -93,13 +93,13 @@ export default function ProfileUploadPage() {
     };
 
     try {
-    await updateUser(userId, payload, accessToken);
-    setError(""); // clear error on success
-    alert("Profile updated successfully!");
-  } catch (err) {
-    setError("Failed to update profile.");
-    console.error("Failed to update profile:", err);
-  }
+      await updateUser(userId, payload, accessToken);
+      setError(""); // clear error on success
+      alert("Profile updated successfully!");
+    } catch (err) {
+      setError("Failed to update profile.");
+      console.error("Failed to update profile:", err);
+    }
   };
 
   const handleImageChange = (file) => {

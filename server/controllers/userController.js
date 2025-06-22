@@ -32,9 +32,6 @@ export const updateUserProfile = async (req, res) => {
     const categoriesHave = await Promise.all(
       skillsHave.map(async (skill) => {
         const skillInfo = await fetchSkill(skill.id);
-        console.log(skill);
-        console.log("1."+skill.id);
-        console.log("2."+skillInfo)
         // Adjust the path below if your skillInfo structure is different
         return skillInfo;
       })
@@ -98,7 +95,6 @@ export const getAllUsers = async (req, res) => {
 export const getSkillInfo = async (req, res) => {
   try {
     const skilllId = req.params.skillId;
-    console.log(skilllId,"recieved")
     const skillInfo = await fetchSkill(skilllId);
     res.json(skillInfo);
   }
