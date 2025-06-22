@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 
 export const skillSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  category: { type: String, required: true }
+  id: { type: String, required: true }
 }, { _id: false });
 
 const availabilitySlotSchema = new mongoose.Schema({

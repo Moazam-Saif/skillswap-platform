@@ -51,7 +51,7 @@ const SkillSearch = ({ selectedSkills, setSelectedSkills }) => {
 
   const handleSelectSkill = (skill) => {
     if (!selectedSkills.some(s => s.id === skill.id)) {
-      console.log(skill)
+      console.log(skill,":skill selected")
       setSelectedSkills([...selectedSkills, skill]);
     }
     setQuery("");

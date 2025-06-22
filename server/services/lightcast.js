@@ -42,6 +42,8 @@ export async function autocompleteSkills(query) {
   });
 
   const foundData =response.data.data;
+  console.log(response,":response")
+  console.log("/n",foundData,":founddata")
   await redis.set(cacheKey, JSON.stringify(foundData), "EX", 3600);
 
   return foundData;
