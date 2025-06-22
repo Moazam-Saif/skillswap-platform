@@ -162,7 +162,7 @@ export default function ProfileUploadPage() {
                   onClick={() => setActiveSkillType("have")}
                   type="button"
                 >
-                  Skills You Have
+                  Skills You Got
                 </button>
               </div>
             </div>
