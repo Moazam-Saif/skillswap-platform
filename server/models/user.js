@@ -28,6 +28,8 @@ const userSchema = new mongoose.Schema({
   skillsHave: [skillSchema],
   skillsWant: [skillSchema],
   skillsLearned: [skillSchema],
+  categoriesHave: [String], // <-- add this
+  categoriesWant: [String],
 
   availability: [availabilitySlotSchema], // Public slots user is available for scheduling
 
