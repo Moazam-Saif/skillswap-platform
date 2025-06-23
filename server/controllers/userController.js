@@ -24,32 +24,35 @@ export const updateUserProfile = async (req, res) => {
       throw err;
     }
 
-    // Fetch categories for each skill in skillsHave and skillsWant
+    // Fetch categories and add to each skill object
     const skillsHave = req.body.skillsHave || [];
     const skillsWant = req.body.skillsWant || [];
 
-    // Fetch categories for skillsHave
-    const categoriesHave = await Promise.all(
+    const enrichedSkillsHave = await Promise.all(
       skillsHave.map(async (skill) => {
         const skillInfo = await fetchSkill(skill.id);
-        // Adjust the path below if your skillInfo structure is different
-        return skillInfo;
+        return {
+          ...skill,
+          category: skillInfo||null
+        };
       })
     );
 
-    // Fetch categories for skillsWant
-    const categoriesWant = await Promise.all(
+    const enrichedSkillsWant = await Promise.all(
       skillsWant.map(async (skill) => {
         const skillInfo = await fetchSkill(skill.id);
-        return skillInfo;
+        return {
+          ...skill,
+          category: skillInfo||null
+        };
       })
     );
 
-    // Add categories to the update payload
+    // Prepare the update payload
     const updatePayload = {
       ...req.body,
-      categoriesHave,
-      categoriesWant,
+      skillsHave: enrichedSkillsHave,
+      skillsWant: enrichedSkillsWant,
     };
 
     const user = await User.findByIdAndUpdate(req.params.id, updatePayload, { new: true });
