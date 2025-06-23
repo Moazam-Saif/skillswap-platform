@@ -28,9 +28,12 @@ export const updateUserProfile = async (req, res) => {
     const skillsHave = req.body.skillsHave || [];
     const skillsWant = req.body.skillsWant || [];
 
+    // Use Set to avoid duplicate categories
+    const categoriesHaveSet = new Set();
     const enrichedSkillsHave = await Promise.all(
       skillsHave.map(async (skill) => {
         const skillInfo = await fetchSkill(skill.id);
+        if (skillInfo) categoriesHaveSet.add(skillInfo);
         return {
           ...skill,
           category: skillInfo||null
@@ -38,9 +41,11 @@ export const updateUserProfile = async (req, res) => {
       })
     );
 
+    const categoriesWantSet = new Set();
     const enrichedSkillsWant = await Promise.all(
       skillsWant.map(async (skill) => {
         const skillInfo = await fetchSkill(skill.id);
+        if (skillInfo) categoriesWantSet.add(skillInfo);
         return {
           ...skill,
           category: skillInfo||null
