@@ -27,8 +27,6 @@ const userSchema = new mongoose.Schema({
   imageUrl: String,
   skillsHave: [skillSchema],
   skillsWant: [skillSchema],
-  categoriesHave: [String],
-  categoriesWant: [String],
   skillsLearned: [skillSchema],
 
   availability: [availabilitySlotSchema], // Public slots user is available for scheduling
