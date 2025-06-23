@@ -58,6 +58,8 @@ export const updateUserProfile = async (req, res) => {
       ...req.body,
       skillsHave: enrichedSkillsHave,
       skillsWant: enrichedSkillsWant,
+      categoriesHave: Array.from(categoriesHaveSet),
+      categoriesWant: Array.from(categoriesWantSet),
     };
 
     const user = await User.findByIdAndUpdate(req.params.id, updatePayload, { new: true });
