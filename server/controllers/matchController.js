@@ -105,3 +105,60 @@ export const getPartialSkillMatches = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getCategorySkillMatches = async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.userId);
+    if (!currentUser) return res.status(404).json({ message: "User not found" });
+
+    const wantCategories = currentUser.categoriesWant || [];
+    const haveCategories = currentUser.categoriesHave || [];
+
+    const pipeline = [
+      // Exclude the current user
+      { $match: { _id: { $ne: currentUser._id } } },
+
+      // Filter users who:
+      // - Have at least one category that current user wants
+      // - Want at least one category that current user offers
+      {
+        $match: {
+          $expr: {
+            $and: [
+              { $gt: [{ $size: { $setIntersection: ["$categoriesHave", wantCategories] } }, 0] },
+              { $gt: [{ $size: { $setIntersection: ["$categoriesWant", haveCategories] } }, 0] }
+            ]
+          }
+        }
+      },
+
+      // Filter the skills to only return relevant ones (optional)
+      {
+        $project: {
+          userId: "$_id",
+          name: 1,
+          imageUrl: 1,
+          skillsTheyOffer: {
+            $filter: {
+              input: "$skillsHave",
+              as: "skill",
+              cond: { $in: ["$$skill.category", wantCategories] }
+            }
+          },
+          skillsTheyWant: {
+            $filter: {
+              input: "$skillsWant",
+              as: "skill",
+              cond: { $in: ["$$skill.category", haveCategories] }
+            }
+          }
+        }
+      }
+    ];
+
+    const matches = await User.aggregate(pipeline);
+    res.json(matches);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
