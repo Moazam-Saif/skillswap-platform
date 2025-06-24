@@ -77,6 +77,7 @@ const Dashboard = () => {
                                         imageUrl={user.imageUrl}
                                         skillsTheyOffer={user.skillsTheyOffer}
                                         skillsTheyWant={user.skillsTheyWant}
+                                        availability={user.availability}
                                     />
                                 ))
                             ))}
@@ -97,10 +98,12 @@ const Dashboard = () => {
                                 matches2.map(user => (
                                     <SwapCard
                                         key={user.userId}
+                                        userId={user.userId}
                                         name={user.name}
                                         imageUrl={user.imageUrl}
                                         skillsTheyOffer={user.skillsTheyOffer}
                                         skillsTheyWant={user.skillsTheyWant}
+                                        availability={user.availability}
                                     />
                                 ))
                             ))}
@@ -124,6 +127,7 @@ const Dashboard = () => {
                                     imageUrl={user.imageUrl}
                                     skillsTheyOffer={user.skillsTheyOffer}
                                     skillsTheyWant={user.skillsTheyWant}
+                                    availability={user.availability}
                                 />
                             ))
                         )}

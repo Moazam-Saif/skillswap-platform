@@ -47,19 +47,6 @@ export async function autocompleteSkills(query) {
   return foundData;
 }
 
-<<<<<<< HEAD
-export const fetchSkillTitles = async (skillId) => {
-  const cacheKey = `skill_titles_${skillId}`;
-  // Try to get from Redis cache first
-  const cached = await redis.get(cacheKey);
-  if (cached) {
-    return JSON.parse(cached);
-  }
-
-   const token = await fetchToken();
-  // If not cached, fetch from external API
-  const res = await axios.get(`https://emsiservices.com/skills/${skillId}/titles`, {
-=======
 export async function fetchSkill(skillId){
   const cacheKey = `skill:${skillId}`;
   // Try to get from Redis cache first
@@ -74,20 +61,10 @@ export async function fetchSkill(skillId){
   console.log("start")
   try{
   const response = await axios.get(`https://emsiservices.com/skills/versions/latest/skills/${skillId}`, {
->>>>>>> temp-main
     headers: {
       Authorization: `Bearer ${token}`
     }
   });
-<<<<<<< HEAD
-  const titles = res.data;
-
-  // Cache the result in Redis for 24 hours (86400 seconds)
-  await redis.set(cacheKey, JSON.stringify(titles), "EX", 86400);
-
-  return titles;
-};
-=======
   const result=response.data.data.subcategory.name;
   await redis.set(cacheKey, JSON.stringify(result), "EX", 86400);
   return result;
@@ -98,4 +75,3 @@ export async function fetchSkill(skillId){
   
   }
 }
->>>>>>> temp-main

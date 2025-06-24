@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
+import SwapRequest from './SwapRequest';
 
 
-export const SwapCard = ({ name, imageUrl, skillsTheyOffer = [], skillsTheyWant = [] }) => {
+export const SwapCard = ({ userId,name, imageUrl, skillsTheyOffer = [], skillsTheyWant = [],availability }) => {
     const [offerIndex, setOfferIndex] = useState(0);
     const [wantIndex, setWantIndex] = useState(0);
+    const [showRequest, setShowRequest] = useState(false);
 
     useEffect(() => {
         const offerInterval = setInterval(() => {
@@ -28,6 +30,7 @@ export const SwapCard = ({ name, imageUrl, skillsTheyOffer = [], skillsTheyWant 
     }
 
     return (
+         <div onClick={() => setShowRequest(true)}>
         <div className="w-[179px] h-[173px] relative bg-transparent">
             <div className="w-full h-[122px] rounded-t-[17px] bg-[#E76F51] border-b-2 border-white relative overflow-hidden flex items-center justify-center">
                 <img
@@ -108,6 +111,19 @@ export const SwapCard = ({ name, imageUrl, skillsTheyOffer = [], skillsTheyWant 
                     <p className="flex flex-wrap">{name || "User"}</p>
                 </div>
             </div>
+        </div>
+         {showRequest && (
+        <SwapRequest
+          userId={userId}
+          userName={name}
+          imageUrl={imageUrl}
+          availability={availability}
+          skillsTheyOffer={skillsTheyOffer}
+          skillsTheyWant={skillsTheyWant}
+          // ...other info you want to pass
+          onClose={() => setShowRequest(false)}
+        />
+      )}
         </div>
     );
 };
