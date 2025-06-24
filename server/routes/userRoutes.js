@@ -3,7 +3,7 @@ import {
   getUserProfile,
   updateUserProfile,
   setAvailability,
-  addRating,getAllUsers,getSkillInfo
+  addRating,getAllUsers,getSkillInfo,sendSwapRequest
 } from '../controllers/userController.js';
 import { verifyToken } from '../middleware/authMiddleware.js';
 import { changePassword } from '../controllers/authController.js';
@@ -17,6 +17,8 @@ router.put('/profile/:id', verifyToken, updateUserProfile);
 router.post('/availability', verifyToken, setAvailability);
 router.post('/rating', verifyToken, addRating);
 router.post('/change-password', verifyToken, changePassword);
+router.post('/swap-request', verifyToken, sendSwapRequest);
+
 router.get('/all', getAllUsers);
 router.get('/matches', verifyToken, getSkillMatches);
 router.get('/partial-matches', verifyToken, getPartialSkillMatches);

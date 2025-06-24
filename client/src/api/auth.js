@@ -68,3 +68,10 @@ export const getCategorySkillMatches = async (accessToken) => {
   });
   return res.data;
 };
+
+export const sendSwapRequest = async (data, accessToken) => {
+  const res = await api.post('/users/swap-request', data, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  return res.data;
+};

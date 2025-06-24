@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import { sendSwapRequest } from '../api/auth';
 
 export default function SwapRequest({
     userId,
@@ -9,11 +12,30 @@ export default function SwapRequest({
     skillsTheyWant = [],
     onClose = () => { },
 }) {
+
+    const { userId: fromUserId, accessToken } = useContext(AuthContext);
     const [selected, setSelected] = useState([]);
     const [days, setDays] = useState(1);
     const [offerIndex, setOfferIndex] = useState(0);
     const [wantIndex, setWantIndex] = useState(0);
-    
+
+
+    const handleRequestSwap = async () => {
+        const data = {
+            toUserId: userId,
+            offerSkill: skillsTheyOffer[offerIndex],
+            wantSkill: skillsTheyWant[wantIndex],
+            days: Number(days),
+            timeSlots: selected, // selected is your array of chosen time slots
+        };
+        try {
+            await sendSwapRequest(data, accessToken);
+            alert("Swap request sent!");
+            onClose();
+        } catch (err) {
+            alert("Failed to send request");
+        }
+    };
 
     const handleToggle = (slot) => {
         setSelected((prev) =>
@@ -33,7 +55,7 @@ export default function SwapRequest({
     const prevOffer = () => setOfferIndex((prev) => (prev - 1 + skillsTheyOffer.length) % skillsTheyOffer.length);
     const nextWant = () => setWantIndex((prev) => (prev + 1) % skillsTheyWant.length);
     const prevWant = () => setWantIndex((prev) => (prev - 1 + skillsTheyWant.length) % skillsTheyWant.length);
- 
+
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
@@ -50,7 +72,7 @@ export default function SwapRequest({
                 {/* Skills Section with Carousel */}
                 <div className="relative w-full h-[30%] flex gap-0 bg-[#E76F5133]">
                     <div className="relative w-1/2 h-full flex flex-col items-center justify-center">
-                        <div className="relative w-full h-[35%] flex items-center justify-center">
+                        <div className="relative w-full h-[35%] flex items-center justify-center text-sm">
                             You will Teach
                         </div>
                         <div className="relative w-full h-[65%] flex items-center justify-center text-[#264653] font-bold">
@@ -78,7 +100,7 @@ export default function SwapRequest({
                         </div>
                     </div>
                     <div className="relative w-1/2 h-full flex flex-col items-center justify-center">
-                        <div className="relative w-full h-[35%] flex items-center justify-center">
+                        <div className="relative w-full h-[35%] flex items-center justify-center text-sm">
                             {userName} will Teach
                         </div>
                         <div className="relative w-full h-[65%] flex items-center justify-center text-[#E76F51] font-bold">
@@ -141,7 +163,7 @@ export default function SwapRequest({
                                             <li
                                                 key={index}
                                                 onClick={() => handleToggle(slot)}
-                                                className={`cursor-pointer px-3 py-1 rounded transition ${selected.includes(slot)
+                                                className={`cursor-pointer px-3 py-1 rounded transition text-sm ${selected.includes(slot)
                                                     ? 'bg-[#264653] font-medium text-white'
                                                     : 'hover:bg-gray-100'
                                                     }`}
@@ -159,7 +181,8 @@ export default function SwapRequest({
                 {/* Actions */}
                 <div className="relative w-full h-[17%] flex gap-0 ">
                     <div className="flex items-center justify-center relative w-1/2 h-full rounded-bl-[15px]">
-                        <button className="px-3 py-1 bg-[#264653] text-white text-sm rounded-[15px] shadow-[#2646531A] shadow-md">Request Swap</button>
+                        <button className="px-3 py-1 bg-[#264653] text-white text-sm rounded-[15px] shadow-[#2646531A] shadow-md cursor-pointer"
+                        onClick={handleRequestSwap}>Request Swap</button>
                     </div>
                     <div className="flex items-center justify-center relative w-1/2 h-full rounded-br-[15px]">
                         <button className="px-3 py-1 bg-[#264653] text-white text-sm rounded-[15px] shadow-[#2646531A] shadow-md">CHAT</button>

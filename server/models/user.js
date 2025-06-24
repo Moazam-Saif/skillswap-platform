@@ -16,6 +16,17 @@ const availabilitySlotSchema = new mongoose.Schema({
   endTime: String           // "16:00"
 }, { _id: false });
 
+const swapRequestSchema = new mongoose.Schema({
+  from: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  to: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  offerSkill: { type: Object, required: true }, // { name, id, category }
+  wantSkill: { type: Object, required: true },  // { name, id, category }
+  days: { type: Number, required: true },
+  timeSlots: [{ type: String }], // e.g. ["Monday 09:00 - 10:00"]
+  status: { type: String, enum: ["pending", "accepted", "rejected"], default: "pending" },
+  createdAt: { type: Date, default: Date.now }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -30,6 +41,8 @@ const userSchema = new mongoose.Schema({
   skillsLearned: [skillSchema],
   categoriesHave: [String], // <-- add this
   categoriesWant: [String],
+  swapRequests: [swapRequestSchema], // requests received
+  requestsSent: [swapRequestSchema],
 
   availability: [availabilitySlotSchema], // Public slots user is available for scheduling
 

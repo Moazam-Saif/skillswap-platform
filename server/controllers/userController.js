@@ -112,3 +112,37 @@ export const getSkillInfo = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 }
+
+export const sendSwapRequest = async (req, res) => {
+  try {
+    const { toUserId, offerSkill, wantSkill, days, timeSlots } = req.body;
+    const fromUserId = req.userId;
+
+    const swapRequest = {
+      from: fromUserId,
+      to: toUserId,
+      offerSkill,
+      wantSkill,
+      days,
+      timeSlots,
+      status: "pending",
+      createdAt: new Date()
+    };
+
+    // Add to recipient's swapRequests
+    await User.findByIdAndUpdate(
+      toUserId,
+      { $push: { swapRequests: swapRequest } }
+    );
+
+    // Add to sender's requestsSent
+    await User.findByIdAndUpdate(
+      fromUserId,
+      { $push: { requestsSent: swapRequest } }
+    );
+
+    res.json({ message: "Swap request sent!" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
