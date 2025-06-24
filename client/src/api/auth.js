@@ -61,3 +61,10 @@ export const getPartialSkillMatches = async (accessToken) => {
   });
   return res.data;
 };
+
+export const getCategorySkillMatches = async (accessToken) => {
+  const res = await api.get('/users/category-matches', {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  return res.data;
+};

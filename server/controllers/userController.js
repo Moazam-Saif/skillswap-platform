@@ -1,5 +1,9 @@
 import User from '../models/User.js';
+<<<<<<< HEAD
 import { fetchSkillTitles } from "../services/lightcast.js"
+=======
+import { fetchSkill } from '../services/lightcast.js';
+>>>>>>> temp-main
 
 export const getUserProfile = async (req, res) => {
   try {
@@ -24,6 +28,7 @@ export const updateUserProfile = async (req, res) => {
       throw err;
     }
 
+<<<<<<< HEAD
     // Get skillsHave and skillsWant from the request
     const { skillsHave = [], skillsWant = [] } = req.body;
 
@@ -47,6 +52,44 @@ export const updateUserProfile = async (req, res) => {
       ...req.body,
       titlesHave,
       titlesWant,
+=======
+    // Fetch categories and add to each skill object
+    const skillsHave = req.body.skillsHave || [];
+    const skillsWant = req.body.skillsWant || [];
+
+    // Use Set to avoid duplicate categories
+    const categoriesHaveSet = new Set();
+    const enrichedSkillsHave = await Promise.all(
+      skillsHave.map(async (skill) => {
+        const skillInfo = await fetchSkill(skill.id);
+        if (skillInfo) categoriesHaveSet.add(skillInfo);
+        return {
+          ...skill,
+          category: skillInfo||null
+        };
+      })
+    );
+
+    const categoriesWantSet = new Set();
+    const enrichedSkillsWant = await Promise.all(
+      skillsWant.map(async (skill) => {
+        const skillInfo = await fetchSkill(skill.id);
+        if (skillInfo) categoriesWantSet.add(skillInfo);
+        return {
+          ...skill,
+          category: skillInfo||null
+        };
+      })
+    );
+
+    // Prepare the update payload
+    const updatePayload = {
+      ...req.body,
+      skillsHave: enrichedSkillsHave,
+      skillsWant: enrichedSkillsWant,
+      categoriesHave: Array.from(categoriesHaveSet),
+      categoriesWant: Array.from(categoriesWantSet),
+>>>>>>> temp-main
     };
 
     const user = await User.findByIdAndUpdate(req.params.id, updatePayload, { new: true });
@@ -89,6 +132,7 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 export const getTitles= async (req, res) => {
   try {
     const titles = await fetchSkillTitles(req.params.skillId);
@@ -97,3 +141,15 @@ export const getTitles= async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 }
+=======
+export const getSkillInfo = async (req, res) => {
+  try {
+    const skilllId = req.params.skillId;
+    const skillInfo = await fetchSkill(skilllId);
+    res.json(skillInfo);
+  }
+  catch(err){
+    res.status(500).json({ error: err.message });
+  }
+}
+>>>>>>> temp-main

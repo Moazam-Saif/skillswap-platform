@@ -51,7 +51,7 @@ const SkillSearch = ({ selectedSkills, setSelectedSkills }) => {
 
   const handleSelectSkill = (skill) => {
     if (!selectedSkills.some(s => s.id === skill.id)) {
-      console.log(skill)
+      console.log(skill,":skill selected")
       setSelectedSkills([...selectedSkills, skill]);
     }
     setQuery("");
@@ -99,7 +99,7 @@ const SkillSearch = ({ selectedSkills, setSelectedSkills }) => {
             >
               {skills.map((skill, index) => (
                 <div
-                  key={skill.id || skill.name}
+                  key={skill.id}
                   className={`px-4 py-3 cursor-pointer hover:bg-gray-100 transition-colors ${index !== skills.length - 1 ? 'border-b border-gray-100' : ''
                     }`}
                   onClick={() => handleSelectSkill(skill)}

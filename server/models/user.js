@@ -5,7 +5,13 @@ category they selected or the specific skills the want.
 import mongoose from "mongoose";
 
 export const skillSchema = new mongoose.Schema({
+<<<<<<< HEAD
   name: { type: String, required: true }
+=======
+  name: { type: String, required: true },
+  id: { type: String, required: true },
+  category: { type: String } // <-- Add this line
+>>>>>>> temp-main
 }, { _id: false });
 
 const availabilitySlotSchema = new mongoose.Schema({
@@ -25,9 +31,9 @@ const userSchema = new mongoose.Schema({
   imageUrl: String,
   skillsHave: [skillSchema],
   skillsWant: [skillSchema],
-  categoriesHave: [String],
-  categoriesWant: [String],
   skillsLearned: [skillSchema],
+  categoriesHave: [String], // <-- add this
+  categoriesWant: [String],
 
   availability: [availabilitySlotSchema], // Public slots user is available for scheduling
 

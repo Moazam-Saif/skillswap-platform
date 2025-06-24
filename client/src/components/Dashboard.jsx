@@ -1,30 +1,44 @@
 import React, { useEffect, useState, useContext } from "react";
-import { getSkillMatches,getPartialSkillMatches } from "../api/auth";
+import { getSkillMatches, getPartialSkillMatches } from "../api/auth";
 import { SwapCard } from "./SwapCard";
 import { AuthContext } from "../context/AuthContext";
 import Nav from "./Nav";
 import { Link } from "react-router-dom";
+import { getCategorySkillMatches } from "../api/auth";
 
 const Dashboard = () => {
     const { userId, accessToken } = useContext(AuthContext);
     const [matches, setMatches] = useState([]);
-    const [matches2,setMatches2]=useState([])
+    const [matches2, setMatches2] = useState([]);
+    const [categoryMatches, setCategoryMatches] = useState([]);
 
     useEffect(() => {
         const fetchMatches = async () => {
             try {
-                const [mutualMatches, partialMatches] = await Promise.all([
+                const [mutualMatches, partialMatches, categoryMatchesRes] = await Promise.all([
                     getSkillMatches(accessToken),
-                    getPartialSkillMatches(accessToken)
+                    getPartialSkillMatches(accessToken),
+                    getCategorySkillMatches(accessToken)
                 ]);
                 setMatches(mutualMatches);
                 setMatches2(partialMatches);
+                setCategoryMatches(categoryMatchesRes);
             } catch (err) {
                 console.error("Failed to fetch matches:", err);
             }
         };
         fetchMatches();
     }, [accessToken]);
+
+    // Create a Set of userIds already shown in the first two lists
+    const shownUserIds = new Set([
+        ...matches.map(u => u.userId),
+        ...matches2.map(u => u.userId)
+    ]);
+
+    const filteredCategoryMatches = categoryMatches.filter(
+        user => !shownUserIds.has(user.userId)
+    );
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -100,7 +114,19 @@ const Dashboard = () => {
                         />
                     </div>
                     <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px]">
-                        <div><SwapCard /></div>
+                        {filteredCategoryMatches.length === 0 ? (
+                            <div className="text-gray-500 flex items-center">No matches found.</div>
+                        ) : (
+                            categoryMatches.map(user => (
+                                <SwapCard
+                                    key={user.userId}
+                                    name={user.name}
+                                    imageUrl={user.imageUrl}
+                                    skillsTheyOffer={user.skillsTheyOffer}
+                                    skillsTheyWant={user.skillsTheyWant}
+                                />
+                            ))
+                        )}
                     </div>
                 </section>
 

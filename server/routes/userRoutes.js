@@ -3,12 +3,16 @@ import {
   getUserProfile,
   updateUserProfile,
   setAvailability,
+<<<<<<< HEAD
   addRating,getAllUsers,
   getTitles
+=======
+  addRating,getAllUsers,getSkillInfo
+>>>>>>> temp-main
 } from '../controllers/userController.js';
 import { verifyToken } from '../middleware/authMiddleware.js';
 import { changePassword } from '../controllers/authController.js';
-import { getSkillMatches,getPartialSkillMatches } from '../controllers/matchController.js';
+import { getSkillMatches,getPartialSkillMatches,getCategorySkillMatches } from '../controllers/matchController.js';
 
 
 const router = express.Router();
@@ -21,8 +25,13 @@ router.post('/change-password', verifyToken, changePassword);
 router.get('/all', getAllUsers);
 router.get('/matches', verifyToken, getSkillMatches);
 router.get('/partial-matches', verifyToken, getPartialSkillMatches);
+<<<<<<< HEAD
 router.get('/fetchCat/:skillId',getTitles);
 
 
+=======
+router.get('/category-matches', verifyToken, getCategorySkillMatches);
+router.get('/fetchCat/:skillId',getSkillInfo);
+>>>>>>> temp-main
 
 export default router;
