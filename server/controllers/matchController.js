@@ -42,7 +42,8 @@ export const getSkillMatches = async (req, res) => {
           name: 1,
           imageUrl: 1,
           skillsTheyOffer: "$matchedSkillTheyOffer",
-          skillsTheyWant: "$matchedSkillTheyWant"
+          skillsTheyWant: "$matchedSkillTheyWant",
+          availability:1
         }
       }
     ];
@@ -94,7 +95,8 @@ export const getPartialSkillMatches = async (req, res) => {
           name: 1,
           imageUrl: 1,
           skillsTheyOffer: 1,
-          skillsTheyWant: 1
+          skillsTheyWant: 1,
+          availability:1
         }
       }
     ];
@@ -151,7 +153,8 @@ export const getCategorySkillMatches = async (req, res) => {
               as: "skill",
               cond: { $in: ["$$skill.category", haveCategories] }
             }
-          }
+          },
+          availability:1
         }
       }
     ];
