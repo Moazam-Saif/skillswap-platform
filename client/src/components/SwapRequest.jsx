@@ -13,7 +13,6 @@ export default function SwapRequest({
     onClose = () => { },
 }) {
 
-    const { userId: fromUserId, accessToken } = useContext(AuthContext);
     const [selected, setSelected] = useState([]);
     const [days, setDays] = useState(1);
     const [offerIndex, setOfferIndex] = useState(0);
