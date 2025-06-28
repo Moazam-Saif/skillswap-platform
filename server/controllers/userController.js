@@ -36,7 +36,7 @@ export const updateUserProfile = async (req, res) => {
         if (skillInfo) categoriesHaveSet.add(skillInfo);
         return {
           ...skill,
-          category: skillInfo||null
+          category: skillInfo || null
         };
       })
     );
@@ -48,7 +48,7 @@ export const updateUserProfile = async (req, res) => {
         if (skillInfo) categoriesWantSet.add(skillInfo);
         return {
           ...skill,
-          category: skillInfo||null
+          category: skillInfo || null
         };
       })
     );
@@ -108,7 +108,7 @@ export const getSkillInfo = async (req, res) => {
     const skillInfo = await fetchSkill(skilllId);
     res.json(skillInfo);
   }
-  catch(err){
+  catch (err) {
     res.status(500).json({ error: err.message });
   }
 }
@@ -117,6 +117,7 @@ export const sendSwapRequest = async (req, res) => {
   try {
     const { toUserId, offerSkill, wantSkill, days, timeSlots } = req.body;
     const fromUserId = req.userId;
+    console.log("toUserId:", toUserId, "fromUserId:", fromUserId);
 
     const swapRequest = {
       from: fromUserId,
@@ -129,17 +130,27 @@ export const sendSwapRequest = async (req, res) => {
       createdAt: new Date()
     };
 
+    const recipient = await User.findById(toUserId);
+    if (!recipient) {
+      console.log("Recipient not found:", toUserId);
+      return res.status(404).json({ message: "Recipient user not found" });
+    }
+
     // Add to recipient's swapRequests
-    await User.findByIdAndUpdate(
+    const updatedRecipient = await User.findByIdAndUpdate(
       toUserId,
-      { $push: { swapRequests: swapRequest } }
+      { $push: { swapRequests: swapRequest } },
+      { new: true }
     );
+    console.log("Updated recipient:", updatedRecipient.swapRequests);
 
     // Add to sender's requestsSent
-    await User.findByIdAndUpdate(
+    const updatedSender = await User.findByIdAndUpdate(
       fromUserId,
-      { $push: { requestsSent: swapRequest } }
+      { $push: { requestsSent: swapRequest } },
+      { new: true }
     );
+    console.log("Updated sender:", updatedSender.requestsSent);
 
     res.json({ message: "Swap request sent!" });
   } catch (err) {

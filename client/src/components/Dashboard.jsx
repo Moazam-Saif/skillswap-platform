@@ -73,6 +73,7 @@ const Dashboard = () => {
                                 matches.map(user => (
                                     <SwapCard
                                         key={user.userId}
+                                        userId={user.userId}
                                         name={user.name}
                                         imageUrl={user.imageUrl}
                                         skillsTheyOffer={user.skillsTheyOffer}
@@ -123,6 +124,7 @@ const Dashboard = () => {
                             categoryMatches.map(user => (
                                 <SwapCard
                                     key={user.userId}
+                                    userId={user.userId}
                                     name={user.name}
                                     imageUrl={user.imageUrl}
                                     skillsTheyOffer={user.skillsTheyOffer}

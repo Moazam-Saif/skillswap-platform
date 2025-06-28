@@ -13,6 +13,7 @@ export default function SwapRequest({
     onClose = () => { },
 }) {
 
+    const { accessToken } = useContext(AuthContext);
     const [selected, setSelected] = useState([]);
     const [days, setDays] = useState(1);
     const [offerIndex, setOfferIndex] = useState(0);
@@ -32,6 +33,7 @@ export default function SwapRequest({
             alert("Swap request sent!");
             onClose();
         } catch (err) {
+            console.log(err);
             alert("Failed to send request");
         }
     };
@@ -57,7 +59,7 @@ export default function SwapRequest({
 
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+        <div className="fixed inset-0 z-100 flex items-center justify-center backdrop-blur-sm">
             <div className="relative mx-auto w-[400px] h-[300px] flex flex-col gap-0 rounded-[15px] bg-[#FFF8F8] text-center shadow-2xl" style={{ backgroundImage: 'url("/Popup.svg")', fontFamily: "'Josefin Sans', sans-serif" }}>
                 {/* Header */}
                 <div className="relative w-full h-[13%] flex gap-0 cursor-pointer">
