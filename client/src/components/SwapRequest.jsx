@@ -131,12 +131,10 @@ export default function SwapRequest({
                 </div>
 
                 {/* Duration & TimeSlots */}
-                <div className="relative w-full h-[40%] flex gap-0 ">
+                <div className="relative w-full h-[35%] flex gap-0 ">
                     <div className="relative w-1/2 h-full">
-                        <div className="relative w-full h-[25%] flex items-center justify-center">
-                            Enter the Duration
-                        </div>
-                        <div className="relative w-full h-[75%] flex flex-col items-center justify-center">
+                       
+                        <div className="relative w-full h-[100%] flex flex-col items-center justify-center">
                             <label htmlFor="days">
                                 Days:
                             </label>
@@ -151,10 +149,8 @@ export default function SwapRequest({
                         </div>
                     </div>
                     <div className="relative w-1/2 h-full">
-                        <div className="relative w-full h-[25%] flex items-center justify-center">
-                            Available TimeSlots
-                        </div>
-                        <div className='relative w-full h-[75%] pl-[2px] pr-[2px] overflow-y-auto'>
+                    
+                        <div className='relative w-full h-[100%] pl-[2px] pr-[2px] overflow-y-auto'>
                             <div className="relative w-full h-full max-h-full flex flex-col items-center justify-center overflow-y-auto p-2 border-1 bg-[#F4A26133] opacity-90 rounded-[15px]">
                                 <ul className="text-sm text-gray-700 space-y-1 w-full">
                                     {timeSlots.length === 0 ? (

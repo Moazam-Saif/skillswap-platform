@@ -5,6 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 import Nav from "./Nav";
 import { Link } from "react-router-dom";
 import { getCategorySkillMatches } from "../api/auth";
+import Sidebar from "./Sidebar";
 
 const Dashboard = () => {
     const { userId, accessToken } = useContext(AuthContext);
@@ -44,17 +45,7 @@ const Dashboard = () => {
         <div className="flex flex-col min-h-screen">
             <Nav />
             <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
-                <aside className="w-[20%] sticky top-0 h-screen bg-[#264653] pt-20 p-6 text-white rounded-tl-[30px] ">
-                    <h2 className="font-semibold mb-2">Sidebar</h2>
-                    <ul className="space-y-2">
-                        <li>
-                            <Link to={`/dashboard/${userId}`}>Dashboard</Link>
-                        </li>
-                        <li>
-                            <Link to={`/profile/${userId}`}>Profile</Link>
-                        </li>
-                    </ul>
-                </aside>
+                <Sidebar />
                 <section className="w-[80%] flex-1 overflow-y-auto bg-[#264653]">
                     <div>
                         <img
