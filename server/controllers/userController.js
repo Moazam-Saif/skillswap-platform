@@ -117,7 +117,7 @@ export const sendSwapRequest = async (req, res) => {
   try {
     const { toUserId, offerSkill, wantSkill, days, timeSlots } = req.body;
     const fromUserId = req.userId;
-    console.log("toUserId:", toUserId, "fromUserId:", fromUserId);
+
 
     const swapRequest = {
       from: fromUserId,
@@ -130,19 +130,13 @@ export const sendSwapRequest = async (req, res) => {
       createdAt: new Date()
     };
 
-    const recipient = await User.findById(toUserId);
-    if (!recipient) {
-      console.log("Recipient not found:", toUserId);
-      return res.status(404).json({ message: "Recipient user not found" });
-    }
-
     // Add to recipient's swapRequests
     const updatedRecipient = await User.findByIdAndUpdate(
       toUserId,
       { $push: { swapRequests: swapRequest } },
       { new: true }
     );
-    console.log("Updated recipient:", updatedRecipient.swapRequests);
+ 
 
     // Add to sender's requestsSent
     const updatedSender = await User.findByIdAndUpdate(
@@ -150,7 +144,7 @@ export const sendSwapRequest = async (req, res) => {
       { $push: { requestsSent: swapRequest } },
       { new: true }
     );
-    console.log("Updated sender:", updatedSender.requestsSent);
+
 
     res.json({ message: "Swap request sent!" });
   } catch (err) {
