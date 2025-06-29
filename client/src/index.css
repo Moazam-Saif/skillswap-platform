@@ -150,3 +150,7 @@
 .transparent-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
+
+.text-shadow-custom {
+  text-shadow: 0 2px 8px rgba(38, 70, 83, 0.15);
+}
