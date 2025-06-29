@@ -37,7 +37,7 @@ function App() {
             }
           />
           <Route
-            path="/users/swap-requests/:userId"
+            path="/users/swap-requests"
             element={
               <PrivateRoute>
                 <RequestsPage />

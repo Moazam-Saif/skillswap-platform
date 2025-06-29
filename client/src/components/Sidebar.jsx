@@ -15,6 +15,9 @@ const Sidebar = () => {
                 <li>
                     <Link to={`/profile/${userId}`}>Profile</Link>
                 </li>
+                <li>
+                    <Link to={`/users/swap-requests`}>Swap Requests</Link>
+                </li>
             </ul>
         </aside>
     );

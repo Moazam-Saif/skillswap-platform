@@ -14,9 +14,10 @@ export default function RequestsPage() {
     useEffect(() => {
         const fetchRequests = async () => {
             try {
-                const user = await getUserRequests(userId, accessToken);
-                setReceivedRequests(user.swapRequests || []);
-                setSentRequests(user.requestsSent || []);
+                const data = await getUserRequests(accessToken);
+                console.log("Fetched swap requests:", data);
+                setReceivedRequests(data.received || []);
+                setSentRequests(data.sent || []);
             } catch (err) {
                 console.error("Failed to fetch requests", err);
             }
@@ -35,21 +36,19 @@ export default function RequestsPage() {
                     {/* Tabs */}
                     <div className="w-full flex justify-center mb-6" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
                         <button
-                            className={`flex items-center justify-center  px-6 py-1 rounded-l-full  text-lg shadow-lg transition-colors duration-150 ${
-                                tab === "received"
+                            className={`flex items-center justify-center  px-6 py-1 rounded-l-full  text-lg shadow-lg transition-colors duration-150 ${tab === "received"
                                     ? "bg-[#e76f51] text-white"
                                     : "bg-white text-gray-400 hover:bg-[#f4a26122] opacity-80"
-                            }`}
+                                }`}
                             onClick={() => setTab("received")}
                         >
                             Received
                         </button>
                         <button
-                            className={`flex items-center justify-center px-6 py-1 rounded-r-full  text-lg shadow-lg transition-colors duration-150 ${
-                                tab === "sent"
+                            className={`flex items-center justify-center px-6 py-1 rounded-r-full  text-lg shadow-lg transition-colors duration-150 ${tab === "sent"
                                     ? "bg-[#e76f51] text-white"
                                     : "bg-white text-gray-400 hover:bg-[#f4a26122] opacity-80"
-                            }`}
+                                }`}
                             onClick={() => setTab("sent")}
                         >
                             Sent
