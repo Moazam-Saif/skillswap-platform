@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Nav from "./Nav";
 import Sidebar from "./Sidebar";
+import RequestCard from "./RequestCard";
 // import RequestItem from "./RequestItem"; // You can create this component for each request
 
 export default function RequestsPage() {
@@ -21,35 +22,33 @@ export default function RequestsPage() {
             <Nav />
             <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
                 <Sidebar />
-                <section className="w-[80%] flex-1 bg-[#264653] p-8">
+                <section className="w-[80%] flex-1 bg-[#fff8f8] p-8">
                     {/* Tabs */}
-                    <div className="w-full flex justify-center mb-6">
-                        <button
-                            className={`px-6 py-2 rounded-l-full font-semibold ${tab === "received" ? "bg-[#e76f51] text-white" : "bg-white text-[#264653]"}`}
-                            onClick={() => setTab("received")}
-                        >
-                            Received
-                        </button>
-                        <button
-                            className={`px-6 py-2 rounded-r-full font-semibold ${tab === "sent" ? "bg-[#e76f51] text-white" : "bg-white text-[#264653]"}`}
-                            onClick={() => setTab("sent")}
-                        >
-                            Sent
-                        </button>
-                    </div>
+ <div className="w-full flex justify-center mb-6" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
+    <button
+        className={`flex items-center justify-center  px-6 py-1 rounded-l-full  text-lg shadow-lg transition-colors duration-150 ${
+            tab === "received"
+                ? "bg-[#e76f51] text-white"
+                : "bg-white text-gray-400 hover:bg-[#f4a26122] opacity-80"
+        }`}
+        onClick={() => setTab("received")}
+    >
+        Received
+    </button>
+    <button
+        className={`flex items-center justify-center px-6 py-1 rounded-r-full  text-lg shadow-lg transition-colors duration-150 ${
+            tab === "sent"
+                ? "bg-[#e76f51] text-white"
+                : "bg-white text-gray-400 hover:bg-[#f4a26122] opacity-80"
+        }`}
+        onClick={() => setTab("sent")}
+    >
+        Sent
+    </button>
+</div>
                     {/* Requests List */}
-                    <div className="flex flex-col gap-4">
-                        {requestsToShow.length === 0 ? (
-                            <div className="text-white text-center">No requests found.</div>
-                        ) : (
-                            requestsToShow.map(request => (
-                                // <RequestItem key={request.id} {...request} />
-                                <div key={request.id} className="bg-white rounded-lg p-4 shadow">
-                                    {/* Replace with <RequestItem ... /> */}
-                                    Request #{request.id}
-                                </div>
-                            ))
-                        )}
+                    <div className="flex flex-col gap-4 justify-center items-center">
+                        <RequestCard/>
                     </div>
                 </section>
             </main>
