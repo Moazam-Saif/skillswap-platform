@@ -75,3 +75,10 @@ export const sendSwapRequest = async (data, accessToken) => {
   });
   return res.data;
 };
+
+export const getUserRequests = async (userId, accessToken) => {
+  const res = await api.get(`/users/swap-requests/${userId}`, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  return res.data;
+};

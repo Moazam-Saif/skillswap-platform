@@ -3,7 +3,7 @@ import {
   getUserProfile,
   updateUserProfile,
   setAvailability,
-  addRating,getAllUsers,getSkillInfo,sendSwapRequest
+  addRating,getAllUsers,getSkillInfo,sendSwapRequest,getAllSwapRequests
 } from '../controllers/userController.js';
 import { verifyToken } from '../middleware/authMiddleware.js';
 import { changePassword } from '../controllers/authController.js';
@@ -24,5 +24,6 @@ router.get('/matches', verifyToken, getSkillMatches);
 router.get('/partial-matches', verifyToken, getPartialSkillMatches);
 router.get('/category-matches', verifyToken, getCategorySkillMatches);
 router.get('/fetchCat/:skillId',getSkillInfo);
+router.get('/swap-requests/:id', verifyToken, getAllSwapRequests);
 
 export default router;

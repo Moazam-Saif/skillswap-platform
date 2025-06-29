@@ -14,7 +14,6 @@ function App() {
       <AuthProvider>
         <Routes>
           {/* Public Routes */}
-          <Route path="/requests" element={<RequestsPage/>}/>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<SignupForm />} />
@@ -34,6 +33,14 @@ function App() {
             element={
               <PrivateRoute>
                 <ProfileUpdate />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/users/swap-requests/:userId"
+            element={
+              <PrivateRoute>
+                <RequestsPage />
               </PrivateRoute>
             }
           />

@@ -151,3 +151,17 @@ export const sendSwapRequest = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getAllSwapRequests = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId)
+      .select('swapRequests requestsSent')
+      .populate('swapRequests.from swapRequests.to requestsSent.from requestsSent.to', 'name imageUrl');
+    res.json({
+      received: user.swapRequests || [],
+      sent: user.requestsSent || []
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
