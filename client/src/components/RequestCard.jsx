@@ -45,13 +45,10 @@ export default function RequestCard({ request, type }) {
             <div className="relative w-full h-[40%] flex">
                 {/* Offer Skill - 45% */}
                 <div
-                    className="relative flex width-[45%] items-center justify-center"
+                    className="relative flex w-[45%] items-center justify-center p-1"
                     title={offerSkill?.name || ""}
                 >
-                    <div className="relative flex items-center justify-center rounded-2xl bg-[#e76f51] text-white" style={{
-                        fontSize: "clamp(0.5rem, 2vw, 1.2rem)", // auto scales between 1rem and 2rem
-                        textOverflow: "ellipsis"
-                    }}>
+                    <div className="relative flex items-center justify-center rounded-2xl bg-[#e76f51] text-white text-center text-[min(1rem,100%)]" >
                         {offerSkill?.name || ""}
                     </div>
                 </div>
@@ -68,14 +65,10 @@ export default function RequestCard({ request, type }) {
                 </div>
                 {/* Want Skill - 45% */}
                 <div
-                    className="flex width-[45%] items-center justify-center"
+                    className="relative flex w-[45%] items-center justify-center p-1"
                     title={wantSkill?.name || ""}
                 >
-                    <div className="flex items-center justify-center rounded-2xl bg-[#e76f51] text-white" style={{
-                        fontFamily: "Lemon, sans",
-                        fontSize: "clamp(0.5rem, 2vw, 1.2rem)", // auto scales between 1rem and 2rem
-                        textOverflow: "ellipsis"
-                    }}>
+                    <div className="relative px-2 py-1 rounded-2xl bg-[#e76f51] text-white text-center text-[min(1rem,100%)]" >
                         {wantSkill?.name || ""}
                     </div>
                 </div>
