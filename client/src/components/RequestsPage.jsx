@@ -15,7 +15,6 @@ export default function RequestsPage() {
         const fetchRequests = async () => {
             try {
                 const data = await getUserRequests(accessToken);
-                console.log("Fetched swap requests:", data);
                 setReceivedRequests(data.received || []);
                 setSentRequests(data.sent || []);
             } catch (err) {
@@ -32,30 +31,37 @@ export default function RequestsPage() {
             <Nav />
             <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
                 <Sidebar />
-                <section className="w-[80%] flex-1 bg-[#fff8f8] p-8">
-                    {/* Tabs */}
-                    <div className="w-full flex justify-center mb-6" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
-                        <button
-                            className={`flex items-center justify-center  px-6 py-1 rounded-l-full  text-lg shadow-lg transition-colors duration-150 ${tab === "received"
-                                    ? "bg-[#e76f51] text-white"
-                                    : "bg-white text-gray-400 hover:bg-[#f4a26122] opacity-80"
-                                }`}
-                            onClick={() => setTab("received")}
+                <section className="relative w-[80%] flex flex-row bg-[#fff8f8] p-8">
+                    {/* Left: Rotated Tabs */}
+                    <div className="relative w-[25%] flex flex-col items-center justify-start" style={{fontFamily: "'Josefin Sans', sans-serif" }}>
+                        <div
+                            className="relative flex items-center justify-center border-2 border-amber-200"
+                            style={{ transform: "rotate(-90deg)", width: "max-content" }}
                         >
-                            Received
-                        </button>
-                        <button
-                            className={`flex items-center justify-center px-6 py-1 rounded-r-full  text-lg shadow-lg transition-colors duration-150 ${tab === "sent"
-                                    ? "bg-[#e76f51] text-white"
+                            <div className="relative flex items-center justify-center">
+                                <button
+                                    className={`px-6 py-1 rounded-l-full font-semibold text-lg shadow-lg transition-colors duration-150 ${tab === "received"
+                                            ? "bg-[#e76f51] text-white"
                                     : "bg-white text-gray-400 hover:bg-[#f4a26122] opacity-80"
-                                }`}
-                            onClick={() => setTab("sent")}
-                        >
-                            Sent
-                        </button>
+                                        }`}
+                                    onClick={() => setTab("received")}
+                                >
+                                    Received
+                                </button>
+                                <button
+                                    className={`px-6 py-1 rounded-r-full font-semibold text-lg shadow-lg transition-colors duration-150 ${tab === "sent"
+                                            ? "bg-[#e76f51] text-white"
+                                            : "bg-white text-gray-400 hover:bg-[#f4a26122] opacity-80"
+                                        }`}
+                                    onClick={() => setTab("sent")}
+                                >
+                                    Sent
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    {/* Requests List */}
-                    <div className="flex flex-col gap-4 justify-center items-center">
+                    {/* Right: Requests List */}
+                    <div className="w-[75%] flex flex-col items-start pl-8">
                         {requestsToShow.length === 0 ? (
                             <div className="text-gray-400 mt-8">No requests found.</div>
                         ) : (

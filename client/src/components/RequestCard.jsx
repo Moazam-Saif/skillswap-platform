@@ -31,26 +31,30 @@ export default function RequestCard({ request, type }) {
                 </div>
             </div>
             <div className="relative w-full h-[40%] flex">
-                <div className="w-1/2 h-full flex items-center justify-center text-2xl text-[#264653] font-extralight" style={{ fontFamily: "Lemon,sans" }}>
+                {/* Offer Skill - 45% */}
+                <div
+                    className="flex items-center justify-center text-2xl text-[#264653] font-extralight"
+                    style={{ width: "45%", fontFamily: "Lemon,sans" }}
+                >
                     {offerSkill?.name || ""}
                 </div>
-                <div className="w-1/2 h-full flex items-center justify-center text-2xl text-[#264653]" style={{ fontFamily: "Lemon, sans" }}>
-                    {wantSkill?.name || ""}
-                </div>
+                {/* Arrows/Image - 10% */}
                 <div
-                    className="absolute left-1/2 top-1/2 flex items-center justify-center"
-                    style={{
-                        width: "28px",
-                        height: "31px",
-                        transform: "translate(-50%, -50%)",
-                        zIndex: 10,
-                    }}
+                    className="flex items-center justify-center"
+                    style={{ width: "10%" }}
                 >
                     <img
                         src="/difArrows.svg"
                         alt="Arrows"
                         style={{ width: "28px", height: "31px" }}
                     />
+                </div>
+                {/* Want Skill - 45% */}
+                <div
+                    className="flex items-center justify-center text-2xl text-[#264653]"
+                    style={{ width: "45%", fontFamily: "Lemon, sans" }}
+                >
+                    {wantSkill?.name || ""}
                 </div>
             </div>
             <div className="relative w-full h-[26%] flex flex-col">
