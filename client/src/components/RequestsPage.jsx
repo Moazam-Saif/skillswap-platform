@@ -61,7 +61,7 @@ export default function RequestsPage() {
                         </div>
                     </div>
                     {/* Right: Requests List */}
-                    <div className="w-[75%] flex flex-col items-start pl-8">
+                    <div className="w-[75%] flex flex-col items-start pl-8 gap-5">
                         {requestsToShow.length === 0 ? (
                             <div className="text-gray-400 mt-8">No requests found.</div>
                         ) : (

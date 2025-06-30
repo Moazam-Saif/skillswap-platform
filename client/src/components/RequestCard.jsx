@@ -24,10 +24,17 @@ export default function RequestCard({ request, type }) {
                     <img src="/userImage.png" alt="icon" className="w-full h-full object-cover rounded-full" />
                 </div>
                 <div className="relative w-1/2 h-full rounded-tl-[15px] flex items-center justify-center">
-                    {type === "received" ? (from?.name || "From") : (to?.name || "To")}
+                    {(() => {
+                        const name = type === "received" ? (from?.name || "From") : (to?.name || "To");
+                        return name.split(" ")[0];
+                    })()}
                 </div>
                 <div className="relative w-1/2 h-full rounded-tr-[15px] flex items-center justify-center">
-                    You
+                    {(() => {
+                        const name = type === "received" ? (from?.name || "From") : (to?.name || "To");
+                        const parts = name.split(" ");
+                        return parts.length > 1 ? parts.slice(1).join(" ") : "You";
+                    })()}
                 </div>
             </div>
             <div className="relative w-full h-[40%] flex">
@@ -84,13 +91,21 @@ export default function RequestCard({ request, type }) {
                 </div>
             </div>
             <div className="relative w-full h-[17%] flex justify-evenly cursor-pointer py-[5px]">
-                {type === "sent" && (
-                    <span className={`text-xs font-bold px-3 py-1 rounded-2xl ${status === "pending" ? "bg-yellow-100 text-yellow-700" : status === "accepted" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                {type === "sent" ? (
+                    <span className={`text-xs font-bold px-3 py-1 rounded-2xl ${status === "pending"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : status === "accepted"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-red-100 text-red-700"
+                        }`} style={{ fontFamily: "Lemon, sans" }}>
                         {status?.toUpperCase()}
                     </span>
+                ) : (
+                    <>
+                        <button className="bg-[#fff8f4] text-sm px-3 rounded-2xl flex items-center justify-center shadow-md text-[#e76f51]" style={{ fontFamily: "Lemon, sans" }}>SWAP</button>
+                        <button className="bg-[#fff8f4] text-sm px-3 rounded-2xl flex items-center justify-center shadow-md">Reject</button>
+                    </>
                 )}
-                <button className="bg-[#fff8f4] text-sm px-3 rounded-2xl flex items-center justify-center shadow-md text-[#e76f51]" style={{ fontFamily: "Lemon, sans" }}>SWAP</button>
-                <button className="bg-[#fff8f4] text-sm px-3 rounded-2xl flex items-center justify-center shadow-md">Reject</button>
             </div>
         </div>
     );
