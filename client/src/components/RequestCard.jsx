@@ -48,7 +48,7 @@ export default function RequestCard({ request, type }) {
                     className="relative flex w-[45%] items-center justify-center p-1"
                     title={offerSkill?.name || ""}
                 >
-                    <div className="relative flex items-center justify-center rounded-2xl bg-[#e76f51] text-white text-center text-[min(1rem,100%)]" >
+                    <div className="relative px-2 py-1 rounded-2xl bg-[#264653] opacity-90 text-white text-center text-[min(1rem,100%)]" >
                         {offerSkill?.name || ""}
                     </div>
                 </div>
@@ -68,7 +68,7 @@ export default function RequestCard({ request, type }) {
                     className="relative flex w-[45%] items-center justify-center p-1"
                     title={wantSkill?.name || ""}
                 >
-                    <div className="relative px-2 py-1 rounded-2xl bg-[#e76f51] text-white text-center text-[min(1rem,100%)]" >
+                    <div className="relative px-2 py-1 rounded-2xl bg-[#e76f51] opacity-90 text-white text-center text-[min(1rem,100%)]" >
                         {wantSkill?.name || ""}
                     </div>
                 </div>
