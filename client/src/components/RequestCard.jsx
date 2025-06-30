@@ -33,8 +33,16 @@ export default function RequestCard({ request, type }) {
             <div className="relative w-full h-[40%] flex">
                 {/* Offer Skill - 45% */}
                 <div
-                    className="flex items-center justify-center text-2xl text-[#264653] font-extralight"
-                    style={{ width: "45%", fontFamily: "Lemon,sans" }}
+                    className="flex items-center justify-center text-[#264653]"
+                    style={{
+                        width: "45%",
+                        fontFamily: "Lemon, sans",
+                        fontSize: "clamp(0.5rem, 2vw, 1.2rem)", // auto scales between 1rem and 2rem
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                    }}
+                    title={offerSkill?.name || ""}
                 >
                     {offerSkill?.name || ""}
                 </div>
@@ -51,8 +59,16 @@ export default function RequestCard({ request, type }) {
                 </div>
                 {/* Want Skill - 45% */}
                 <div
-                    className="flex items-center justify-center text-2xl text-[#264653]"
-                    style={{ width: "45%", fontFamily: "Lemon, sans" }}
+                    className="flex items-center justify-center text-[#264653]"
+                    style={{
+                        width: "45%",
+                        fontFamily: "Lemon, sans",
+                        fontSize: "clamp(0.5rem, 2vw, 1.2rem)", // auto scales between 1rem and 2rem
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                    }}
+                    title={wantSkill?.name || ""}
                 >
                     {wantSkill?.name || ""}
                 </div>

@@ -33,9 +33,9 @@ export default function RequestsPage() {
                 <Sidebar />
                 <section className="relative w-[80%] flex flex-row bg-[#fff8f8] p-8">
                     {/* Left: Rotated Tabs */}
-                    <div className="relative w-[25%] flex flex-col items-center justify-start" style={{fontFamily: "'Josefin Sans', sans-serif" }}>
+                    <div className="relative w-[25%] flex items-center justify-start" style={{fontFamily: "'Josefin Sans', sans-serif" }}>
                         <div
-                            className="relative flex items-center justify-center border-2 border-amber-200"
+                            className="relative flex items-center justify-center"
                             style={{ transform: "rotate(-90deg)", width: "max-content" }}
                         >
                             <div className="relative flex items-center justify-center">
