@@ -45,11 +45,10 @@ export default function RequestCard({ request, type }) {
             <div className="relative w-full h-[40%] flex">
                 {/* Offer Skill - 45% */}
                 <div
-                    className="flex width-[45%] items-center justify-center"
+                    className="relative flex width-[45%] items-center justify-center"
                     title={offerSkill?.name || ""}
                 >
-                    <div className="flex items-center justify-center rounded-2xl bg-[#e76f51] text-white" style={{
-                        fontFamily: "Lemon, sans",
+                    <div className="relative flex items-center justify-center rounded-2xl bg-[#e76f51] text-white" style={{
                         fontSize: "clamp(0.5rem, 2vw, 1.2rem)", // auto scales between 1rem and 2rem
                         textOverflow: "ellipsis"
                     }}>
