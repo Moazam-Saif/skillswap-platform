@@ -4,6 +4,11 @@ export default function RequestCard({ request, type }) {
     // Destructure request fields
     const { offerSkill, wantSkill, days, timeSlots, status, from, to } = request || {};
 
+    const handleSwap = async()=>{
+        const data={
+            
+        }
+    }
     return (
         <div
             className="relative"
@@ -40,18 +45,16 @@ export default function RequestCard({ request, type }) {
             <div className="relative w-full h-[40%] flex">
                 {/* Offer Skill - 45% */}
                 <div
-                    className="flex items-center justify-center text-[#264653]"
-                    style={{
-                        width: "45%",
-                        fontFamily: "Lemon, sans",
-                        fontSize: "clamp(0.5rem, 2vw, 1.2rem)", // auto scales between 1rem and 2rem
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis"
-                    }}
+                    className="flex width-[45%] items-center justify-center"
                     title={offerSkill?.name || ""}
                 >
-                    {offerSkill?.name || ""}
+                    <div className="flex items-center justify-center rounded-2xl bg-[#e76f51] text-white" style={{
+                        fontFamily: "Lemon, sans",
+                        fontSize: "clamp(0.5rem, 2vw, 1.2rem)", // auto scales between 1rem and 2rem
+                        textOverflow: "ellipsis"
+                    }}>
+                        {offerSkill?.name || ""}
+                    </div>
                 </div>
                 {/* Arrows/Image - 10% */}
                 <div
@@ -66,18 +69,16 @@ export default function RequestCard({ request, type }) {
                 </div>
                 {/* Want Skill - 45% */}
                 <div
-                    className="flex items-center justify-center text-[#264653]"
-                    style={{
-                        width: "45%",
-                        fontFamily: "Lemon, sans",
-                        fontSize: "clamp(0.5rem, 2vw, 1.2rem)", // auto scales between 1rem and 2rem
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis"
-                    }}
+                    className="flex width-[45%] items-center justify-center"
                     title={wantSkill?.name || ""}
                 >
-                    {wantSkill?.name || ""}
+                    <div className="flex items-center justify-center rounded-2xl bg-[#e76f51] text-white" style={{
+                        fontFamily: "Lemon, sans",
+                        fontSize: "clamp(0.5rem, 2vw, 1.2rem)", // auto scales between 1rem and 2rem
+                        textOverflow: "ellipsis"
+                    }}>
+                        {wantSkill?.name || ""}
+                    </div>
                 </div>
             </div>
             <div className="relative w-full h-[26%] flex flex-col">
@@ -102,7 +103,7 @@ export default function RequestCard({ request, type }) {
                     </span>
                 ) : (
                     <>
-                        <button className="bg-[#fff8f4] text-sm px-3 rounded-2xl flex items-center justify-center shadow-md text-[#e76f51]" style={{ fontFamily: "Lemon, sans" }}>SWAP</button>
+                        <button onClick={handleSwap} className="bg-[#fff8f4] text-sm px-3 rounded-2xl flex items-center justify-center shadow-md text-[#e76f51]" style={{ fontFamily: "Lemon, sans" }}>SWAP</button>
                         <button className="bg-[#fff8f4] text-sm px-3 rounded-2xl flex items-center justify-center shadow-md">Reject</button>
                     </>
                 )}
