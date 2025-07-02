@@ -39,3 +39,18 @@ export const createSession = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+import Session from '../models/Session.js';
+
+export const getUserSessions = async (req, res) => {
+  try {
+    const sessions = await Session.find({
+      $or: [{ userA: req.userId }, { userB: req.userId }]
+    })
+    .populate('userA', 'name')
+    .populate('userB', 'name');
+    res.json(sessions);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

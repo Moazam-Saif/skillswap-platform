@@ -3,6 +3,7 @@ import Nav from "./Nav";
 import Sidebar from "./Sidebar";
 import { AuthContext } from "../context/AuthContext";
 import api from "../api/axios";
+import { getUserSessions } from "../api/auth";
 
 export default function SessionsPage() {
     const { userId, accessToken } = useContext(AuthContext);
@@ -12,10 +13,8 @@ export default function SessionsPage() {
     useEffect(() => {
         const fetchSessions = async () => {
             try {
-                const res = await api.get("/users/sessions", {
-                    headers: { Authorization: `Bearer ${accessToken}` }
-                });
-                setSessions(res.data || []);
+                const data = await getUserSessions(accessToken);
+                setSessions(data || []);
             } catch (err) {
                 console.error("Failed to fetch sessions", err);
             } finally {

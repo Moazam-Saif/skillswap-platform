@@ -8,7 +8,7 @@ import {
 import { verifyToken } from '../middleware/authMiddleware.js';
 import { changePassword } from '../controllers/authController.js';
 import { getSkillMatches,getPartialSkillMatches,getCategorySkillMatches } from '../controllers/matchController.js';
-import { createSession } from '../controllers/scheduleController.js';
+import { createSession,getUserSessions } from '../controllers/scheduleController.js';
 
 
 const router = express.Router();
@@ -28,6 +28,7 @@ router.get('/partial-matches', verifyToken, getPartialSkillMatches);
 router.get('/category-matches', verifyToken, getCategorySkillMatches);
 router.get('/fetchCat/:skillId',getSkillInfo);
 router.get('/swap-requests', verifyToken, getAllSwapRequests);
+router.get('/sessions', verifyToken, getUserSessions);
 
 console.log(router.stack.map(r => r.route && r.route.path).filter(Boolean));
 
