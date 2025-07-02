@@ -9,16 +9,13 @@ const sessionSchema = new mongoose.Schema({
   skillFromA: skillSchema,
   skillFromB: skillSchema,
 
-  scheduledTime: {
-    date: { type: String, required: true }, // e.g. "2025-06-03"
-    start: { type: String, required: true }, // e.g. "14:00"
-    end: { type: String, required: true }
-  },
+  scheduledTime: [{ type: String }],
 
   isConfirmed: { type: Boolean, default: false },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-
-  status: { type: String, enum: ['pending', 'confirmed', 'completed', 'cancelled'], default: 'pending' },
+  duration:Number,
+  expiresAt: { type: Date, required: true }, // <-- add this
+  status: { type: String, enum: ['active', 'completed'], default: 'active' },
 }, { timestamps: true });
 
 export default mongoose.model("Session", sessionSchema);

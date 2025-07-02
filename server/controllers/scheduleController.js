@@ -5,15 +5,23 @@ export const createSession = async (req, res) => {
   try {
     const { requestId, duration } = req.body;
 
+    console.log("Looking for requestId:", requestId);
+
     // Find the request in the recipient's swapRequests
     const recipient = await User.findById(req.userId);
+    console.log("Recipient ID:", req.userId);
+    console.log("Number of swapRequests:", recipient.swapRequests.length);
+    console.log("Request IDs:", recipient.swapRequests.map(r => r._id?.toString()));
+
     const request = recipient.swapRequests.find(req => req._id.toString() === requestId);
 
     if (!request) {
-      return res.status(404).json({ message: 'Request not found' });
+      console.log("Request not found in swapRequests");
+      return res.status(404).json({ error: "Swap request not found" });
     }
 
     const expiresAt = new Date(Date.now() + duration * 24 * 60 * 60 * 1000);
+    
     // Create a new session
     const session = await Session.create({
       userA: request.from,
@@ -23,7 +31,6 @@ export const createSession = async (req, res) => {
       duration,
       expiresAt,
       status: 'active',
-
     });
 
     // Add the session to both users
@@ -36,6 +43,7 @@ export const createSession = async (req, res) => {
 
     res.json({ message: 'Session created successfully', session });
   } catch (err) {
+    console.error("Error in createSession:", err);
     res.status(500).json({ error: err.message });
   }
 };
