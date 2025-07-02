@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import { fetchSkill } from '../services/lightcast.js';
+import { clearSearchCache } from './searchController.js';
 
 export const getUserProfile = async (req, res) => {
   try {
@@ -63,6 +64,7 @@ export const updateUserProfile = async (req, res) => {
     };
 
     const user = await User.findByIdAndUpdate(req.params.id, updatePayload, { new: true });
+    await clearSearchCache();
     res.json(user);
   } catch (err) {
     res.status(err.status || 500).json({ message: err.message });

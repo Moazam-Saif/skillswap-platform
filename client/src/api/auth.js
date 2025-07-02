@@ -96,3 +96,20 @@ export const createSession = async (data, accessToken) => {
   });
   return res.data;
 };
+
+// ...existing code...
+
+export const searchUsersBySkill = async (skillName) => {
+  const res = await api.get(`/search/skill/${encodeURIComponent(skillName)}`);
+  return res.data;
+};
+
+export const searchUsersByCategory = async (category) => {
+  const res = await api.get(`/search/category/${encodeURIComponent(category)}`);
+  return res.data;
+};
+
+export const searchUsersByName = async (name) => {
+  const res = await api.get(`/search/name/${encodeURIComponent(name)}`);
+  return res.data;
+};
