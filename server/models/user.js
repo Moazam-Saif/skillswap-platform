@@ -25,7 +25,7 @@ const swapRequestSchema = new mongoose.Schema({
   timeSlots: [{ type: String }], // e.g. ["Monday 09:00 - 10:00"]
   status: { type: String, enum: ["pending", "accepted", "rejected"], default: "pending" },
   createdAt: { type: Date, default: Date.now }
-}, { _id: false });
+}, { _id: true });
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },

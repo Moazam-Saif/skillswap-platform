@@ -1,34 +1,37 @@
 import Session from '../models/Session.js';
+import User from '../models/User.js';
 
-export const proposeSession = async (req, res) => {
+export const createSession = async (req, res) => {
   try {
-    const { recipientId, datetime } = req.body;
+    const { requestId, duration } = req.body;
+
+    // Find the request in the recipient's swapRequests
+    const recipient = await User.findById(req.userId);
+    const request = recipient.swapRequests.find(req => req._id.toString() === requestId);
+
+    if (!request) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    // Create a new session
     const session = await Session.create({
-      sender: req.userId,
-      recipient: recipientId,
-      datetime,
-      status: 'pending'
+      userA: request.from,
+      userB: request.to,
+      skillFromA: request.offerSkill,
+      skillFromB: request.wantSkill,
+      duration,
+      status: 'pending',
     });
-    res.json(session);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
 
-export const respondToSession = async (req, res) => {
-  try {
-    const { sessionId, response } = req.body; // 'accepted' or 'rejected'
-    const session = await Session.findByIdAndUpdate(sessionId, { status: response }, { new: true });
-    res.json(session);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+    // Add the session to both users
+    await User.findByIdAndUpdate(request.from, { $push: { sessions: session._id } });
+    await User.findByIdAndUpdate(request.to, { $push: { sessions: session._id } });
 
-export const getUserSessions = async (req, res) => {
-  try {
-    const sessions = await Session.find({ $or: [{ sender: req.userId }, { recipient: req.userId }] });
-    res.json(sessions);
+    // Remove the request from the recipient's swapRequests
+    recipient.swapRequests = recipient.swapRequests.filter(req => req._id.toString() !== requestId);
+    await recipient.save();
+
+    res.json({ message: 'Session created successfully', session });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
