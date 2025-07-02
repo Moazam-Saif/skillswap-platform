@@ -7,6 +7,7 @@ import PrivateRoute from './components/PrivateRoute.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import ProfileUpdate from './components/ProfileUpdate.jsx';
 import RequestsPage from './components/RequestsPage.jsx';
+import SessionsPage from './components/SessionsPage.jsx';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <AuthProvider>
         <Routes>
           {/* Public Routes */}
+          <Route path="/active-requests" element={<SessionsPage/>}/>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<SignupForm />} />

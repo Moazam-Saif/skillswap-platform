@@ -29,4 +29,6 @@ router.get('/category-matches', verifyToken, getCategorySkillMatches);
 router.get('/fetchCat/:skillId',getSkillInfo);
 router.get('/swap-requests', verifyToken, getAllSwapRequests);
 
+console.log(router.stack.map(r => r.route && r.route.path).filter(Boolean));
+
 export default router;

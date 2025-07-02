@@ -18,6 +18,9 @@ const Sidebar = () => {
                 <li>
                     <Link to={`/users/swap-requests`}>Swap Requests</Link>
                 </li>
+                <li>
+                    <Link to={`/active-requests`}>Swap Requests</Link>
+                </li>
             </ul>
         </aside>
     );

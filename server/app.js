@@ -7,7 +7,6 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import skillRoutes from './routes/skillRoutes.js';
-import scheduleRoutes from './routes/scheduleRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 
 
@@ -26,7 +25,6 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/skills', skillRoutes);
-app.use('/api/schedule', scheduleRoutes);
 app.use('/api/chat', chatRoutes);
 
 // Error Handler

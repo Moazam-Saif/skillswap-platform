@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { createSession } from '../api/auth';
+import { AuthContext } from "../context/AuthContext";
 
 export default function RequestCard({ request, type }) {
     // Destructure request fields
     const { offerSkill, wantSkill, days, timeSlots, status, from, to } = request || {};
+    const { accessToken } = useContext(AuthContext);
 
     const handleSwap = async () => {
         try {
