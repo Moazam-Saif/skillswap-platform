@@ -3,8 +3,8 @@ import { searchBySkill,searchByCategory,searchByName } from '../controllers/sear
 
 const router = express.Router();
 
-router.get('/search/skill/:skillName', searchBySkill);
-router.get('/search/category/:category', searchByCategory);
-router.get('/search/name/:name', searchByName);
+router.get('/skill/:skillName', searchBySkill);
+router.get('/category/:category', searchByCategory);
+router.get('/name/:name', searchByName);
 
 export default router;

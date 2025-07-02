@@ -6,18 +6,37 @@ export const searchBySkill = async (req, res) => {
     const skillName = req.params.skillName.toLowerCase();
     const cacheKey = `search:skill:${skillName}`;
     
+    console.log(`=== SEARCH DEBUG ===`);
+    console.log(`Original skill name: ${req.params.skillName}`);
+    console.log(`Lowercased skill name: ${skillName}`);
+    console.log(`Cache key: ${cacheKey}`);
+    
     // Check cache first
     const cached = await redis.get(cacheKey);
     if (cached) {
       console.log(`Cache hit for skill: ${skillName}`);
-      return res.json(JSON.parse(cached));
+      const results = JSON.parse(cached);
+      console.log(`Cached results count: ${results.length}`);
+      return res.json(results);
     }
     
     console.log(`Cache miss for skill: ${skillName}`);
+    
+    // First, let's see how many users exist total
+    const totalUsers = await User.countDocuments();
+    console.log(`Total users in database: ${totalUsers}`);
+    
+    // Let's see what skills exist in the database
+    const sampleUsers = await User.find({}).select('skillsHave').limit(3);
+    console.log(`Sample user skills:`, JSON.stringify(sampleUsers, null, 2));
+    
     // If not cached, query database
     const users = await User.find({ 
       "skillsHave.name": { $regex: skillName, $options: 'i' }
     }).select('name imageUrl skillsHave');
+    
+    console.log(`Database query result count: ${users.length}`);
+    console.log(`First result:`, users[0] ? JSON.stringify(users[0], null, 2) : 'No results');
     
     // Cache results for 10 minutes
     await redis.setex(cacheKey, 600, JSON.stringify(users));

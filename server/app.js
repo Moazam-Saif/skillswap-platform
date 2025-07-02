@@ -8,6 +8,7 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import skillRoutes from './routes/skillRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
+import searchRoutes from './routes/searchRoutes.js';
 
 
 
@@ -26,6 +27,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/search',searchRoutes);
+
 
 // Error Handler
 app.use((err, req, res, next) => {
