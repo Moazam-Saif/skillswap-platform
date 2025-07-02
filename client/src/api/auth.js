@@ -82,3 +82,10 @@ export const getUserRequests = async (accessToken) => {
   });
   return res.data;
 };
+
+export const createSession = async (data, accessToken) => {
+  const res = await api.post('/users/create-session', data, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  return res.data;
+};
