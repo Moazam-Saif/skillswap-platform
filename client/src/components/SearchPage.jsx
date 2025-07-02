@@ -68,7 +68,7 @@ export default function SearchPage() {
           )}
 
           {/* Results Container - 80% width of the section */}
-          <div className="w-[80%] mx-auto">
+          <div className="w-[70%] mx-auto">
             {loading ? (
               <div className="flex items-center justify-center py-12">
                 <div className="text-gray-500 text-lg">Searching...</div>

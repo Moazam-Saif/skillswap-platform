@@ -116,7 +116,7 @@ export default function SearchResultCard({ user }) {
             <div className="h-[35%] flex items-center px-4">
                 {/* Label - 20% width */}
                 <div className="w-[20%] text-center">
-                    <span className="text-sm font-medium">Skills Have:</span>
+                    <span className="text-lg">Skills Have:</span>
                 </div>
                 
                 {/* Carousel Container - 80% width */}
@@ -170,7 +170,7 @@ export default function SearchResultCard({ user }) {
             <div className="h-[35%] flex items-center px-4">
                 {/* Label - 20% width */}
                 <div className="w-[20%] text-center">
-                    <span className="text-sm font-medium">Skills Want:</span>
+                    <span className="text-lg">Skills Want:</span>
                 </div>
                 
                 {/* Carousel Container - 80% width */}
