@@ -1,46 +1,239 @@
+import { useState, useRef, useEffect } from 'react';
+
 export default function SearchResultCard({ user }) {
+    const [canScrollLeftHave, setCanScrollLeftHave] = useState(false);
+    const [canScrollRightHave, setCanScrollRightHave] = useState(false);
+    const [canScrollLeftWant, setCanScrollLeftWant] = useState(false);
+    const [canScrollRightWant, setCanScrollRightWant] = useState(false);
+    const skillsHaveRef = useRef(null);
+    const skillsWantRef = useRef(null);
+
+    // Sample data for testing
+    const sampleUser = {
+        firstName: user?.name?.split(' ')[0] || "John",
+        lastName: user?.name?.split(' ')[1] || "Doe",
+        imageUrl: user?.imageUrl || "/userImage.png",
+        skillsHave: user?.skillsHave || [
+            { name: "JavaScript" },
+            { name: "React" },
+            { name: "Node.js" },
+            { name: "Python" },
+            { name: "MongoDB" },
+            { name: "Express" },
+            { name: "TypeScript" },
+            { name: "CSS" }
+        ],
+        skillsWant: [
+            { name: "Machine Learning" },
+            { name: "AI" },
+            { name: "Data Science" },
+            { name: "AWS" },
+            { name: "Docker" },
+            { name: "Kubernetes" }
+        ]
+    };
+
+    // Check scroll positions and overflow
+    const checkScrollPosition = (container, setCanLeft, setCanRight) => {
+        if (container) {
+            const { scrollLeft, scrollWidth, clientWidth } = container;
+            const hasOverflow = scrollWidth > clientWidth;
+            
+            if (!hasOverflow) {
+                setCanLeft(false);
+                setCanRight(false);
+            } else {
+                setCanLeft(scrollLeft > 0);
+                setCanRight(scrollLeft < scrollWidth - clientWidth - 1);
+            }
+        }
+    };
+
+    // Handle carousel scroll
+    const handleScroll = (container, direction) => {
+        if (container) {
+            const scrollAmount = 120; // Adjust scroll distance
+            const newScrollLeft = direction === 'left' 
+                ? container.scrollLeft - scrollAmount
+                : container.scrollLeft + scrollAmount;
+            
+            container.scrollTo({
+                left: newScrollLeft,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    // Check all scroll positions
+    const checkAllScrollPositions = () => {
+        checkScrollPosition(skillsHaveRef.current, setCanScrollLeftHave, setCanScrollRightHave);
+        checkScrollPosition(skillsWantRef.current, setCanScrollLeftWant, setCanScrollRightWant);
+    };
+
+    // Handle resize and initial setup
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            checkAllScrollPositions();
+        }, 100);
+
+        const handleResize = () => {
+            checkAllScrollPositions();
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        const resizeObserver = new ResizeObserver(() => {
+            checkAllScrollPositions();
+        });
+
+        if (skillsHaveRef.current) {
+            resizeObserver.observe(skillsHaveRef.current);
+        }
+        if (skillsWantRef.current) {
+            resizeObserver.observe(skillsWantRef.current);
+        }
+
+        return () => {
+            clearTimeout(timeoutId);
+            window.removeEventListener('resize', handleResize);
+            resizeObserver.disconnect();
+        };
+    }, [sampleUser.skillsHave, sampleUser.skillsWant]);
+
     return (
-        <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-4">
-                <img 
-                    src={user.imageUrl || "/userImage.png"} 
-                    alt="user" 
-                    className="w-16 h-16 rounded-full object-cover border-2 border-[#e76f51]" 
-                />
-                <div className="flex-1">
-                    <div className="font-semibold text-xl text-[#264653] mb-2">{user.name}</div>
-                    <div className="text-sm text-gray-600">
-                        <span className="font-medium">Skills: </span>
-                        {user.skillsHave?.length > 0 
-                            ? user.skillsHave.map(s => s.name).join(", ")
-                            : "No skills listed"
-                        }
-                    </div>
-                    {user.skillsHave?.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-3">
-                            {user.skillsHave.slice(0, 5).map((skill, index) => (
+        <div className="bg-[#e76f51] text-white rounded-[50px] shadow-sm hover:shadow-md transition-shadow h-[155px] w-[80%] overflow-hidden" style={{fontFamily: "'Josefin Sans', sans-serif"}}>
+            {/* Top Section - 30% height */}
+            <div className="h-[30%] border-b-2 border-white flex items-center">
+                {/* First Name - 45% width */}
+                <div className="w-[45%] px-4 flex justify-center">
+                    <span className="font-semibold text-lg truncate">
+                        {sampleUser.firstName}
+                    </span>
+                </div>
+                
+                {/* User Image - 10% width */}
+                <div className="w-[10%] flex justify-center">
+                    <img 
+                        src={sampleUser.imageUrl} 
+                        alt="user" 
+                        className="w-10 h-10 rounded-full object-cover" 
+                    />
+                </div>
+                
+                {/* Last Name - 45% width */}
+                <div className="w-[45%] px-4 flex justify-center">
+                    <span className="font-semibold text-lg truncate">
+                        {sampleUser.lastName}
+                    </span>
+                </div>
+            </div>
+
+            {/* Skills Have Section - 35% height */}
+            <div className="h-[35%] flex items-center px-4">
+                {/* Label - 20% width */}
+                <div className="w-[20%] text-center">
+                    <span className="text-lg">Skills Have:</span>
+                </div>
+                
+                {/* Carousel Container - 80% width */}
+                <div className="w-[80%] flex items-center relative">
+                    {/* Left Arrow */}
+                    {canScrollLeftHave && (
+                        <button
+                            onClick={() => handleScroll(skillsHaveRef.current, 'left')}
+                            className="absolute left-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
+                        >
+                            ←
+                        </button>
+                    )}
+                    
+                    {/* Skills Carousel */}
+                    <div 
+                        ref={skillsHaveRef}
+                        className="overflow-x-hidden overflow-y-hidden w-full px-6"
+                        onScroll={() => checkScrollPosition(skillsHaveRef.current, setCanScrollLeftHave, setCanScrollRightHave)}
+                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                    >
+                        <div className="flex gap-2 py-1">
+                            {sampleUser.skillsHave.map((skill, index) => (
                                 <span 
                                     key={index}
-                                    className="px-3 py-1 bg-[#e76f51]/10 text-[#e76f51] rounded-full text-xs font-medium"
+                                    className="px-3 py-1 bg-[#f4a261] text-[#264653] rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 shadow-sm"
                                 >
                                     {skill.name}
                                 </span>
                             ))}
-                            {user.skillsHave.length > 5 && (
-                                <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
-                                    +{user.skillsHave.length - 5} more
-                                </span>
-                            )}
                         </div>
+                    </div>
+
+                    {/* Right Arrow */}
+                    {canScrollRightHave && (
+                        <button
+                            onClick={() => handleScroll(skillsHaveRef.current, 'right')}
+                            className="absolute right-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
+                        >
+                            →
+                        </button>
                     )}
                 </div>
-                <button 
-                    className="px-4 py-2 bg-[#e76f51] text-white rounded-lg hover:bg-[#d65d42] transition-colors font-medium"
-                    onClick={() => window.open(`/profile/${user._id}`, '_blank')}
-                >
-                    View Profile
-                </button>
             </div>
+
+            {/* Skills Want Section - 35% height */}
+            <div className="h-[35%] flex items-center px-4">
+                {/* Label - 20% width */}
+                <div className="w-[20%] text-center">
+                    <span className="text-lg">Skills Want:</span>
+                </div>
+                
+                {/* Carousel Container - 80% width */}
+                <div className="w-[80%] flex items-center relative">
+                    {/* Left Arrow */}
+                    {canScrollLeftWant && (
+                        <button
+                            onClick={() => handleScroll(skillsWantRef.current, 'left')}
+                            className="absolute left-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
+                        >
+                            ←
+                        </button>
+                    )}
+                    
+                    {/* Skills Carousel */}
+                    <div 
+                        ref={skillsWantRef}
+                        className="overflow-x-hidden overflow-y-hidden w-full px-6"
+                        onScroll={() => checkScrollPosition(skillsWantRef.current, setCanScrollLeftWant, setCanScrollRightWant)}
+                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                    >
+                        <div className="flex gap-2 py-1">
+                            {sampleUser.skillsWant.map((skill, index) => (
+                                <span 
+                                    key={index}
+                                    className="px-3 py-1 bg-[#e9c46a] text-[#264653] rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 shadow-sm"
+                                >
+                                    {skill.name}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Right Arrow */}
+                    {canScrollRightWant && (
+                        <button
+                            onClick={() => handleScroll(skillsWantRef.current, 'right')}
+                            className="absolute right-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
+                        >
+                            →
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* Hide scrollbar styles */}
+            <style jsx>{`
+                div::-webkit-scrollbar {
+                    display: none;
+                }
+            `}</style>
         </div>
     );
 }
