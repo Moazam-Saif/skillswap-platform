@@ -21,7 +21,10 @@ export default function SearchResultCard({ user }) {
             { name: "MongoDB" },
             { name: "Express" },
             { name: "TypeScript" },
-            { name: "CSS" }
+            { name: "CSS" },
+            { name: "AWS" },
+            { name: "Docker" },
+            { name: "Kubernetes" }
         ],
         skillsWant: [
             { name: "Machine Learning" },
@@ -154,7 +157,7 @@ export default function SearchResultCard({ user }) {
                         onScroll={() => checkScrollPosition(skillsHaveRef.current, setCanScrollLeftHave, setCanScrollRightHave)}
                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     >
-                        <div className="flex gap-2 py-1">
+                        <div className="flex gap-3 py-1">
                             {sampleUser.skillsHave.map((skill, index) => (
                                 <span 
                                     key={index}
@@ -170,7 +173,7 @@ export default function SearchResultCard({ user }) {
                     {canScrollRightHave && (
                         <button
                             onClick={() => handleScroll(skillsHaveRef.current, 'right')}
-                            className="absolute right-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
+                            className="absolute right-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-[#264653]/80 hover:bg-[#264653]/90  transition-all flex-shrink-0 shadow-sm"
                         >
                             →
                         </button>
@@ -191,7 +194,7 @@ export default function SearchResultCard({ user }) {
                     {canScrollLeftWant && (
                         <button
                             onClick={() => handleScroll(skillsWantRef.current, 'left')}
-                            className="absolute left-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
+                            className="absolute left-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-[#264653]/80 hover:bg-[#264653]/90 transition-all flex-shrink-0 shadow-sm"
                         >
                             ←
                         </button>
@@ -204,7 +207,7 @@ export default function SearchResultCard({ user }) {
                         onScroll={() => checkScrollPosition(skillsWantRef.current, setCanScrollLeftWant, setCanScrollRightWant)}
                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     >
-                        <div className="flex gap-2 py-1">
+                        <div className="flex gap-3 py-1">
                             {sampleUser.skillsWant.map((skill, index) => (
                                 <span 
                                     key={index}
@@ -220,7 +223,7 @@ export default function SearchResultCard({ user }) {
                     {canScrollRightWant && (
                         <button
                             onClick={() => handleScroll(skillsWantRef.current, 'right')}
-                            className="absolute right-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
+                            className="absolute right-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-[#264653]/80 hover:bg-[#264653]/90 transition-all flex-shrink-0 shadow-sm"
                         >
                             →
                         </button>
