@@ -40,7 +40,6 @@ export const createSession = async (req, res) => {
   }
 };
 
-import Session from '../models/Session.js';
 
 export const getUserSessions = async (req, res) => {
   try {
