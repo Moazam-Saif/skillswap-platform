@@ -1,5 +1,5 @@
 import express from 'express';
-import { searchBySkill,searchByCategory,searchByName } from '../controllers/searchController';
+import { searchBySkill,searchByCategory,searchByName } from '../controllers/searchController.js';
 
 const router = express.Router();
 
