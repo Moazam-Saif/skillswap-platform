@@ -13,6 +13,7 @@ export const createSession = async (req, res) => {
       return res.status(404).json({ message: 'Request not found' });
     }
 
+    const expiresAt = new Date(Date.now() + duration * 24 * 60 * 60 * 1000);
     // Create a new session
     const session = await Session.create({
       userA: request.from,
@@ -20,7 +21,9 @@ export const createSession = async (req, res) => {
       skillFromA: request.offerSkill,
       skillFromB: request.wantSkill,
       duration,
-      status: 'pending',
+      expiresAt,
+      status: 'active',
+
     });
 
     // Add the session to both users

@@ -1,14 +1,23 @@
 import React from "react";
+import { createSession } from '../api/auth';
 
 export default function RequestCard({ request, type }) {
     // Destructure request fields
     const { offerSkill, wantSkill, days, timeSlots, status, from, to } = request || {};
 
-    const handleSwap = async()=>{
-        const data={
-            
+    const handleSwap = async () => {
+        try {
+            const duration = days; // Use the duration from the request
+            const data = { requestId: request._id, duration };
+            const response = await createSession(data, accessToken);
+
+            alert('Session created successfully!');
+            // Optionally, refresh the requests list or update the UI
+        } catch (err) {
+            console.error('Failed to create session', err);
+            alert('Failed to create session');
         }
-    }
+    };
     return (
         <div
             className="relative"
@@ -86,10 +95,10 @@ export default function RequestCard({ request, type }) {
             <div className="relative w-full h-[17%] flex justify-evenly cursor-pointer py-[5px]">
                 {type === "sent" ? (
                     <span className={`text-xs font-bold px-3 py-1 rounded-2xl ${status === "pending"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : status === "accepted"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-red-100 text-red-700"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : status === "accepted"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
                         }`} style={{ fontFamily: "Lemon, sans" }}>
                         {status?.toUpperCase()}
                     </span>
