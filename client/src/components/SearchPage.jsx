@@ -67,36 +67,38 @@ export default function SearchPage() {
             </div>
           )}
 
-          {/* Results */}
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="text-gray-500 text-lg">Searching...</div>
-            </div>
-          ) : searched ? (
-            <div>
-              <p className="text-gray-600 mb-6 text-lg">
-                Found <span className="font-semibold text-[#e76f51]">{results.length}</span> user{results.length !== 1 ? 's' : ''} 
-                {results.length > 0 && ` matching "${searchQuery}"`}
-              </p>
-              
-              {results.length > 0 ? (
-                <div className="grid gap-4">
-                  {results.map(user => (
-                    <SearchResultCard key={user._id} user={user} />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="text-gray-400 text-lg mb-2">No users found</div>
-                  <div className="text-gray-500">Try searching with different terms</div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="text-gray-500 text-lg">Use the search bar above to find users</div>
-            </div>
-          )}
+          {/* Results Container - 80% width of the section */}
+          <div className="w-[80%] mx-auto">
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-gray-500 text-lg">Searching...</div>
+              </div>
+            ) : searched ? (
+              <div>
+                <p className="text-gray-600 mb-6 text-lg text-center">
+                  Found <span className="font-semibold text-[#e76f51]">{results.length}</span> user{results.length !== 1 ? 's' : ''} 
+                  {results.length > 0 && ` matching "${searchQuery}"`}
+                </p>
+                
+                {results.length > 0 ? (
+                  <div className="flex flex-col gap-6">
+                    {results.map(user => (
+                      <SearchResultCard key={user._id} user={user} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="text-gray-400 text-lg mb-2">No users found</div>
+                    <div className="text-gray-500">Try searching with different terms</div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-gray-500 text-lg">Use the search bar above to find users</div>
+              </div>
+            )}
+          </div>
         </section>
       </main>
     </div>

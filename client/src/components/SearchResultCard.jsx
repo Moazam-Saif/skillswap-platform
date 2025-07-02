@@ -8,32 +8,13 @@ export default function SearchResultCard({ user }) {
     const skillsHaveRef = useRef(null);
     const skillsWantRef = useRef(null);
 
-    // Sample data for testing
-    const sampleUser = {
-        firstName: user?.name?.split(' ')[0] || "John",
-        lastName: user?.name?.split(' ')[1] || "Doe",
+    // Process real user data
+    const userData = {
+        firstName: user?.name?.split(' ')[0] || "User",
+        lastName: user?.name?.split(' ').slice(1).join(' ') || "",
         imageUrl: user?.imageUrl || "/userImage.png",
-        skillsHave: user?.skillsHave || [
-            { name: "JavaScript" },
-            { name: "React" },
-            { name: "Node.js" },
-            { name: "Python" },
-            { name: "MongoDB" },
-            { name: "Express" },
-            { name: "TypeScript" },
-            { name: "CSS" },
-            { name: "AWS" },
-            { name: "Docker" },
-            { name: "Kubernetes" }
-        ],
-        skillsWant: [
-            { name: "Machine Learning" },
-            { name: "AI" },
-            { name: "Data Science" },
-            { name: "AWS" },
-            { name: "Docker" },
-            { name: "Kubernetes" }
-        ]
+        skillsHave: user?.skillsHave || [],
+        skillsWant: user?.skillsWant || []
     };
 
     // Check scroll positions and overflow
@@ -55,7 +36,7 @@ export default function SearchResultCard({ user }) {
     // Handle carousel scroll
     const handleScroll = (container, direction) => {
         if (container) {
-            const scrollAmount = 120; // Adjust scroll distance
+            const scrollAmount = 120;
             const newScrollLeft = direction === 'left' 
                 ? container.scrollLeft - scrollAmount
                 : container.scrollLeft + scrollAmount;
@@ -101,23 +82,23 @@ export default function SearchResultCard({ user }) {
             window.removeEventListener('resize', handleResize);
             resizeObserver.disconnect();
         };
-    }, [sampleUser.skillsHave, sampleUser.skillsWant]);
+    }, [userData.skillsHave, userData.skillsWant]);
 
     return (
-        <div className="bg-[#e76f51] text-white rounded-[50px] shadow-sm hover:shadow-md transition-shadow h-[155px] w-[80%] overflow-hidden" style={{fontFamily: "'Josefin Sans', sans-serif"}}>
+        <div className="bg-[#e76f51] text-white rounded-[50px] shadow-sm hover:shadow-md transition-shadow h-[155px] w-full overflow-hidden" style={{fontFamily: "'Josefin Sans', sans-serif"}}>
             {/* Top Section - 30% height */}
             <div className="h-[30%] border-b-2 border-white flex items-center">
                 {/* First Name - 45% width */}
                 <div className="w-[45%] px-4 flex justify-center">
                     <span className="font-semibold text-lg truncate">
-                        {sampleUser.firstName}
+                        {userData.firstName}
                     </span>
                 </div>
                 
                 {/* User Image - 10% width */}
                 <div className="w-[10%] flex justify-center">
                     <img 
-                        src={sampleUser.imageUrl} 
+                        src={userData.imageUrl} 
                         alt="user" 
                         className="w-10 h-10 rounded-full object-cover" 
                     />
@@ -126,7 +107,7 @@ export default function SearchResultCard({ user }) {
                 {/* Last Name - 45% width */}
                 <div className="w-[45%] px-4 flex justify-center">
                     <span className="font-semibold text-lg truncate">
-                        {sampleUser.lastName}
+                        {userData.lastName}
                     </span>
                 </div>
             </div>
@@ -135,7 +116,7 @@ export default function SearchResultCard({ user }) {
             <div className="h-[35%] flex items-center px-4">
                 {/* Label - 20% width */}
                 <div className="w-[20%] text-center">
-                    <span className="text-lg">Skills Have:</span>
+                    <span className="text-sm font-medium">Skills Have:</span>
                 </div>
                 
                 {/* Carousel Container - 80% width */}
@@ -157,15 +138,19 @@ export default function SearchResultCard({ user }) {
                         onScroll={() => checkScrollPosition(skillsHaveRef.current, setCanScrollLeftHave, setCanScrollRightHave)}
                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     >
-                        <div className="flex gap-3 py-1">
-                            {sampleUser.skillsHave.map((skill, index) => (
-                                <span 
-                                    key={index}
-                                    className="px-3 py-1 bg-[#f4a261] text-[#264653] rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 shadow-sm"
-                                >
-                                    {skill.name}
-                                </span>
-                            ))}
+                        <div className="flex gap-2 py-1">
+                            {userData.skillsHave.length > 0 ? (
+                                userData.skillsHave.map((skill, index) => (
+                                    <span 
+                                        key={index}
+                                        className="px-3 py-1 bg-[#f4a261] text-[#264653] rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 shadow-sm"
+                                    >
+                                        {skill.name || skill}
+                                    </span>
+                                ))
+                            ) : (
+                                <span className="text-xs text-white/70 italic">No skills listed</span>
+                            )}
                         </div>
                     </div>
 
@@ -173,7 +158,7 @@ export default function SearchResultCard({ user }) {
                     {canScrollRightHave && (
                         <button
                             onClick={() => handleScroll(skillsHaveRef.current, 'right')}
-                            className="absolute right-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-[#264653]/80 hover:bg-[#264653]/90  transition-all flex-shrink-0 shadow-sm"
+                            className="absolute right-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
                         >
                             →
                         </button>
@@ -185,7 +170,7 @@ export default function SearchResultCard({ user }) {
             <div className="h-[35%] flex items-center px-4">
                 {/* Label - 20% width */}
                 <div className="w-[20%] text-center">
-                    <span className="text-lg">Skills Want:</span>
+                    <span className="text-sm font-medium">Skills Want:</span>
                 </div>
                 
                 {/* Carousel Container - 80% width */}
@@ -194,7 +179,7 @@ export default function SearchResultCard({ user }) {
                     {canScrollLeftWant && (
                         <button
                             onClick={() => handleScroll(skillsWantRef.current, 'left')}
-                            className="absolute left-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-[#264653]/80 hover:bg-[#264653]/90 transition-all flex-shrink-0 shadow-sm"
+                            className="absolute left-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
                         >
                             ←
                         </button>
@@ -207,15 +192,19 @@ export default function SearchResultCard({ user }) {
                         onScroll={() => checkScrollPosition(skillsWantRef.current, setCanScrollLeftWant, setCanScrollRightWant)}
                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     >
-                        <div className="flex gap-3 py-1">
-                            {sampleUser.skillsWant.map((skill, index) => (
-                                <span 
-                                    key={index}
-                                    className="px-3 py-1 bg-[#e9c46a] text-[#264653] rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 shadow-sm"
-                                >
-                                    {skill.name}
-                                </span>
-                            ))}
+                        <div className="flex gap-2 py-1">
+                            {userData.skillsWant.length > 0 ? (
+                                userData.skillsWant.map((skill, index) => (
+                                    <span 
+                                        key={index}
+                                        className="px-3 py-1 bg-[#e9c46a] text-[#264653] rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 shadow-sm"
+                                    >
+                                        {skill.name || skill}
+                                    </span>
+                                ))
+                            ) : (
+                                <span className="text-xs text-white/70 italic">No skills wanted</span>
+                            )}
                         </div>
                     </div>
 
@@ -223,7 +212,7 @@ export default function SearchResultCard({ user }) {
                     {canScrollRightWant && (
                         <button
                             onClick={() => handleScroll(skillsWantRef.current, 'right')}
-                            className="absolute right-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-[#264653]/80 hover:bg-[#264653]/90 transition-all flex-shrink-0 shadow-sm"
+                            className="absolute right-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
                         >
                             →
                         </button>
