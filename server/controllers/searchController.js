@@ -17,7 +17,7 @@ export const searchBySkill = async (req, res) => {
     // If not cached, query database
     const users = await User.find({ 
       "skillsHave.name": { $regex: skillName, $options: 'i' }
-    }).select('name imageUrl skillsHave');
+    }).select('name imageUrl skillsHave skillsWant'); // Added skillsWant
     
     // Cache results for 10 minutes
     await redis.setex(cacheKey, 600, JSON.stringify(users));
@@ -45,7 +45,7 @@ export const searchByCategory = async (req, res) => {
     // If not cached, query database
     const users = await User.find({ 
       "skillsHave.category": { $regex: category, $options: 'i' }
-    }).select('name imageUrl skillsHave');
+    }).select('name imageUrl skillsHave skillsWant'); // Added skillsWant
     
     // Cache results for 10 minutes
     await redis.setex(cacheKey, 600, JSON.stringify(users));
@@ -73,7 +73,7 @@ export const searchByName = async (req, res) => {
     // If not cached, query database
     const users = await User.find({ 
       name: { $regex: name, $options: 'i' }
-    }).select('name imageUrl skillsHave');
+    }).select('name imageUrl skillsHave skillsWant'); // Added skillsWant
     
     // Cache results for 5 minutes (names change less frequently)
     await redis.setex(cacheKey, 300, JSON.stringify(users));

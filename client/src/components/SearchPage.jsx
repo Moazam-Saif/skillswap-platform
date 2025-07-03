@@ -55,29 +55,28 @@ export default function SearchPage() {
       <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
         <Sidebar />
         <section className="w-[80%] flex flex-col bg-[#fff8f8] p-8">
-          <h2 className="text-2xl font-bold mb-6 text-[#264653]">Search Results</h2>
           
-          {/* Search Info */}
+          {/* Search Info - Small text at top */}
           {searchQuery && (
-            <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-              <p className="text-gray-700">
+            <div className="mb-4 text-center">
+              <p className="text-[#264653] text-lg">
                 Searching for <span className="font-semibold">"{searchQuery}"</span> in{" "}
                 <span className="font-semibold capitalize">{searchType}</span>
               </p>
             </div>
           )}
 
-          {/* Results Container - 80% width of the section */}
+          {/* Results Container - 70% width of the section */}
           <div className="w-[70%] mx-auto">
             {loading ? (
-              <div className="flex items-center justify-center py-12">
+              <div className="flex items-center justify-center py-12 text-center">
                 <div className="text-gray-500 text-lg">Searching...</div>
               </div>
             ) : searched ? (
               <div>
-                <p className="text-gray-600 mb-6 text-lg text-center">
-                  Found <span className="font-semibold text-[#e76f51]">{results.length}</span> user{results.length !== 1 ? 's' : ''} 
-                  {results.length > 0 && ` matching "${searchQuery}"`}
+                {/* Results count - Small text */}
+                <p className="text-[#264653] text-sm mb-6 text-center">
+                  {results.length} result{results.length !== 1 ? 's' : ''} found
                 </p>
                 
                 {results.length > 0 ? (

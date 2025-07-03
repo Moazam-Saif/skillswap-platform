@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import AnimationStroke from "../animations/animationstroke.jsx";
 import IconAnimation from "../animations/iconAnimation.jsx";
 import SearchResultCard from './SearchResultCard.jsx';
+import UserProfileView from './ProfilePage.jsx';
 
 
 export default function LandingPage() {
@@ -96,10 +97,11 @@ export default function LandingPage() {
     />
      
   </div>
-  <div className="flex items-center justify-center min-h-screen bg-gray-200 w-full">
-      <SearchResultCard />
-    </div>
+
   </div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-200 w-[100vw]">
+      < UserProfileView/>
+    </div>
 
 
     </>

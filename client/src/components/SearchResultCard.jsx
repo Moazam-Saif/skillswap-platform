@@ -17,6 +17,13 @@ export default function SearchResultCard({ user }) {
         skillsWant: user?.skillsWant || []
     };
 
+    // Debug: Still keep a simple log to see what we're getting
+    useEffect(() => {
+        console.log('User:', userData.firstName, userData.lastName);
+        console.log('Skills Have:', userData.skillsHave);
+        console.log('Skills Want:', userData.skillsWant);
+    }, [user]);
+
     // Check scroll positions and overflow
     const checkScrollPosition = (container, setCanLeft, setCanRight) => {
         if (container) {

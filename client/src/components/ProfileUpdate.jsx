@@ -177,8 +177,7 @@ export default function ProfileUploadPage() {
 
         {/* Right Half - Empty Div */}
         <div className="w-1/2 min-h-screen border-gray-200" style={{
-          background: 'linear-gradient(to right, #FFF8F8 0%, #E76F51 15%)',
-          opacity: 0.8,
+          background: 'linear-gradient(to right, rgba(255,248,248,0.8) 0%, rgba(231,111,81,0.8) 15%)',
         }}>
           {/* This div is intentionally left empty as requested */}
           <UserInfo
