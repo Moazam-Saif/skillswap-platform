@@ -227,11 +227,11 @@ export default function UserProfileView() {
           <div style={{ height: '1.33%' }}></div>
 
           {/* Buttons Section - 28% height */}
-          <div className="flex flex-col gap-4 justify-center" style={{ height: '28%' }}>
-            <button className="bg-[#264653] text-white px-6 py-4 rounded-lg font-semibold text-lg hover:bg-[#1e3a3f] transition-colors shadow-lg">
+          <div className="flex justify-center items-center gap-10 px-4" style={{ height: '28%' }}>
+            <button className="px-4 py-2 bg-[#264653] text-white rounded-3xl text-lg shadow-sm hover:bg-[#d85a3c] transition-colors">
               Request Swap
             </button>
-            <button className="bg-[#E76F51] text-white px-6 py-4 rounded-lg font-semibold text-lg hover:bg-[#d85a3c] transition-colors shadow-lg">
+            <button className="px-4 py-2 bg-[#264653] text-white rounded-3xl text-lg  shadow-sm hover:bg-[#d85a3c] transition-colors">
               Start Chat
             </button>
           </div>
