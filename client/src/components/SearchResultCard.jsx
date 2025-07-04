@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function SearchResultCard({ user }) {
     const [canScrollLeftHave, setCanScrollLeftHave] = useState(false);
@@ -7,6 +8,7 @@ export default function SearchResultCard({ user }) {
     const [canScrollRightWant, setCanScrollRightWant] = useState(false);
     const skillsHaveRef = useRef(null);
     const skillsWantRef = useRef(null);
+    const navigate = useNavigate();
 
     // Process real user data
     const userData = {
@@ -14,7 +16,15 @@ export default function SearchResultCard({ user }) {
         lastName: user?.name?.split(' ').slice(1).join(' ') || "",
         imageUrl: user?.imageUrl || "/userImage.png",
         skillsHave: user?.skillsHave || [],
-        skillsWant: user?.skillsWant || []
+        skillsWant: user?.skillsWant || [],
+        userId: user?._id
+    };
+
+    // Handle card click to navigate to profile
+    const handleCardClick = () => {
+        if (userData.userId) {
+            navigate(`/users/profile/show/${userData.userId}`);
+        }
     };
 
     // Debug: Still keep a simple log to see what we're getting
@@ -41,7 +51,10 @@ export default function SearchResultCard({ user }) {
     };
 
     // Handle carousel scroll
-    const handleScroll = (container, direction) => {
+    const handleScroll = (container, direction, event) => {
+        // Stop event propagation to prevent card click
+        event.stopPropagation();
+        
         if (container) {
             const scrollAmount = 120;
             const newScrollLeft = direction === 'left' 
@@ -92,7 +105,11 @@ export default function SearchResultCard({ user }) {
     }, [userData.skillsHave, userData.skillsWant]);
 
     return (
-        <div className="bg-[#e76f51] text-white rounded-[50px] shadow-sm hover:shadow-md transition-shadow h-[155px] w-full overflow-hidden" style={{fontFamily: "'Josefin Sans', sans-serif"}}>
+        <div 
+            className="bg-[#e76f51] text-white rounded-[50px] shadow-sm hover:shadow-md transition-shadow h-[155px] w-full overflow-hidden cursor-pointer hover:shadow-lg" 
+            style={{fontFamily: "'Josefin Sans', sans-serif"}}
+            onClick={handleCardClick}
+        >
             {/* Top Section - 30% height */}
             <div className="h-[30%] border-b-2 border-white flex items-center">
                 {/* First Name - 45% width */}
@@ -131,7 +148,7 @@ export default function SearchResultCard({ user }) {
                     {/* Left Arrow */}
                     {canScrollLeftHave && (
                         <button
-                            onClick={() => handleScroll(skillsHaveRef.current, 'left')}
+                            onClick={(e) => handleScroll(skillsHaveRef.current, 'left', e)}
                             className="absolute left-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
                         >
                             ←
@@ -164,7 +181,7 @@ export default function SearchResultCard({ user }) {
                     {/* Right Arrow */}
                     {canScrollRightHave && (
                         <button
-                            onClick={() => handleScroll(skillsHaveRef.current, 'right')}
+                            onClick={(e) => handleScroll(skillsHaveRef.current, 'right', e)}
                             className="absolute right-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
                         >
                             →
@@ -185,7 +202,7 @@ export default function SearchResultCard({ user }) {
                     {/* Left Arrow */}
                     {canScrollLeftWant && (
                         <button
-                            onClick={() => handleScroll(skillsWantRef.current, 'left')}
+                            onClick={(e) => handleScroll(skillsWantRef.current, 'left', e)}
                             className="absolute left-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
                         >
                             ←
@@ -218,7 +235,7 @@ export default function SearchResultCard({ user }) {
                     {/* Right Arrow */}
                     {canScrollRightWant && (
                         <button
-                            onClick={() => handleScroll(skillsWantRef.current, 'right')}
+                            onClick={(e) => handleScroll(skillsWantRef.current, 'right', e)}
                             className="absolute right-0 z-10 w-6 h-6 flex items-center justify-center rounded-full text-sm bg-white/20 hover:bg-white/40 transition-all flex-shrink-0 shadow-sm"
                         >
                             →

@@ -9,6 +9,7 @@ import ProfileUpdate from './components/ProfileUpdate.jsx';
 import RequestsPage from './components/RequestsPage.jsx';
 import SessionsPage from './components/SessionsPage.jsx';
 import UserSearchPage from './components/SearchPage.jsx';
+import UserProfileView from './components/ProfilePage.jsx';
 
 
 function App() {
@@ -53,6 +54,14 @@ function App() {
             element={
             <PrivateRoute>
               <SessionsPage/>
+            </PrivateRoute>
+            }
+          />
+          <Route
+            path="/users/profile/show/:userId"
+            element={
+            <PrivateRoute>
+              <UserProfileView/>
             </PrivateRoute>
             }
           />
