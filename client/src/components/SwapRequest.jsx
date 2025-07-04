@@ -60,9 +60,9 @@ export default function SwapRequest({
 
     return (
         <div className="fixed inset-0 z-100 flex items-center justify-center backdrop-blur-sm">
-            <div className="relative mx-auto w-[400px] h-[300px] flex flex-col gap-0 rounded-[15px] bg-[#FFF8F8] text-center shadow-2xl" style={{ backgroundImage: 'url("/Popup.svg")', fontFamily: "'Josefin Sans', sans-serif" }}>
+            <div className="relative mx-auto w-[400px] h-[300px] flex flex-col gap-0 rounded-[15px] bg-[#FFF8F8] text-center shadow-2xl text-white" style={{ backgroundImage: 'url("/Popup.svg")', fontFamily: "'Josefin Sans', sans-serif" }}>
                 {/* Header */}
-                <div className="relative w-full h-[13%] flex gap-0 cursor-pointer">
+                <div className="relative w-full h-[41px] flex gap-0 cursor-pointer">
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[35px] w-[35px] bg-gray-300 rounded-full">
                         <img src={imageUrl} alt="icon" className="w-full h-full object-cover rounded-full" />
                     </div>
@@ -71,7 +71,7 @@ export default function SwapRequest({
                 </div>
 
                 {/* Skills Section with Carousel */}
-                <div className="relative w-full h-[30%] flex gap-0 bg-[#E76F5133]">
+                <div className="relative w-full h-[103px] flex gap-0 bg-[#E76F5122]">
                     <div className="relative w-1/2 h-full flex flex-col items-center justify-center">
                         <div className="relative w-full h-[35%] flex items-center justify-center text-sm">
                             You will Teach
@@ -131,7 +131,7 @@ export default function SwapRequest({
                 </div>
 
                 {/* Duration & TimeSlots */}
-                <div className="relative w-full h-[35%] flex gap-0 ">
+                <div className="relative w-full h-[107px] flex gap-0 ">
                     <div className="relative w-1/2 h-full">
                        
                         <div className="relative w-full h-[100%] flex flex-col items-center justify-center">
@@ -176,7 +176,7 @@ export default function SwapRequest({
                 </div>
 
                 {/* Actions */}
-                <div className="relative w-full h-[17%] flex gap-0 ">
+                <div className="relative w-full h-[50px] flex gap-0 ">
                     <div className="flex items-center justify-center relative w-1/2 h-full rounded-bl-[15px]">
                         <button className="px-3 py-1 bg-[#264653] text-white text-sm rounded-[15px] shadow-[#2646531A] shadow-md cursor-pointer"
                         onClick={handleRequestSwap}>Request Swap</button>
