@@ -117,22 +117,8 @@ export const searchUsersByName = async (name) => {
 // ...existing code...
 
 export const getUserById = async (userId, accessToken) => {
-  try {
-    const response = await fetch(`${API_URL}/users/${userId}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch user');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    throw error;
-  }
+ const res = await api.get(`/users/profile/show/${userId}`,{
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  return res.data;
 };

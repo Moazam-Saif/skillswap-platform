@@ -21,7 +21,7 @@ router.post('/change-password', verifyToken, changePassword);
 router.post('/swap-request', verifyToken, sendSwapRequest);
 router.post('/create-session', verifyToken, createSession);
 
-router.get('/:id', verifyToken, getUserById);
+router.get('/profile/show/:id', verifyToken, getUserById);
 
 router.get('/all', getAllUsers);
 router.get('/matches', verifyToken, getSkillMatches);
