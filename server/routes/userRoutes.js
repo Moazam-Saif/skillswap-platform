@@ -3,7 +3,7 @@ import {
   getUserProfile,
   updateUserProfile,
   setAvailability,
-  addRating,getAllUsers,getSkillInfo,sendSwapRequest,getAllSwapRequests
+  addRating,getAllUsers,getSkillInfo,sendSwapRequest,getAllSwapRequests,getUserById
 } from '../controllers/userController.js';
 import { verifyToken } from '../middleware/authMiddleware.js';
 import { changePassword } from '../controllers/authController.js';
