@@ -4,7 +4,7 @@ import { SwapCard } from "./SwapCard";
 import { AuthContext } from "../context/AuthContext";
 import Nav from "./Nav";
 import { Link } from "react-router-dom";
-import { getCategorySkillMatches } from "../api/auth";
+import { getCategorySkillMatches} from "../api/auth";
 import Sidebar from "./Sidebar";
 
 const Dashboard = () => {

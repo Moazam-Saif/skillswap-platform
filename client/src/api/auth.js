@@ -113,3 +113,26 @@ export const searchUsersByName = async (name) => {
   const res = await api.get(`/search/name/${encodeURIComponent(name)}`);
   return res.data;
 };
+
+// ...existing code...
+
+export const getUserById = async (userId, accessToken) => {
+  try {
+    const response = await fetch(`${API_URL}/users/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch user');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    throw error;
+  }
+};

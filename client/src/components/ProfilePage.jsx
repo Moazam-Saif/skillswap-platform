@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from "react-router-dom";
 import Nav from './Nav';
 import { AuthContext } from '@/context/AuthContext';
-import { getUser } from '../api/auth';
+import { getUserById } from '../api/auth';
 
 export default function UserProfileView() {
   const [user, setUser] = useState(null);
@@ -10,34 +10,6 @@ export default function UserProfileView() {
   const [error, setError] = useState("");
   const { userId } = useParams();
   const { accessToken } = useContext(AuthContext);
-
-  // Dummy data for testing
-  const dummyUser = {
-    _id: "64a7b8c9d12345678901234",
-    name: "John Doe",
-    imageUrl: "/userImage.png",
-    bio: "Passionate developer and designer with 5+ years of experience. Love learning new technologies and sharing knowledge with others.",
-    contact: "+1-555-0123",
-    swapCount: 12, // Added swap count for testing
-    skillsHave: [
-      { name: "JavaScript", id: "js001", category: "Programming" },
-      { name: "React", id: "react001", category: "Frontend" },
-      { name: "Node.js", id: "node001", category: "Backend" },
-      { name: "MongoDB", id: "mongo001", category: "Database" },
-      { name: "CSS", id: "css001", category: "Frontend" },
-      { name: "HTML", id: "html001", category: "Frontend" },
-      { name: "Express.js", id: "express001", category: "Backend" },
-      { name: "Git", id: "git001", category: "Tools" }
-    ],
-    skillsWant: [
-      { name: "Python", id: "py001", category: "Programming" },
-      { name: "Machine Learning", id: "ml001", category: "AI/ML" },
-      { name: "Docker", id: "docker001", category: "DevOps" },
-      { name: "AWS", id: "aws001", category: "Cloud" },
-      { name: "TypeScript", id: "ts001", category: "Programming" },
-      { name: "GraphQL", id: "graphql001", category: "API" }
-    ]
-  };
 
   // Function to create random pattern for skills
   const createRandomPattern = (skills) => {
@@ -69,25 +41,25 @@ export default function UserProfileView() {
   };
 
   useEffect(() => {
-    // For testing, use dummy data without any backend call
-    setTimeout(() => {
-      setUser(dummyUser);
-      setLoading(false);
-    }, 1000); // Simulate loading time
-    
-    // Uncomment below when ready to use real API
-    // const fetchUser = async () => {
-    //   try {
-    //     const userData = await getUser(userId, accessToken);
-    //     setUser(userData);
-    //   } catch (err) {
-    //     setError("Failed to fetch user profile.");
-    //     console.error("Failed to fetch user:", err);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-    // fetchUser();
+    const fetchUser = async () => {
+      try {
+        if (!userId) {
+          setError("User ID not provided");
+          setLoading(false);
+          return;
+        }
+
+        const userData = await getUserById(userId, accessToken);
+        setUser(userData);
+      } catch (err) {
+        setError("Failed to fetch user profile.");
+        console.error("Failed to fetch user:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
   }, [userId, accessToken]);
 
   if (loading) {
@@ -117,19 +89,19 @@ export default function UserProfileView() {
   return (
     <div className="flex flex-col min-h-screen w-full" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
       <Nav />
-      <div className="flex-1 bg-gray-50 flex">
+      <div className="flex-1 bg-gray-50 flex flex-col lg:flex-row">
         {/* Left Half - Scrollable */}
-        <div className="w-1/2 p-8 flex flex-col gap-10 bg-[#fff8f8] overflow-y-auto">
+        <div className="w-full lg:w-1/2 p-4 sm:p-6 lg:p-8 flex flex-col gap-6 lg:gap-10 bg-[#fff8f8] overflow-y-auto">
           {/* Upper Half - User Image with Frame */}
-          <div className='relative h-1/2 w-full mx-auto border-b-1 border-[#264653] p-[5px]'>
+          <div className='relative h-64 sm:h-80 lg:h-1/2 w-full mx-auto border-b-1 border-[#264653] p-[5px]'>
             <div className="flex items-center justify-center h-full">
-              <div className="relative flex items-center justify-center sm:w-64 sm:h-64 md:w-[210px] md:h-[210px] mx-auto" style={{
+              <div className="relative flex items-center justify-center w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-[210px] lg:h-[210px] mx-auto" style={{
                 backgroundImage: `url(/circleFrame.png)`,
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "contain"
               }}>
-                <div className="relative flex items-center justify-center sm:w-56 sm:h-56 md:w-[180px] md:h-[180px] mx-auto">
+                <div className="relative flex items-center justify-center w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-[180px] lg:h-[180px] mx-auto">
                   <img 
                     src={user?.imageUrl || "/userImage.png"} 
                     alt="Profile" 
@@ -141,18 +113,18 @@ export default function UserProfileView() {
           </div>
 
           {/* Lower Half - Skills Sections */}
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-6 lg:gap-8">
             {/* Skills Have Section */}
-            <div className="flex flex-col gap-4">
-              <h3 className="text-xl font-semibold text-[#264653] text-center">Skills They Have</h3>
+            <div className="flex flex-col gap-3 lg:gap-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-[#264653] text-center">Skills They Have</h3>
               <div className="flex flex-col gap-2 items-center">
                 {user?.skillsHave?.length > 0 ? (
                   createRandomPattern(user.skillsHave).map((row, rowIndex) => (
-                    <div key={rowIndex} className="flex gap-2 justify-center">
+                    <div key={rowIndex} className="flex gap-2 justify-center flex-wrap">
                       {row.map((skill, skillIndex) => (
                         <span
                           key={skillIndex}
-                          className="px-4 py-2 bg-[#E76F51] text-white rounded-full text-sm font-medium shadow-sm"
+                          className="px-3 py-1.5 sm:px-4 sm:py-2 bg-[#E76F51] text-white rounded-full text-xs sm:text-sm font-medium shadow-sm"
                         >
                           {skill.name}
                         </span>
@@ -160,22 +132,22 @@ export default function UserProfileView() {
                     </div>
                   ))
                 ) : (
-                  <span className="text-gray-500 italic">No skills listed</span>
+                  <span className="text-gray-500 italic text-sm">No skills listed</span>
                 )}
               </div>
             </div>
 
             {/* Skills Want Section */}
-            <div className="flex flex-col gap-4">
-              <h3 className="text-xl font-semibold text-[#264653] text-center">Skills They Want</h3>
+            <div className="flex flex-col gap-3 lg:gap-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-[#264653] text-center">Skills They Want</h3>
               <div className="flex flex-col gap-2 items-center">
                 {user?.skillsWant?.length > 0 ? (
                   createRandomPattern(user.skillsWant).map((row, rowIndex) => (
-                    <div key={rowIndex} className="flex gap-2 justify-center">
+                    <div key={rowIndex} className="flex gap-2 justify-center flex-wrap">
                       {row.map((skill, skillIndex) => (
                         <span
                           key={skillIndex}
-                          className="px-4 py-2 bg-[#264653] text-white rounded-full text-sm font-medium shadow-sm"
+                          className="px-3 py-1.5 sm:px-4 sm:py-2 bg-[#264653] text-white rounded-full text-xs sm:text-sm font-medium shadow-sm"
                         >
                           {skill.name}
                         </span>
@@ -183,7 +155,7 @@ export default function UserProfileView() {
                     </div>
                   ))
                 ) : (
-                  <span className="text-gray-500 italic">No skills wanted</span>
+                  <span className="text-gray-500 italic text-sm">No skills wanted</span>
                 )}
               </div>
             </div>
@@ -191,17 +163,16 @@ export default function UserProfileView() {
         </div>
 
         {/* Right Half - Sticky */}
-        <div className="w-1/2 sticky top-0 h-screen border-gray-200 flex flex-col pt-8 pr-8 pb-8 text-white" style={{
+        <div className="w-full lg:w-1/2 lg:sticky lg:top-0 min-h-screen lg:h-screen border-gray-200 flex flex-col pt-6 pr-4 pb-6 sm:pt-8 sm:pr-6 sm:pb-8 lg:pt-8 lg:pr-8 lg:pb-8 text-white" style={{
           background: 'linear-gradient(to right, rgba(255,248,248,0.8) 0%, rgba(231,111,81,0.8) 15%)'
-          
         }}>
           {/* Name Section - 40% height */}
           <div className="flex flex-col justify-center items-center text-center" style={{ height: '40%' }}>
-            <h1 className="text-5xl font-bold mb-2">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2">
               {firstName}
             </h1>
             {lastName && (
-              <h2 className="text-3xl font-semibold ">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold">
                 {lastName}
               </h2>
             )}
@@ -211,14 +182,14 @@ export default function UserProfileView() {
           <div style={{ height: '1.33%' }}></div>
 
           {/* Swap Section - 28% height */}
-          <div className="flex flex-col justify-center items-center text-center rounded-tr-[30px] rounded-br-[30px] border-l-0 border-1 border-white" style={{
-                        background: 'linear-gradient(to right, rgba(255,248,248,0.2) 0%, rgba(233,196,106,0.2) 15%)',
-                        height: '28%'
-                    }}>
-            <h3 className="text-3xl font-semibold mb-2">
+          <div className="flex flex-col justify-center items-center text-center rounded-tr-[20px] rounded-br-[20px] lg:rounded-tr-[30px] lg:rounded-br-[30px] border-l-0 border-1 border-white" style={{
+            background: 'linear-gradient(to right, rgba(255,248,248,0.2) 0%, rgba(233,196,106,0.2) 15%)',
+            height: '28%'
+          }}>
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-2">
               Swaps Done
             </h3>
-            <div className="text-4xl font-bold text-[#264653]">
+            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#264653]">
               {user?.swapCount || 0}
             </div>
           </div>
@@ -227,11 +198,11 @@ export default function UserProfileView() {
           <div style={{ height: '1.33%' }}></div>
 
           {/* Buttons Section - 28% height */}
-          <div className="flex justify-center items-center gap-10 px-4" style={{ height: '28%' }}>
-            <button className="px-4 py-2 bg-[#264653] text-white rounded-3xl text-lg shadow-sm hover:bg-[#d85a3c] transition-colors">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 lg:gap-10 px-4" style={{ height: '28%' }}>
+            <button className="w-full sm:w-auto px-6 py-3 bg-[#E76F51] text-white rounded-full text-sm font-medium shadow-sm hover:bg-[#d85a3c] transition-colors">
               Request Swap
             </button>
-            <button className="px-4 py-2 bg-[#264653] text-white rounded-3xl text-lg  shadow-sm hover:bg-[#d85a3c] transition-colors">
+            <button className="w-full sm:w-auto px-6 py-3 bg-[#264653] text-white rounded-full text-sm font-medium shadow-sm hover:bg-[#1e3a3f] transition-colors">
               Start Chat
             </button>
           </div>

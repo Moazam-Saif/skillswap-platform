@@ -167,3 +167,24 @@ export const getAllSwapRequests = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// ...existing code...
+
+// ...existing code...
+
+export const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-passwordHash');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    
+    // Add dummy swapCount for now
+    const userWithSwapCount = {
+      ...user.toObject(),
+      swapCount: Math.floor(Math.random() * 20) + 1 // Random number between 1-20
+    };
+    
+    res.json(userWithSwapCount);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
