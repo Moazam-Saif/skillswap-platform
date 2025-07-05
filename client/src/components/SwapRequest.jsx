@@ -19,22 +19,32 @@ export default function SwapRequest({
     const [offerIndex, setOfferIndex] = useState(0);
     const [wantIndex, setWantIndex] = useState(0);
 
+    // Use real data with fallbacks
+    const userData = {
+        userId: userId || "unknown-user",
+        userName: userName || "Unknown User",
+        imageUrl: imageUrl || "/userImage.png",
+        availability: availability.length > 0 ? availability : [],
+        skillsTheyOffer: skillsTheyOffer.length > 0 ? skillsTheyOffer : [],
+        skillsTheyWant: skillsTheyWant.length > 0 ? skillsTheyWant : []
+    };
 
     const handleRequestSwap = async () => {
         const data = {
-            toUserId: userId,
-            offerSkill: skillsTheyOffer[offerIndex],
-            wantSkill: skillsTheyWant[wantIndex],
+            toUserId: userData.userId,
+            offerSkill: userData.skillsTheyOffer[offerIndex],
+            wantSkill: userData.skillsTheyWant[wantIndex],
             days: Number(days),
             timeSlots: selected, // selected is your array of chosen time slots
         };
+        
         try {
-            await sendSwapRequest(data, accessToken);
-            alert("Swap request sent!");
+            const response = await sendSwapRequest(data, accessToken);
+            alert("Swap request sent successfully!");
             onClose();
         } catch (err) {
-            console.log(err);
-            alert("Failed to send request");
+            console.error("Failed to send swap request:", err);
+            alert("Failed to send request. Please try again.");
         }
     };
 
@@ -44,55 +54,54 @@ export default function SwapRequest({
         );
     };
 
-    // Format slots for display
-    const timeSlots = availability.length
-        ? availability.map(
+    // Format slots for display using real data
+    const timeSlots = userData.availability.length
+        ? userData.availability.map(
             (slot) => `${slot.day} ${slot.startTime} - ${slot.endTime}`
         )
         : [];
 
     // Carousel navigation
-    const nextOffer = () => setOfferIndex((prev) => (prev + 1) % skillsTheyOffer.length);
-    const prevOffer = () => setOfferIndex((prev) => (prev - 1 + skillsTheyOffer.length) % skillsTheyOffer.length);
-    const nextWant = () => setWantIndex((prev) => (prev + 1) % skillsTheyWant.length);
-    const prevWant = () => setWantIndex((prev) => (prev - 1 + skillsTheyWant.length) % skillsTheyWant.length);
-
+    const nextOffer = () => setOfferIndex((prev) => (prev + 1) % userData.skillsTheyOffer.length);
+    const prevOffer = () => setOfferIndex((prev) => (prev - 1 + userData.skillsTheyOffer.length) % userData.skillsTheyOffer.length);
+    const nextWant = () => setWantIndex((prev) => (prev + 1) % userData.skillsTheyWant.length);
+    const prevWant = () => setWantIndex((prev) => (prev - 1 + userData.skillsTheyWant.length) % userData.skillsTheyWant.length);
 
     return (
         <div className="fixed inset-0 z-100 flex items-center justify-center backdrop-blur-sm">
-            <div className="relative mx-auto w-[400px] h-[300px] flex flex-col gap-0 rounded-[15px] bg-[#FFF8F8] text-center shadow-2xl text-white" style={{ backgroundImage: 'url("/Popup.svg")', fontFamily: "'Josefin Sans', sans-serif" }}>
+            <div className="relative mx-auto w-[500px] h-[400px] flex flex-col gap-0 rounded-[15px] text-center shadow-2xl text-white border-1 border-gray-200" style={{ backgroundImage: 'url("/Popup.svg")', fontFamily: "'Josefin Sans', sans-serif" }}>
                 {/* Header */}
-                <div className="relative w-full h-[41px] flex gap-0 cursor-pointer">
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[35px] w-[35px] bg-gray-300 rounded-full">
-                        <img src={imageUrl} alt="icon" className="w-full h-full object-cover rounded-full" />
+                <div className="relative w-full h-[50px] flex gap-0 cursor-pointer">
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[42px] w-[42px] bg-gray-300 rounded-full border-2 border-[#264653]">
+                        <img src={userData.imageUrl} alt="icon" className="w-full h-full object-cover rounded-full" />
                     </div>
-                    <div className="relative w-1/2 h-full rounded-tl-[15px] flex items-center justify-center">{userName}</div>
-                    <div className="relative w-1/2 h-full rounded-tr-[15px] flex items-center justify-center">You</div>
+                    <div className="relative w-1/2 h-full rounded-tl-[15px] flex items-center justify-center text-lg font-medium">{userData.userName}</div>
+                    <div className="relative w-1/2 h-full rounded-tr-[15px] flex items-center justify-center text-lg font-medium">You</div>
                 </div>
 
                 {/* Skills Section with Carousel */}
-                <div className="relative w-full h-[103px] flex gap-0 bg-[#E76F5122]">
+                <div className="relative w-full h-[158px] flex gap-0 bg-[#E76F5122]">
                     <div className="relative w-1/2 h-full flex flex-col items-center justify-center">
-                        <div className="relative w-full h-[35%] flex items-center justify-center text-sm">
+                        <div className="relative w-full h-[30%] flex items-center justify-center text-base font-medium">
                             You will Teach
                         </div>
-                        <div className="relative w-full h-[65%] flex items-center justify-center text-[#264653] font-bold">
+                        <div className="relative w-full h-[70%] flex items-center justify-center text-white font-bold">
                             <button
-                                className="px-2 text-lg font-bold text-[#264653] hover:text-[#e76f51] focus:outline-none"
+                                className="px-2 text-xl font-bold text-[#264653] hover:text-white focus:outline-none"
                                 onClick={prevOffer}
-                                disabled={skillsTheyOffer.length <= 1}
+                                disabled={userData.skillsTheyOffer.length <= 1}
                                 aria-label="Previous Skill"
                                 type="button"
                             >
                                 &#8592;
                             </button>
-                            <span className="mx-2">
-                                {skillsTheyOffer[offerIndex]?.name || "Your Skill"}
+                            <span className="mx-2 text-lg">
+                                {userData.skillsTheyOffer[offerIndex]?.name || "No Skills Available"}
                             </span>
                             <button
-                                className="px-2 text-lg font-bold text-[#264653] hover:text-[#e76f51] focus:outline-none"
+                                className="px-2 text-xl font-bold text-[#264653] hover:text-white focus:outline-none"
                                 onClick={nextOffer}
-                                disabled={skillsTheyOffer.length <= 1}
+                                disabled={userData.skillsTheyOffer.length <= 1}
                                 aria-label="Next Skill"
                                 type="button"
                             >
@@ -101,26 +110,26 @@ export default function SwapRequest({
                         </div>
                     </div>
                     <div className="relative w-1/2 h-full flex flex-col items-center justify-center">
-                        <div className="relative w-full h-[35%] flex items-center justify-center text-sm">
-                            {userName} will Teach
+                        <div className="relative w-full h-[30%] flex items-center justify-center text-base font-medium">
+                            {userData.userName} will Teach
                         </div>
-                        <div className="relative w-full h-[65%] flex items-center justify-center text-[#E76F51] font-bold">
+                        <div className="relative w-full h-[70%] flex items-center justify-center text-white font-bold">
                             <button
-                                className="px-2 text-lg font-bold text-[#E76F51] hover:text-[#264653] focus:outline-none"
+                                className="px-2 text-xl font-bold text-[#264653] hover:text-white focus:outline-none"
                                 onClick={prevWant}
-                                disabled={skillsTheyWant.length <= 1}
+                                disabled={userData.skillsTheyWant.length <= 1}
                                 aria-label="Previous Skill"
                                 type="button"
                             >
                                 &#8592;
                             </button>
-                            <span className="mx-2">
-                                {skillsTheyWant[wantIndex]?.name || "Their Skill"}
+                            <span className="mx-2 text-lg">
+                                {userData.skillsTheyWant[wantIndex]?.name || "No Skills Available"}
                             </span>
                             <button
-                                className="px-2 text-lg font-bold text-[#E76F51] hover:text-[#264653] focus:outline-none"
+                                className="px-2 text-xl font-bold text-[#264653] hover:text-white focus:outline-none"
                                 onClick={nextWant}
-                                disabled={skillsTheyWant.length <= 1}
+                                disabled={userData.skillsTheyWant.length <= 1}
                                 aria-label="Next Skill"
                                 type="button"
                             >
@@ -131,11 +140,11 @@ export default function SwapRequest({
                 </div>
 
                 {/* Duration & TimeSlots */}
-                <div className="relative w-full h-[107px] flex gap-0 ">
+                <div className="relative w-full h-[132px] flex gap-0 bg-[#e76f5122] ">
                     <div className="relative w-1/2 h-full">
                        
-                        <div className="relative w-full h-[100%] flex flex-col items-center justify-center">
-                            <label htmlFor="days">
+                        <div className="relative w-full h-[100%] flex flex-col items-center justify-between">
+                            <label className="mt-3 text-lg font-medium" htmlFor="days">
                                 Days:
                             </label>
                             <input
@@ -144,15 +153,15 @@ export default function SwapRequest({
                                 min={1}
                                 value={days}
                                 onChange={e => setDays(e.target.value)}
-                                className="px-2 text-center outline-none bg-white border-1 border-gray-200 rounded-full shadow-2xs"
+                                className="px-2 text-center text-lg outline-none bg-white w-[150px] border-1 border-[#e76f51] text-[#e76f51] rounded-full shadow-2xs mb-9"
                             />
                         </div>
                     </div>
-                    <div className="relative w-1/2 h-full">
+                    <div className="relative w-1/2 h-full p-[4px]">
                     
                         <div className='relative w-full h-[100%] pl-[2px] pr-[2px] overflow-y-auto'>
-                            <div className="relative w-full h-full max-h-full flex flex-col items-center justify-center overflow-y-auto p-2 border-1 bg-[#F4A26133] opacity-90 rounded-[15px]">
-                                <ul className="text-sm text-gray-700 space-y-1 w-full">
+                            <div className="relative w-full h-full max-h-full flex flex-col items-center justify-center overflow-y-auto p-2 border-1 bg-[#e76f5140] opacity-90 rounded-[15px]">
+                                <ul className="text-sm text-white space-y-1 w-full pt-10">
                                     {timeSlots.length === 0 ? (
                                         <li className="text-gray-400">No available time slots</li>
                                     ) : (
@@ -176,13 +185,13 @@ export default function SwapRequest({
                 </div>
 
                 {/* Actions */}
-                <div className="relative w-full h-[50px] flex gap-0 ">
+                <div className="relative w-full h-[60px] flex gap-0 ">
                     <div className="flex items-center justify-center relative w-1/2 h-full rounded-bl-[15px]">
-                        <button className="px-3 py-1 bg-[#264653] text-white text-sm rounded-[15px] shadow-[#2646531A] shadow-md cursor-pointer"
+                        <button className="px-3 py-1 bg-white text-[#e76f51] text-base rounded-[15px] shadow-[#2646531A] shadow-md cursor-pointer"
                         onClick={handleRequestSwap}>Request Swap</button>
                     </div>
                     <div className="flex items-center justify-center relative w-1/2 h-full rounded-br-[15px]">
-                        <button className="px-3 py-1 bg-[#264653] text-white text-sm rounded-[15px] shadow-[#2646531A] shadow-md">CHAT</button>
+                        <button className="px-3 py-1 bg-white text-[#e76f51] text-base rounded-[15px] shadow-[#2646531A] shadow-md">CHAT</button>
                     </div>
                 </div>
                 {/* Close Button */}

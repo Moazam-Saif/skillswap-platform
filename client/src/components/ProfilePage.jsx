@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from "react-router-dom";
 import Nav from './Nav';
+import SwapRequest from './SwapRequest';
 import { AuthContext } from '@/context/AuthContext';
 import { getUserById } from '../api/auth';
 
@@ -8,6 +9,7 @@ export default function UserProfileView() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showSwapRequest, setShowSwapRequest] = useState(false);
   const { userId } = useParams();
   const { accessToken } = useContext(AuthContext);
 
@@ -38,6 +40,11 @@ export default function UserProfileView() {
     const firstName = names[0] || '';
     const lastName = names.slice(1).join(' ') || '';
     return { firstName, lastName };
+  };
+
+  // Handler for opening swap request
+  const handleRequestSwap = () => {
+    setShowSwapRequest(true);
   };
 
   useEffect(() => {
@@ -199,7 +206,10 @@ export default function UserProfileView() {
 
           {/* Buttons Section - 28% height */}
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 lg:gap-10 px-4" style={{ height: '28%' }}>
-            <button className="w-full sm:w-auto px-6 py-3 bg-[#E76F51] text-white rounded-full text-sm font-medium shadow-sm hover:bg-[#d85a3c] transition-colors">
+            <button 
+              onClick={handleRequestSwap}
+              className="w-full sm:w-auto px-6 py-3 bg-[#E76F51] text-white rounded-full text-sm font-medium shadow-sm hover:bg-[#d85a3c] transition-colors"
+            >
               Request Swap
             </button>
             <button className="w-full sm:w-auto px-6 py-3 bg-[#264653] text-white rounded-full text-sm font-medium shadow-sm hover:bg-[#1e3a3f] transition-colors">
@@ -211,6 +221,19 @@ export default function UserProfileView() {
           <div style={{ height: '1.33%' }}></div>
         </div>
       </div>
+
+      {/* SwapRequest Modal */}
+      {showSwapRequest && (
+        <SwapRequest
+          userId={user?._id}
+          userName={user?.name}
+          imageUrl={user?.imageUrl}
+          availability={user?.availability || []}
+          skillsTheyOffer={user?.skillsHave || []}
+          skillsTheyWant={user?.skillsWant || []}
+          onClose={() => setShowSwapRequest(false)}
+        />
+      )}
     </div>
   );
 }
