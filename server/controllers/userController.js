@@ -177,10 +177,12 @@ export const getUserById = async (req, res) => {
     const user = await User.findById(req.params.id).select('-passwordHash');
     if (!user) return res.status(404).json({ message: 'User not found' });
     
-    // Add dummy swapCount for now
+    // Count completed sessions from user's sessions array
+    const swapCount = user.sessions ? user.sessions.filter(session => session.status === 'completed').length : 0;
+    
     const userWithSwapCount = {
       ...user.toObject(),
-      swapCount: Math.floor(Math.random() * 20) + 1 // Random number between 1-20
+      swapCount: swapCount
     };
     
     res.json(userWithSwapCount);

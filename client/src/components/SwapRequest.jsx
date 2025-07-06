@@ -74,7 +74,7 @@ export default function SwapRequest({
     const prevWant = () => setWantIndex((prev) => (prev - 1 + userData.skillsTheyWant.length) % userData.skillsTheyWant.length);
 
     return (
-        <div className="fixed inset-0 z-100 flex items-center justify-center backdrop-blur-sm">
+        <div className="fixed inset-0 z-100 flex items-center justify-center shadow-sm backdrop-blur-sm">
             <div className="relative mx-auto w-[500px] h-[400px] flex flex-col gap-0 rounded-[15px] text-center shadow-2xl text-white bg-[#E76F51E6]" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
                 {/* Header */}
                 <div className="relative w-full h-[50px] flex gap-0 cursor-pointer border-b-1 border-white" onClick={handleHeaderClick}>
