@@ -86,7 +86,7 @@ export default function SwapRequest({
                 </div>
 
                 {/* Skills Section with Carousel */}
-                <div className="relative w-full h-[158px] flex gap-0 bg-[#ffffff0D]">
+                <div className="relative w-full h-[158px] flex gap-0 bg-[#ffffff0D] shadow-2xs">
                     <div className="relative w-1/2 h-full flex flex-col items-center justify-center border-r-1 border-white">
                         <div className="relative w-full h-[30%] flex items-center justify-center text-base font-medium">
                             {userData.userName} will Teach
