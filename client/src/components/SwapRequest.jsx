@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { sendSwapRequest } from '../api/auth';
 
@@ -14,6 +15,7 @@ export default function SwapRequest({
 }) {
 
     const { accessToken } = useContext(AuthContext);
+    const navigate = useNavigate();
     const [selected, setSelected] = useState([]);
     const [days, setDays] = useState(1);
     const [offerIndex, setOfferIndex] = useState(0);
@@ -54,6 +56,10 @@ export default function SwapRequest({
         );
     };
 
+    const handleHeaderClick = () => {
+        navigate(`/users/profile/show/${userData.userId}`);
+    };
+
     // Format slots for display using real data
     const timeSlots = userData.availability.length
         ? userData.availability.map(
@@ -69,9 +75,9 @@ export default function SwapRequest({
 
     return (
         <div className="fixed inset-0 z-100 flex items-center justify-center backdrop-blur-sm">
-            <div className="relative mx-auto w-[500px] h-[400px] flex flex-col gap-0 rounded-[15px] text-center shadow-2xl text-white border-1 border-gray-200" style={{ backgroundImage: 'url("/Popup.svg")', fontFamily: "'Josefin Sans', sans-serif" }}>
+            <div className="relative mx-auto w-[500px] h-[400px] flex flex-col gap-0 rounded-[15px] text-center shadow-2xl text-white bg-[#E76F51E6]" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
                 {/* Header */}
-                <div className="relative w-full h-[50px] flex gap-0 cursor-pointer">
+                <div className="relative w-full h-[50px] flex gap-0 cursor-pointer border-b-1 border-white" onClick={handleHeaderClick}>
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[42px] w-[42px] bg-gray-300 rounded-full border-2 border-[#264653]">
                         <img src={userData.imageUrl} alt="icon" className="w-full h-full object-cover rounded-full" />
                     </div>
@@ -81,9 +87,9 @@ export default function SwapRequest({
 
                 {/* Skills Section with Carousel */}
                 <div className="relative w-full h-[158px] flex gap-0 bg-[#E76F5122]">
-                    <div className="relative w-1/2 h-full flex flex-col items-center justify-center">
+                    <div className="relative w-1/2 h-full flex flex-col items-center justify-center border-r-1 border-white">
                         <div className="relative w-full h-[30%] flex items-center justify-center text-base font-medium">
-                            You will Teach
+                            {userData.userName} will Teach
                         </div>
                         <div className="relative w-full h-[70%] flex items-center justify-center text-white font-bold">
                             <button
@@ -111,7 +117,7 @@ export default function SwapRequest({
                     </div>
                     <div className="relative w-1/2 h-full flex flex-col items-center justify-center">
                         <div className="relative w-full h-[30%] flex items-center justify-center text-base font-medium">
-                            {userData.userName} will Teach
+                            You will Teach
                         </div>
                         <div className="relative w-full h-[70%] flex items-center justify-center text-white font-bold">
                             <button
@@ -141,7 +147,7 @@ export default function SwapRequest({
 
                 {/* Duration & TimeSlots */}
                 <div className="relative w-full h-[132px] flex gap-0 bg-[#e76f5122] ">
-                    <div className="relative w-1/2 h-full">
+                    <div className="relative w-1/2 h-full border-r-1 border-white">
                        
                         <div className="relative w-full h-[100%] flex flex-col items-center justify-between">
                             <label className="mt-3 text-lg font-medium" htmlFor="days">
@@ -161,7 +167,7 @@ export default function SwapRequest({
                     
                         <div className='relative w-full h-[100%] pl-[2px] pr-[2px] overflow-y-auto'>
                             <div className="relative w-full h-full max-h-full flex flex-col items-center justify-center overflow-y-auto p-2 border-1 bg-[#e76f5140] opacity-90 rounded-[15px]">
-                                <ul className="text-sm text-white space-y-1 w-full pt-10">
+                                <ul className="text-sm text-white space-y-1 w-full">
                                     {timeSlots.length === 0 ? (
                                         <li className="text-gray-400">No available time slots</li>
                                     ) : (
@@ -185,8 +191,8 @@ export default function SwapRequest({
                 </div>
 
                 {/* Actions */}
-                <div className="relative w-full h-[60px] flex gap-0 ">
-                    <div className="flex items-center justify-center relative w-1/2 h-full rounded-bl-[15px]">
+                <div className="relative w-full h-[60px] flex gap-0 border-t-1 border-white">
+                    <div className="flex items-center justify-center relative w-1/2 h-full rounded-bl-[15px] border-r-1 border-white">
                         <button className="px-3 py-1 bg-white text-[#e76f51] text-base rounded-[15px] shadow-[#2646531A] shadow-md cursor-pointer"
                         onClick={handleRequestSwap}>Request Swap</button>
                     </div>
