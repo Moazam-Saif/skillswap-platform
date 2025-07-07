@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const animationSlice = createSlice({
+const lockSlice = createSlice({
   name: 'animation',
   initialState: {
     activeCardId: null,
@@ -68,6 +68,6 @@ export const {
   releaseAnimation, 
   cancelAnimation, 
   clearAnimationQueue 
-} = animationSlice.actions;
+} = lockSlice.actions;
 
-export default animationSlice.reducer;
+export default lockSlice.reducer;
