@@ -5,68 +5,89 @@ import { requestAnimation, releaseAnimation, cancelAnimation } from '../store/lo
 import SwapRequest from './SwapRequest';
 
 export const SwapCard = ({ userId, name, imageUrl, skillsTheyOffer = [], skillsTheyWant = [], availability = [] }) => {
-    const cardId = useId(); // Generate unique ID for this card instance
+    const cardId = useId();
     const dispatch = useDispatch();
-    const activeCardId = useSelector(state => state.animation.activeCardId);
+    const activeCardId = useSelector(state => state.cardAnimation.activeCardId); // Changed from animation to cardAnimation
     const isAnimating = activeCardId === cardId;
-    
+
     const [offerIndex, setOfferIndex] = useState(0);
     const [wantIndex, setWantIndex] = useState(0);
     const [showRequest, setShowRequest] = useState(false);
-    
-    // Check if this card should animate
+
     const shouldAnimate = (skillsTheyOffer.length > 1 || skillsTheyWant.length > 1);
-    
+
+    // Debug log to see what's in state
+    console.log('🔍 SwapCard state check:', {
+        cardId,
+        activeCardId,
+        isAnimating,
+        shouldAnimate,
+        reduxState: useSelector(state => state) // This will show the entire state
+    });
+
     useEffect(() => {
         if (!shouldAnimate) return;
-        
-        // Request animation permission
+
+        console.log('🎯 Requesting animation for card:', cardId);
         dispatch(requestAnimation({ cardId }));
-        
-        // Cleanup on unmount
+
         return () => {
+            console.log('🎯 Canceling animation for card:', cardId);
             dispatch(cancelAnimation({ cardId }));
         };
     }, [cardId, shouldAnimate, dispatch]);
-    
+
     useEffect(() => {
+        console.log('🎯 Animation effect triggered:', { isAnimating, shouldAnimate, cardId });
+        
         if (!isAnimating || !shouldAnimate) return;
-        
+
         let offerInterval, wantInterval;
-        
-        // Start intervals only when this card is active
+
         if (skillsTheyOffer.length > 1) {
+            console.log('🎯 Starting offer interval for card:', cardId);
             offerInterval = setInterval(() => {
-                setOfferIndex(prev => (prev + 1) % skillsTheyOffer.length);
+                setOfferIndex(prev => {
+                    const newIndex = (prev + 1) % skillsTheyOffer.length;
+                    console.log('🎯 Offer index changed:', prev, '->', newIndex);
+                    return newIndex;
+                });
             }, 2000);
         }
-        
+
         if (skillsTheyWant.length > 1) {
+            console.log('🎯 Starting want interval for card:', cardId);
             wantInterval = setInterval(() => {
-                setWantIndex(prev => (prev + 1) % skillsTheyWant.length);
+                setWantIndex(prev => {
+                    const newIndex = (prev + 1) % skillsTheyWant.length;
+                    console.log('🎯 Want index changed:', prev, '->', newIndex);
+                    return newIndex;
+                });
             }, 3000);
         }
-        
-        // Auto-release animation after reasonable time (e.g., 30 seconds)
+
         const autoReleaseTimer = setTimeout(() => {
+            console.log('🎯 Auto-releasing animation for card:', cardId);
             dispatch(releaseAnimation({ cardId }));
-        }, 30000);
-        
+        }, 5000);
+
         return () => {
+            console.log('🎯 Cleaning up intervals for card:', cardId);
             clearInterval(offerInterval);
             clearInterval(wantInterval);
             clearTimeout(autoReleaseTimer);
         };
     }, [isAnimating, shouldAnimate, skillsTheyOffer.length, skillsTheyWant.length, cardId, dispatch]);
-    
-    // Release animation when card becomes inactive (e.g., user scrolls away)
+
+    // Release animation when card becomes inactive
     useEffect(() => {
         const handleVisibilityChange = () => {
             if (document.hidden && isAnimating) {
+                console.log('🎯 Releasing animation due to visibility change:', cardId);
                 dispatch(releaseAnimation({ cardId }));
             }
         };
-        
+
         document.addEventListener('visibilitychange', handleVisibilityChange);
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
@@ -122,7 +143,7 @@ export const SwapCard = ({ userId, name, imageUrl, skillsTheyOffer = [], skillsT
                         </AnimatePresence>
                     </div>
 
-                    {/* Decorations (unchanged) */}
+                    {/* Decorations */}
                     <div
                         className="absolute left-[-67px] top-0 h-[122px] w-[126px] flex items-end"
                         style={{
@@ -144,7 +165,6 @@ export const SwapCard = ({ userId, name, imageUrl, skillsTheyOffer = [], skillsT
                 </div>
 
                 <div className="w-full h-[50px] flex bg-[#E76F51] rounded-b-[30px] overflow-hidden">
-                    {/* Left: Image */}
                     <div className="w-1/2 flex items-center justify-center border-r-2 border-white">
                         <img
                             src={imageUrl || "/userImage.png"}
@@ -152,7 +172,6 @@ export const SwapCard = ({ userId, name, imageUrl, skillsTheyOffer = [], skillsT
                             className="w-[35px] h-[35px] rounded-full object-cover"
                         />
                     </div>
-                    {/* Right: Name */}
                     <div
                         className="w-1/2 flex flex-col items-center justify-center text-white text-sm px-2 text-center"
                         style={{ fontFamily: "'Josefin Sans', sans-serif" }}
