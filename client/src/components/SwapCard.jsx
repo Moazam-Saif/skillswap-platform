@@ -7,12 +7,13 @@ import SwapRequest from './SwapRequest';
 export const SwapCard = ({ userId, name, imageUrl, skillsTheyOffer = [], skillsTheyWant = [], availability = [] }) => {
     const cardId = useId();
     const dispatch = useDispatch();
-    const activeCardId = useSelector(state => state.cardAnimation.activeCardId); // Changed from animation to cardAnimation
+    const activeCardId = useSelector(state => state.cardAnimation.activeCardId);
     const isAnimating = activeCardId === cardId;
 
     const [offerIndex, setOfferIndex] = useState(0);
     const [wantIndex, setWantIndex] = useState(0);
     const [showRequest, setShowRequest] = useState(false);
+    const [isComponentMounted, setIsComponentMounted] = useState(true);
 
     const shouldAnimate = (skillsTheyOffer.length > 1 || skillsTheyWant.length > 1);
 
@@ -21,22 +22,37 @@ export const SwapCard = ({ userId, name, imageUrl, skillsTheyOffer = [], skillsT
         cardId,
         activeCardId,
         isAnimating,
-        shouldAnimate,
-        reduxState: useSelector(state => state) // This will show the entire state
+        shouldAnimate
     });
 
+    // Continuous animation request effect
     useEffect(() => {
-        if (!shouldAnimate) return;
+        if (!shouldAnimate || !isComponentMounted) return;
 
-        console.log('🎯 Requesting animation for card:', cardId);
-        dispatch(requestAnimation({ cardId }));
+        const requestAnimationContinuously = () => {
+            console.log('🎯 Requesting animation for card:', cardId);
+            dispatch(requestAnimation({ cardId }));
+        };
+
+        // Initial request
+        requestAnimationContinuously();
+
+        // Re-request animation after a delay when not animating
+        let reRequestTimer;
+        if (!isAnimating) {
+            reRequestTimer = setTimeout(() => {
+                if (isComponentMounted && shouldAnimate) {
+                    requestAnimationContinuously();
+                }
+            }, 1000); // Wait 1 second before re-requesting
+        }
 
         return () => {
-            console.log('🎯 Canceling animation for card:', cardId);
-            dispatch(cancelAnimation({ cardId }));
+            clearTimeout(reRequestTimer);
         };
-    }, [cardId, shouldAnimate, dispatch]);
+    }, [cardId, shouldAnimate, isAnimating, isComponentMounted, dispatch]);
 
+    // Animation intervals effect
     useEffect(() => {
         console.log('🎯 Animation effect triggered:', { isAnimating, shouldAnimate, cardId });
         
@@ -66,10 +82,11 @@ export const SwapCard = ({ userId, name, imageUrl, skillsTheyOffer = [], skillsT
             }, 3000);
         }
 
+        // Auto-release after a shorter time to allow cycling
         const autoReleaseTimer = setTimeout(() => {
             console.log('🎯 Auto-releasing animation for card:', cardId);
             dispatch(releaseAnimation({ cardId }));
-        }, 5000);
+        }, 3500); // 6 seconds per card
 
         return () => {
             console.log('🎯 Cleaning up intervals for card:', cardId);
@@ -78,6 +95,15 @@ export const SwapCard = ({ userId, name, imageUrl, skillsTheyOffer = [], skillsT
             clearTimeout(autoReleaseTimer);
         };
     }, [isAnimating, shouldAnimate, skillsTheyOffer.length, skillsTheyWant.length, cardId, dispatch]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            setIsComponentMounted(false);
+            console.log('🎯 Component unmounting, canceling animation for card:', cardId);
+            dispatch(cancelAnimation({ cardId }));
+        };
+    }, [cardId, dispatch]);
 
     // Release animation when card becomes inactive
     useEffect(() => {
