@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const lockSlice = createSlice({
-  name: 'animation',
+  name: 'cardAnimation',
   initialState: {
     activeCardId: null,
     requestQueue: []
@@ -9,65 +9,54 @@ const lockSlice = createSlice({
   reducers: {
     requestAnimation: (state, action) => {
       const { cardId } = action.payload;
+      console.log('🔐 Animation requested for card:', cardId);
       
-      // If no card is currently animating, start immediately
       if (!state.activeCardId) {
         state.activeCardId = cardId;
+        console.log('✅ Animation granted immediately to:', cardId);
       } else {
-        // Add to queue if not already there
         if (!state.requestQueue.includes(cardId)) {
           state.requestQueue.push(cardId);
+          console.log('📝 Card added to queue:', cardId, 'Queue length:', state.requestQueue.length);
         }
       }
     },
     
     releaseAnimation: (state, action) => {
       const { cardId } = action.payload;
+      console.log('🔄 Animation release requested for card:', cardId);
       
-      // Only release if this card is currently active
       if (state.activeCardId === cardId) {
         state.activeCardId = null;
+        console.log('🛑 Animation released from:', cardId);
         
-        // Assign next card in queue
         if (state.requestQueue.length > 0) {
           state.activeCardId = state.requestQueue.shift();
+          console.log('➡️ Next card from queue:', state.activeCardId);
         }
       } else {
-        // Remove from queue if it's there
         state.requestQueue = state.requestQueue.filter(id => id !== cardId);
+        console.log('🗑️ Card removed from queue:', cardId);
       }
     },
     
     cancelAnimation: (state, action) => {
       const { cardId } = action.payload;
+      console.log('❌ Animation cancelled for card:', cardId);
       
-      // Remove from queue
       state.requestQueue = state.requestQueue.filter(id => id !== cardId);
       
-      // If this card is currently active, release it
       if (state.activeCardId === cardId) {
         state.activeCardId = null;
         
-        // Assign next card in queue
         if (state.requestQueue.length > 0) {
           state.activeCardId = state.requestQueue.shift();
+          console.log('➡️ Next card from queue after cancel:', state.activeCardId);
         }
       }
-    },
-    
-    // Safety cleanup action
-    clearAnimationQueue: (state) => {
-      state.activeCardId = null;
-      state.requestQueue = [];
     }
   }
 });
 
-export const { 
-  requestAnimation, 
-  releaseAnimation, 
-  cancelAnimation, 
-  clearAnimationQueue 
-} = lockSlice.actions;
-
+export const { requestAnimation, releaseAnimation, cancelAnimation } = lockSlice.actions;
 export default lockSlice.reducer;

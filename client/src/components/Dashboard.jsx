@@ -56,7 +56,7 @@ const Dashboard = () => {
                         />
                     </div>
                     {/* SwapCard list for mutual skill matches */}
-                    <div className="h-[193px] w-full bg-[#fff8f8] rounded-tl-[30px] pl-8 pt-[10px] pb-[10px] flex gap-4 overflow-x-auto">
+                    <div className="h-[193px] w-full bg-[#fff8f8] rounded-tl-[30px] pl-8 pt-[10px] pb-[10px] flex gap-6 overflow-x-auto">
                         {matches.length === 0 ? (
                             <div className="text-gray-500 flex items-center">No matches found.</div>
                         ) : (
@@ -82,7 +82,7 @@ const Dashboard = () => {
                             style={{ aspectRatio: '1380 / 98' }}
                         />
                     </div>
-                    <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px] flex gap-4 overflow-x-auto">
+                    <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px] flex gap-6 overflow-x-auto">
                         {matches2.length === 0 ? (
                             <div className="text-gray-500 flex items-center">No matches found.</div>
                         ) : (
@@ -108,7 +108,7 @@ const Dashboard = () => {
                             style={{ aspectRatio: '1380 / 98' }}
                         />
                     </div>
-                    <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px] flex gap-4 overflow-x-auto">
+                    <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px] flex gap-6 overflow-x-auto">
                         {filteredCategoryMatches.length === 0 ? (
                             <div className="text-gray-500 flex items-center">No matches found.</div>
                         ) : (
