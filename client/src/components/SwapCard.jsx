@@ -1,29 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useId } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from "framer-motion";
+import { requestAnimation, releaseAnimation, cancelAnimation } from '../store/lockSlice';
 import SwapRequest from './SwapRequest';
 
-
-export const SwapCard = ({ userId, name, imageUrl, skillsTheyOffer = [], skillsTheyWant = [], availability=[] }) => {
+export const SwapCard = ({ userId, name, imageUrl, skillsTheyOffer = [], skillsTheyWant = [], availability = [] }) => {
+    const cardId = useId(); // Generate unique ID for this card instance
+    const dispatch = useDispatch();
+    const activeCardId = useSelector(state => state.animation.activeCardId);
+    const isAnimating = activeCardId === cardId;
+    
     const [offerIndex, setOfferIndex] = useState(0);
     const [wantIndex, setWantIndex] = useState(0);
     const [showRequest, setShowRequest] = useState(false);
     
-   
+    // Check if this card should animate
+    const shouldAnimate = (skillsTheyOffer.length > 1 || skillsTheyWant.length > 1);
+    
     useEffect(() => {
-        const offerInterval = setInterval(() => {
-            setOfferIndex(prev => (skillsTheyOffer.length > 0 ? (prev + 1) % skillsTheyOffer.length : 0));
-        }, 3000);
-
-        const wantInterval = setInterval(() => {
-            setWantIndex(prev => (skillsTheyWant.length > 0 ? (prev + 1) % skillsTheyWant.length : 0));
-        }, 3000);
-
+        if (!shouldAnimate) return;
+        
+        // Request animation permission
+        dispatch(requestAnimation({ cardId }));
+        
+        // Cleanup on unmount
         return () => {
-            console.log(skillsTheyOffer, "+", skillsTheyWant);
+            dispatch(cancelAnimation({ cardId }));
+        };
+    }, [cardId, shouldAnimate, dispatch]);
+    
+    useEffect(() => {
+        if (!isAnimating || !shouldAnimate) return;
+        
+        let offerInterval, wantInterval;
+        
+        // Start intervals only when this card is active
+        if (skillsTheyOffer.length > 1) {
+            offerInterval = setInterval(() => {
+                setOfferIndex(prev => (prev + 1) % skillsTheyOffer.length);
+            }, 2000);
+        }
+        
+        if (skillsTheyWant.length > 1) {
+            wantInterval = setInterval(() => {
+                setWantIndex(prev => (prev + 1) % skillsTheyWant.length);
+            }, 3000);
+        }
+        
+        // Auto-release animation after reasonable time (e.g., 30 seconds)
+        const autoReleaseTimer = setTimeout(() => {
+            dispatch(releaseAnimation({ cardId }));
+        }, 30000);
+        
+        return () => {
             clearInterval(offerInterval);
             clearInterval(wantInterval);
+            clearTimeout(autoReleaseTimer);
         };
-    }, [skillsTheyOffer, skillsTheyWant]);
+    }, [isAnimating, shouldAnimate, skillsTheyOffer.length, skillsTheyWant.length, cardId, dispatch]);
+    
+    // Release animation when card becomes inactive (e.g., user scrolls away)
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden && isAnimating) {
+                dispatch(releaseAnimation({ cardId }));
+            }
+        };
+        
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+    }, [isAnimating, cardId, dispatch]);
 
     function getNameBeforeBracket(str = "") {
         const idx = str.search(/[\(\[\{]/);
@@ -121,7 +169,6 @@ export const SwapCard = ({ userId, name, imageUrl, skillsTheyOffer = [], skillsT
                     availability={availability}
                     skillsTheyOffer={skillsTheyOffer}
                     skillsTheyWant={skillsTheyWant}
-                    // ...other info you want to pass
                     onClose={() => setShowRequest(false)}
                 />
             )}
