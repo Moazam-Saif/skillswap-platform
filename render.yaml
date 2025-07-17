@@ -3,8 +3,7 @@ services:
     name: client
     env: docker
     plan: free
-    dockerfilePath: ./client/Dockerfile
-    buildContext: ./client
+    dockerfilePath: client/Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
@@ -15,8 +14,7 @@ services:
     name: backend
     env: docker
     plan: free
-    dockerfilePath: ./src/Dockerfile
-    buildContext: ./src
+    dockerfilePath: src/Dockerfile
     envVars:
       - key: PORT
         value: 5000
