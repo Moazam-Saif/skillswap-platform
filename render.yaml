@@ -46,19 +46,3 @@ services:
         value: 1
       - key: REDIS_URL
         value: redis://localhost:6379
-
-  # Background Services (Optional - for cron jobs)
-  - type: worker
-    name: skillswap-worker
-    env: node
-    buildCommand: cd server && npm ci
-    startCommand: cd server && node services/cron.js
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: MONGO_URI
-        value: mongodb+srv://saifmoazam9:w3EoBVZta3I2y7Sz@cluster0.nmpyqva.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-      - key: CLIENT_URL
-        value: https://client-x83y.onrender.com
-      - key: REDIS_URL
-        value: redis://localhost:6379
