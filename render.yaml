@@ -28,15 +28,8 @@ services:
         value: production
       - key: PORT
         value: 10000
-      - key: MONGODB_URI
-        fromDatabase:
-          name: skillswap-mongodb
-          property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: skillswap-redis
-          property: connectionString
+      - key: MONGO_URI
+        value: mongodb+srv://saifmoazam9:w3EoBVZta3I2y7Sz@cluster0.nmpyqva.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
@@ -51,19 +44,10 @@ services:
         value: d668e1e430bef13c0fc2bf14fcd429ea652a451ab97908aac58e4771296045bb
       - key: REFRESH_TOKEN_EXPIRY_DAYS
         value: 1
+      - key: REDIS_URL
+        value: redis://localhost:6379
 
-# Databases
-databases:
-  - name: skillswap-mongodb
-    databaseName: skillswap
-    user: skillswap_user
-    plan: starter
-
-  - name: skillswap-redis
-    plan: starter
-    maxmemoryPolicy: allkeys-lru
-
-# Background Services (Optional - for cron jobs)
+  # Background Services (Optional - for cron jobs)
   - type: worker
     name: skillswap-worker
     env: node
@@ -72,14 +56,9 @@ databases:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: MONGODB_URI
-        fromDatabase:
-          name: skillswap-mongodb
-          property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: skillswap-redis
-          property: connectionString
+      - key: MONGO_URI
+        value: mongodb+srv://saifmoazam9:w3EoBVZta3I2y7Sz@cluster0.nmpyqva.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       - key: CLIENT_URL
         value: https://client-x83y.onrender.com
+      - key: REDIS_URL
+        value: redis://localhost:6379
