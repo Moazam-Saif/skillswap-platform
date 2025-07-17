@@ -14,7 +14,8 @@ services:
     name: backend
     env: docker
     plan: free
-    dockerfilePath: server/Dockerfile
+    buildCommand: docker build -t backend ./server
+    startCommand: docker run -p 5000:5000 backend
     envVars:
       - key: PORT
         value: 5000
