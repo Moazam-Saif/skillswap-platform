@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: client
+    env: docker
+    plan: free
+    dockerfilePath: ./client/Dockerfile
+    buildContext: ./client
+    envVars:
+      - key: NODE_ENV
+        value: production
+    autoDeploy: true
+    healthCheckPath: /
+
+  - type: web
+    name: backend
+    env: docker
+    plan: free
+    dockerfilePath: ./src/Dockerfile
+    buildContext: ./src
+    envVars:
+      - key: PORT
+        value: 5000
+    autoDeploy: true
