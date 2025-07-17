@@ -1,21 +1,85 @@
 services:
+  # Frontend React Application
   - type: web
-    name: client
-    env: docker
-    plan: free
-    dockerfilePath: client/Dockerfile
+    name: client-x83y
+    env: static
+    buildCommand: cd client && npm ci && npm run build
+    staticPublishPath: ./client/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
     envVars:
       - key: NODE_ENV
         value: production
-    autoDeploy: true
-    healthCheckPath: /
+      - key: VITE_API_URL
+        value: https://backend-x83y.onrender.com
 
+  # Backend Node.js API
   - type: web
-    name: backend
-    env: docker
-    plan: free
-    dockerfilePath: server/Dockerfile
+    name: backend-x83y
+    env: node
+    plan: starter
+    buildCommand: cd server && npm ci
+    startCommand: cd server && npm start
+    healthCheckPath: /health
     envVars:
+      - key: NODE_ENV
+        value: production
       - key: PORT
-        value: 5000
-    autoDeploy: true
+        value: 10000
+      - key: MONGODB_URI
+        fromDatabase:
+          name: skillswap-mongodb
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: skillswap-redis
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: LIGHTCAST_CLIENT_ID
+        value: hmew8k1b38azu6mi
+      - key: LIGHTCAST_CLIENT_SECRET
+        value: 0z1ueBNA
+      - key: CLIENT_URL
+        value: https://client-x83y.onrender.com
+      - key: ACCESS_TOKEN_SECRET
+        value: d668e1e430bef13c0fc2bf14fcd429ea652a451ab97908aac58e4771296045bb
+      - key: REFRESH_TOKEN_EXPIRY_DAYS
+        value: 1
+
+# Databases
+databases:
+  - name: skillswap-mongodb
+    databaseName: skillswap
+    user: skillswap_user
+    plan: starter
+
+  - name: skillswap-redis
+    plan: starter
+    maxmemoryPolicy: allkeys-lru
+
+# Background Services (Optional - for cron jobs)
+  - type: worker
+    name: skillswap-worker
+    env: node
+    buildCommand: cd server && npm ci
+    startCommand: cd server && node services/cron.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        fromDatabase:
+          name: skillswap-mongodb
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: skillswap-redis
+          property: connectionString
+      - key: CLIENT_URL
+        value: https://client-x83y.onrender.com

@@ -15,10 +15,15 @@ import searchRoutes from './routes/searchRoutes.js';
 const app = express();
 
 // Global Middlewares
-app.use(cors({
-  origin: `${process.env.CLIENT_URL}`,
+const corsOptions = {
+  origin: [
+    'http://localhost:5173',                    // Local development
+    'https://client-x83y.onrender.com'         // Production
+  ],
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -34,6 +39,14 @@ app.use('/api/search',searchRoutes);
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.statusCode || 500).json({ message: err.message || 'Server Error' });
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    service: 'skillswap-api'
+  });
 });
 
 export default app;
