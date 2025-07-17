@@ -14,7 +14,7 @@ services:
     name: backend
     env: docker
     plan: free
-    dockerfilePath: src/Dockerfile
+    dockerfilePath: server/Dockerfile
     envVars:
       - key: PORT
         value: 5000
