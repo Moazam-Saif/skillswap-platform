@@ -4,7 +4,7 @@ import { SwapCard } from "./SwapCard";
 import { AuthContext } from "../context/AuthContext";
 import Nav from "./Nav";
 import { Link } from "react-router-dom";
-import { getCategorySkillMatches} from "../api/auth";
+import { getCategorySkillMatches } from "../api/auth";
 import Sidebar from "./Sidebar";
 
 const Dashboard = () => {
@@ -46,22 +46,75 @@ const Dashboard = () => {
             <Nav />
             <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
                 <Sidebar />
-                <section className="w-[80%] flex-1 overflow-y-auto bg-[#264653]">
-                    <div>
-                        <img
-                            src="/Top.svg"
-                            alt="Dashboard SVG"
-                            className="w-full max-w-[1380px] h-auto"
-                            style={{ aspectRatio: '1380 / 98' }}
-                        />
-                    </div>
-                    {/* SwapCard list for mutual skill matches */}
-                    <div className="h-[193px] w-full bg-[#fff8f8] rounded-tl-[30px] pl-8 pt-[10px] pb-[10px] flex gap-6 overflow-x-auto">
-                        {matches.length === 0 ? (
-                            <div className="text-gray-500 flex items-center">No matches found.</div>
-                        ) : (
-                            (
-                                matches.map(user => (
+                <section className="w-full md:w-[80%] flex-1 overflow-y-auto bg-[#264653] md:ml-0">
+                    {/* Add top padding on mobile to account for burger menu */}
+                    <div className="pt-16 md:pt-0">
+                        <div>
+                            <img
+                                src="/Top.svg"
+                                alt="Dashboard SVG"
+                                className="w-full max-w-[1380px] h-auto"
+                                style={{ aspectRatio: '1380 / 98' }}
+                            />
+                        </div>
+                        {/* SwapCard list for mutual skill matches */}
+                        <div className="h-[193px] w-full bg-[#fff8f8] rounded-tl-[30px] pl-8 pt-[10px] pb-[10px] flex gap-6 overflow-x-auto">
+                            {matches.length === 0 ? (
+                                <div className="text-gray-500 flex items-center">No matches found.</div>
+                            ) : (
+                                (
+                                    matches.map(user => (
+                                        <SwapCard
+                                            key={user.userId}
+                                            userId={user.userId}
+                                            name={user.name}
+                                            imageUrl={user.imageUrl}
+                                            skillsTheyOffer={user.skillsTheyOffer}
+                                            skillsTheyWant={user.skillsTheyWant}
+                                            availability={user.availability}
+                                        />
+                                    ))
+                                ))}
+                        </div>
+                        <div>
+                            <img
+                                src="/Mid.svg"
+                                alt="Dashboard SVG2"
+                                className="w-full max-w-[1380px] h-auto"
+                                style={{ aspectRatio: '1380 / 98' }}
+                            />
+                        </div>
+                        <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px] flex gap-6 overflow-x-auto">
+                            {matches2.length === 0 ? (
+                                <div className="text-gray-500 flex items-center">No matches found.</div>
+                            ) : (
+                                (
+                                    matches2.map(user => (
+                                        <SwapCard
+                                            key={user.userId}
+                                            userId={user.userId}
+                                            name={user.name}
+                                            imageUrl={user.imageUrl}
+                                            skillsTheyOffer={user.skillsTheyOffer}
+                                            skillsTheyWant={user.skillsTheyWant}
+                                            availability={user.availability}
+                                        />
+                                    ))
+                                ))}
+                        </div>
+                        <div>
+                            <img
+                                src="/Bottom.svg"
+                                alt="Dashboard SVG2"
+                                className="w-full max-w-[1380px] h-auto"
+                                style={{ aspectRatio: '1380 / 98' }}
+                            />
+                        </div>
+                        <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px] flex gap-6 overflow-x-auto">
+                            {filteredCategoryMatches.length === 0 ? (
+                                <div className="text-gray-500 flex items-center">No matches found.</div>
+                            ) : (
+                                categoryMatches.map(user => (
                                     <SwapCard
                                         key={user.userId}
                                         userId={user.userId}
@@ -72,58 +125,8 @@ const Dashboard = () => {
                                         availability={user.availability}
                                     />
                                 ))
-                            ))}
-                    </div>
-                    <div>
-                        <img
-                            src="/Mid.svg"
-                            alt="Dashboard SVG2"
-                            className="w-full max-w-[1380px] h-auto"
-                            style={{ aspectRatio: '1380 / 98' }}
-                        />
-                    </div>
-                    <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px] flex gap-6 overflow-x-auto">
-                        {matches2.length === 0 ? (
-                            <div className="text-gray-500 flex items-center">No matches found.</div>
-                        ) : (
-                            (
-                                matches2.map(user => (
-                                    <SwapCard
-                                        key={user.userId}
-                                        userId={user.userId}
-                                        name={user.name}
-                                        imageUrl={user.imageUrl}
-                                        skillsTheyOffer={user.skillsTheyOffer}
-                                        skillsTheyWant={user.skillsTheyWant}
-                                        availability={user.availability}
-                                    />
-                                ))
-                            ))}
-                    </div>
-                    <div>
-                        <img
-                            src="/Bottom.svg"
-                            alt="Dashboard SVG2"
-                            className="w-full max-w-[1380px] h-auto"
-                            style={{ aspectRatio: '1380 / 98' }}
-                        />
-                    </div>
-                    <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px] flex gap-6 overflow-x-auto">
-                        {filteredCategoryMatches.length === 0 ? (
-                            <div className="text-gray-500 flex items-center">No matches found.</div>
-                        ) : (
-                            categoryMatches.map(user => (
-                                <SwapCard
-                                    key={user.userId}
-                                    userId={user.userId}
-                                    name={user.name}
-                                    imageUrl={user.imageUrl}
-                                    skillsTheyOffer={user.skillsTheyOffer}
-                                    skillsTheyWant={user.skillsTheyWant}
-                                    availability={user.availability}
-                                />
-                            ))
-                        )}
+                            )}
+                        </div>
                     </div>
                 </section>
 

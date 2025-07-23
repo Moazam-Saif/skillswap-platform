@@ -1,13 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { logout } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 
-
 const Sidebar = () => {
-    const { userId,setAccessToken, setUserId } = useContext(AuthContext);
+    const { userId, setAccessToken, setUserId } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [isOpen, setIsOpen] = useState(false);
 
     const handleLogout = async () => {
         await logout();
@@ -16,32 +16,156 @@ const Sidebar = () => {
         navigate("/login");
     };
 
+    const toggleSidebar = () => {
+        setIsOpen(!isOpen);
+    };
+
+    const closeSidebar = () => {
+        setIsOpen(false);
+    };
+
     return (
-        <aside className="w-[20%] sticky top-0 h-screen bg-[#264653] pt-20 p-6 text-white rounded-tl-[30px] ">
-            <h2 className="font-semibold mb-2">Sidebar</h2>
-            <ul className="space-y-2">
-                <li>
-                    <Link to={`/dashboard/${userId}`}>Dashboard</Link>
-                </li>
-                <li>
-                    <Link to={`/profile/${userId}`}>Profile</Link>
-                </li>
-                <li>
-                    <Link to={`/users/swap-requests`}>Swap Requests</Link>
-                </li>
-                <li>
-                    <Link to={`/active-requests`}>Swap Requests</Link>
-                </li>
-                <li>
-                    <button
-                onClick={handleLogout}
-                className="bg-[#e76f51] text-white px-4 py-2 rounded-full font-semibold"
+        <>
+            {/* Burger Menu Button - Only visible on mobile */}
+            <button
+                onClick={toggleSidebar}
+                className="
+                    md:hidden fixed top-4 left-4 z-50
+                    bg-[#264653] text-white p-2 rounded-md
+                    hover:bg-[#1e4a4f] transition-colors
+                "
+                style={{ fontFamily: "'Josefin Sans', sans-serif" }}
             >
-                Logout
+                <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                    />
+                </svg>
             </button>
-                </li>
-            </ul>
-        </aside>
+
+            {/* Overlay for mobile when sidebar is open */}
+            {isOpen && (
+                <div
+                    className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+                    onClick={closeSidebar}
+                />
+            )}
+
+            {/* Sidebar */}
+            <aside 
+                className={`
+                    fixed md:sticky top-0 left-0 z-40
+                    w-[20%] min-w-[200px]
+                    h-screen 
+                    bg-[#264653] 
+                    pt-16 md:pt-20 
+                    p-4 md:p-6 
+                    text-white 
+                    rounded-tl-[30px] 
+                    transform transition-transform duration-300 ease-in-out
+                    ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+                `}
+                style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+            >
+                <ul className="space-y-4 flex flex-col text-sm md:text-base">
+                    <li>
+                        <Link 
+                            to={`/dashboard/${userId}`}
+                            onClick={closeSidebar}
+                            className="
+                                block text-left
+                                py-2
+                                hover:text-[#e76f51] 
+                                transition-colors
+                                font-medium
+                            "
+                            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+                        >
+                            Dashboard
+                        </Link>
+                    </li>
+                    <li>
+                        <Link 
+                            to={`/profile/${userId}`}
+                            onClick={closeSidebar}
+                            className="
+                                block text-left
+                                py-2
+                                hover:text-[#e76f51] 
+                                transition-colors
+                                font-medium
+                            "
+                            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+                        >
+                            Profile
+                        </Link>
+                    </li>
+                    <li>
+                        <Link 
+                            to={`/users/swap-requests`}
+                            onClick={closeSidebar}
+                            className="
+                                block text-left
+                                py-2
+                                hover:text-[#e76f51] 
+                                transition-colors
+                                font-medium
+                            "
+                            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+                        >
+                            Swap Requests
+                        </Link>
+                    </li>
+                    <li>
+                        <Link 
+                            to={`/active-requests`}
+                            onClick={closeSidebar}
+                            className="
+                                block text-left
+                                py-2
+                                hover:text-[#e76f51] 
+                                transition-colors
+                                font-medium
+                            "
+                            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+                        >
+                            Active Requests
+                        </Link>
+                    </li>
+                    <li className="mt-6">
+                        <button
+                            onClick={() => {
+                                handleLogout();
+                                closeSidebar();
+                            }}
+                            className="
+                                w-full
+                                bg-[#e76f51] 
+                                text-white 
+                                px-4 
+                                py-2 
+                                rounded-full 
+                                font-semibold
+                                hover:bg-[#d45d47] 
+                                transition-colors
+                                text-sm md:text-base
+                            "
+                            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+                        >
+                            Logout
+                        </button>
+                    </li>
+                </ul>
+            </aside>
+        </>
     );
 };
 
