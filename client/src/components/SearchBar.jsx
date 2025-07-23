@@ -121,7 +121,7 @@ export default function SearchBar() {
                         </svg>
                     </div>
                     
-                    {/* Search Input */}
+                    {/* Search Input - Fixed text color */}
                     <input
                         ref={inputRef}
                         type="text"
@@ -130,9 +130,10 @@ export default function SearchBar() {
                         onChange={handleInputChange}
                         onFocus={handleInputFocus}
                         onKeyPress={handleInputKeyPress}
-                        className={`flex-1 px-3 py-2 bg-transparent border-none outline-none text-sm transition-opacity duration-300 ${
+                        className={`flex-1 px-3 py-2 bg-transparent border-none outline-none text-sm transition-opacity duration-300 text-gray-900 placeholder-gray-500 ${
                             isExpanded ? 'opacity-100' : 'opacity-0'
                         }`}
+                        style={{ color: '#111827' }} // Force dark text color
                     />
                 </div>
 

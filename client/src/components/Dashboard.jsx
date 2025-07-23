@@ -42,7 +42,7 @@ const Dashboard = () => {
     );
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
             <Nav />
             <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
                 <Sidebar />
@@ -57,15 +57,23 @@ const Dashboard = () => {
                                 style={{ aspectRatio: '1380 / 98' }}
                             />
                         </div>
+                        
                         {/* SwapCard list for mutual skill matches */}
-                        <div className="h-[193px] w-full bg-[#fff8f8] rounded-tl-[30px] pl-8 pt-[10px] pb-[10px] flex gap-6 overflow-x-auto">
+                        <div className="
+                            w-full bg-[#fff8f8] rounded-tl-[30px] p-4 md:pl-8 md:pt-[10px] md:pb-[10px]
+                            /* Mobile: Grid layout */ 
+                            grid grid-cols-2 gap-4 auto-rows-auto
+                            /* Desktop: Horizontal scroll */
+                            md:flex md:gap-6 md:overflow-x-auto md:h-[193px]
+                        ">
                             {matches.length === 0 ? (
-                                <div className="text-gray-500 flex items-center">No matches found.</div>
+                                <div className="col-span-2 md:col-span-1 text-gray-500 flex items-center justify-center py-8">
+                                    No matches found.
+                                </div>
                             ) : (
-                                (
-                                    matches.map(user => (
+                                matches.map(user => (
+                                    <div key={user.userId} className="flex-shrink-0">
                                         <SwapCard
-                                            key={user.userId}
                                             userId={user.userId}
                                             name={user.name}
                                             imageUrl={user.imageUrl}
@@ -73,9 +81,11 @@ const Dashboard = () => {
                                             skillsTheyWant={user.skillsTheyWant}
                                             availability={user.availability}
                                         />
-                                    ))
-                                ))}
+                                    </div>
+                                ))
+                            )}
                         </div>
+                        
                         <div>
                             <img
                                 src="/Mid.svg"
@@ -84,14 +94,22 @@ const Dashboard = () => {
                                 style={{ aspectRatio: '1380 / 98' }}
                             />
                         </div>
-                        <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px] flex gap-6 overflow-x-auto">
+                        
+                        <div className="
+                            w-full bg-[#fff8f8] p-4 md:pl-8 md:pt-[10px] md:pb-[10px]
+                            /* Mobile: Grid layout */ 
+                            grid grid-cols-2 gap-4 auto-rows-auto
+                            /* Desktop: Horizontal scroll */
+                            md:flex md:gap-6 md:overflow-x-auto md:h-[193px]
+                        ">
                             {matches2.length === 0 ? (
-                                <div className="text-gray-500 flex items-center">No matches found.</div>
+                                <div className="col-span-2 md:col-span-1 text-gray-500 flex items-center justify-center py-8">
+                                    No matches found.
+                                </div>
                             ) : (
-                                (
-                                    matches2.map(user => (
+                                matches2.map(user => (
+                                    <div key={user.userId} className="flex-shrink-0">
                                         <SwapCard
-                                            key={user.userId}
                                             userId={user.userId}
                                             name={user.name}
                                             imageUrl={user.imageUrl}
@@ -99,9 +117,11 @@ const Dashboard = () => {
                                             skillsTheyWant={user.skillsTheyWant}
                                             availability={user.availability}
                                         />
-                                    ))
-                                ))}
+                                    </div>
+                                ))
+                            )}
                         </div>
+                        
                         <div>
                             <img
                                 src="/Bottom.svg"
@@ -110,26 +130,35 @@ const Dashboard = () => {
                                 style={{ aspectRatio: '1380 / 98' }}
                             />
                         </div>
-                        <div className="h-[193px] w-full bg-[#fff8f8] pl-8 pt-[10px] pb-[10px] flex gap-6 overflow-x-auto">
+                        
+                        <div className="
+                            w-full bg-[#fff8f8] p-4 md:pl-8 md:pt-[10px] md:pb-[10px]
+                            /* Mobile: Grid layout */ 
+                            grid grid-cols-2 gap-4 auto-rows-auto
+                            /* Desktop: Horizontal scroll */
+                            md:flex md:gap-6 md:overflow-x-auto md:h-[193px]
+                        ">
                             {filteredCategoryMatches.length === 0 ? (
-                                <div className="text-gray-500 flex items-center">No matches found.</div>
+                                <div className="col-span-2 md:col-span-1 text-gray-500 flex items-center justify-center py-8">
+                                    No matches found.
+                                </div>
                             ) : (
                                 categoryMatches.map(user => (
-                                    <SwapCard
-                                        key={user.userId}
-                                        userId={user.userId}
-                                        name={user.name}
-                                        imageUrl={user.imageUrl}
-                                        skillsTheyOffer={user.skillsTheyOffer}
-                                        skillsTheyWant={user.skillsTheyWant}
-                                        availability={user.availability}
-                                    />
+                                    <div key={user.userId} className="flex-shrink-0">
+                                        <SwapCard
+                                            userId={user.userId}
+                                            name={user.name}
+                                            imageUrl={user.imageUrl}
+                                            skillsTheyOffer={user.skillsTheyOffer}
+                                            skillsTheyWant={user.skillsTheyWant}
+                                            availability={user.availability}
+                                        />
+                                    </div>
                                 ))
                             )}
                         </div>
                     </div>
                 </section>
-
             </main>
         </div>
     );
