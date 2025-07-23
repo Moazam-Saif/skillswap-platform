@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { logout } from "../api/auth";
 import { useNavigate } from "react-router-dom";
+import SearchBar from "./SearchBar";
 
 const Sidebar = () => {
     const { userId, setAccessToken, setUserId } = useContext(AuthContext);
@@ -51,10 +52,10 @@ const Sidebar = () => {
                 </svg>
             </button>
 
-            {/* Overlay for mobile when sidebar is open */}
+            {/* Blur overlay for mobile when sidebar is open */}
             {isOpen && (
                 <div
-                    className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+                    className="md:hidden fixed inset-0 backdrop-blur-sm z-30"
                     onClick={closeSidebar}
                 />
             )}
@@ -75,14 +76,19 @@ const Sidebar = () => {
                 `}
                 style={{ fontFamily: "'Josefin Sans', sans-serif" }}
             >
-                <ul className="space-y-4 flex flex-col text-sm md:text-base">
+                {/* Search Bar - Only visible on mobile when sidebar is open */}
+                <div className="md:hidden mb-6">
+                    <SearchBar />
+                </div>
+                
+                <ul className="space-y-0 flex flex-col text-sm md:text-base">
                     <li>
                         <Link 
                             to={`/dashboard/${userId}`}
                             onClick={closeSidebar}
                             className="
                                 block text-left
-                                py-2
+                                py-3
                                 hover:text-[#e76f51] 
                                 transition-colors
                                 font-medium
@@ -91,6 +97,7 @@ const Sidebar = () => {
                         >
                             Dashboard
                         </Link>
+                        <hr className="border-[#e76f51] border-t-1 my-2" />
                     </li>
                     <li>
                         <Link 
@@ -98,7 +105,7 @@ const Sidebar = () => {
                             onClick={closeSidebar}
                             className="
                                 block text-left
-                                py-2
+                                py-3
                                 hover:text-[#e76f51] 
                                 transition-colors
                                 font-medium
@@ -107,6 +114,7 @@ const Sidebar = () => {
                         >
                             Profile
                         </Link>
+                        <hr className="border-[#e76f51] border-t-1 my-2" />
                     </li>
                     <li>
                         <Link 
@@ -114,7 +122,7 @@ const Sidebar = () => {
                             onClick={closeSidebar}
                             className="
                                 block text-left
-                                py-2
+                                py-3
                                 hover:text-[#e76f51] 
                                 transition-colors
                                 font-medium
@@ -123,6 +131,7 @@ const Sidebar = () => {
                         >
                             Swap Requests
                         </Link>
+                        <hr className="border-[#e76f51] border-t-1 my-2" />
                     </li>
                     <li>
                         <Link 
@@ -130,7 +139,7 @@ const Sidebar = () => {
                             onClick={closeSidebar}
                             className="
                                 block text-left
-                                py-2
+                                py-3
                                 hover:text-[#e76f51] 
                                 transition-colors
                                 font-medium
@@ -139,8 +148,9 @@ const Sidebar = () => {
                         >
                             Active Requests
                         </Link>
+                        <hr className="border-[#e76f51] border-t-1 my-2" />
                     </li>
-                    <li className="mt-6">
+                    <li className="mt-4">
                         <button
                             onClick={() => {
                                 handleLogout();
