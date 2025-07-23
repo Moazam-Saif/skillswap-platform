@@ -97,7 +97,7 @@ const Sidebar = () => {
                         >
                             Dashboard
                         </Link>
-                        <hr className="border-[#e76f51] border-t-1 my-2" />
+                        <hr className="border-white border-t-1 border-dotted my-2 opacity-40" />
                     </li>
                     <li>
                         <Link 
@@ -114,7 +114,7 @@ const Sidebar = () => {
                         >
                             Profile
                         </Link>
-                        <hr className="border-[#e76f51] border-t-1 my-2" />
+                        <hr className="border-white border-t-1 border-dotted my-2 opacity-40" />
                     </li>
                     <li>
                         <Link 
@@ -131,7 +131,7 @@ const Sidebar = () => {
                         >
                             Swap Requests
                         </Link>
-                        <hr className="border-[#e76f51] border-t-1 my-2" />
+                        <hr className="border-white border-t-1 border-dotted my-2 opacity-40" />
                     </li>
                     <li>
                         <Link 
@@ -148,7 +148,7 @@ const Sidebar = () => {
                         >
                             Active Requests
                         </Link>
-                        <hr className="border-[#e76f51] border-t-1 my-2" />
+                        <hr className="border-white border-t-1 border-dotted my-2 opacity-40" />
                     </li>
                     <li className="mt-4">
                         <button
