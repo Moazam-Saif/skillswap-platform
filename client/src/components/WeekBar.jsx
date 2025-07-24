@@ -37,7 +37,7 @@ const WeekScheduler = ({ timeSlots, setTimeSlots }) => {
         <>
             <div className="p-4 sm:p-6 max-w-2xl mx-auto">
                 {/* Day Selector Bar */}
-                <div className="flex flex-wrap justify-evenly bg-[rgb(255,255,255,0.7)] p-4 rounded-lg shadow-md mb-4 sm:gap-3">
+                <div className="flex flex-wrap justify-evenly bg-[rgb(255,255,255,0.7)] p-4 rounded-lg shadow-md mb-4 gap-y-2 sm:gap-3">
                     {daysOfWeek.map((day) => (
                         <div
                             key={day}
@@ -83,7 +83,6 @@ const WeekScheduler = ({ timeSlots, setTimeSlots }) => {
                     </div>
                 )}
 
-                {/* Scrollable Summary with Responsive Height */}
                 {/* Scrollable Summary with Responsive Height */}
                 <div
                     ref={scrollRef}
