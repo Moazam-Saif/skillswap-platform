@@ -136,7 +136,7 @@ export default function ProfileUploadPage() {
             <WeekBar timeSlots={timeSlots} setTimeSlots={setTimeSlots} />
           </div>
         )}
-        <div className="w-1/2 p-8 flex flex-col gap-10 bg-[#fff8f8] ">
+        <div className="w-1/2 p-8 flex flex-col gap-10 bg-[#fff8f8] overflow-y-auto">
           {/* Upper Half - Image Uploader */}
           <div className='relative h-1/2 w-full mx-auto border-b-1 border-black'>
             <ImageUploader image={imagePreview} onChange={handleImageChange} />
@@ -176,14 +176,11 @@ export default function ProfileUploadPage() {
           {/* Lower Half - Form Fields */}
         </div>
 
-        {/* Right Half - Empty Div */}
-        <div className="w-1/2 min-h-screen border-gray-200" style={{
+        {/* Right Half - Sticky */}
+        <div className="w-1/2 min-h-screen border-gray-200 sticky top-0" style={{
            background: 'linear-gradient(to right, #FFF8F8 0%, #E76F51 15%)',
           opacity: 0.8,
         }}>
-          
-
-    
           {/* This div is intentionally left empty as requested */}
           <UserInfo
             name={userName}

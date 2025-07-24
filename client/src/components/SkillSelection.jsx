@@ -113,25 +113,23 @@ const SkillSearch = ({ selectedSkills, setSelectedSkills }) => {
       </div>
 
       <div>
-        <div className="overflow-x-auto">
-          <div className="flex gap-5 min-w-max">
-            {selectedSkills.map(skill => (
-              <div
-                key={skill.id}
-                className="flex items-center gap-3 bg-[#DFDBDB] text-black py-1 rounded-full whitespace-nowrap flex-shrink-0"
+        <div className="flex flex-wrap gap-3">
+          {selectedSkills.map(skill => (
+            <div
+              key={skill.id}
+              className="flex items-center gap-3 bg-[#DFDBDB] text-black py-1 rounded-full whitespace-nowrap"
+            >
+              <span className=" ml-3 text-sm">{skill.name}</span>
+              <button
+                className="flex items-center justify-center w-4 h-4 rounded-full bg-gray-300  hover:bg-red-600 transition-colors mr-2"
+                onClick={() => handleRemoveSkill(skill.name)}
+                aria-label={`Remove ${skill.name}`}
+                type="button"
               >
-                <span className=" ml-3 text-sm">{skill.name}</span>
-                <button
-                  className="flex items-center justify-center w-4 h-4 rounded-full bg-gray-300  hover:bg-red-600 transition-colors mr-2"
-                  onClick={() => handleRemoveSkill(skill.name)}
-                  aria-label={`Remove ${skill.name}`}
-                  type="button"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
-          </div>
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>
