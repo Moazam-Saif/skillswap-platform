@@ -154,3 +154,13 @@
 .text-shadow-custom {
   text-shadow: 0 2px 8px rgba(38, 70, 83, 0.15);
 }
+
+.profile-gradient {
+  background: linear-gradient(to bottom, rgba(255,248,248,0.8) 0%, rgba(231,111,81,0.9) 5%);
+}
+
+@media (min-width: 1024px) {
+  .profile-gradient {
+    background: linear-gradient(to right, rgba(255,248,248,0.8) 0%, rgba(231,111,81,0.8) 15%);
+  }
+}

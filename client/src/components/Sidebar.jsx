@@ -31,7 +31,7 @@ const Sidebar = () => {
             <button
                 onClick={toggleSidebar}
                 className="
-                    md:hidden fixed top-4 left-4 z-50
+                    md:hidden fixed top-4 left-4 z-1000
                     bg-[#264653] text-white p-2 rounded-md
                     hover:bg-[#1e4a4f] transition-colors
                 "
@@ -55,7 +55,7 @@ const Sidebar = () => {
             {/* Blur overlay for mobile when sidebar is open */}
             {isOpen && (
                 <div
-                    className="md:hidden fixed inset-0 backdrop-blur-sm z-30"
+                    className="md:hidden fixed inset-0 backdrop-blur-sm z-900"
                     onClick={closeSidebar}
                 />
             )}
@@ -63,7 +63,7 @@ const Sidebar = () => {
             {/* Sidebar */}
             <aside 
                 className={`
-                    fixed md:sticky top-0 left-0 z-40
+                    fixed md:sticky top-0 left-0 z-1000
                     w-[20%] min-w-[200px]
                     h-screen 
                     bg-[#264653] 
