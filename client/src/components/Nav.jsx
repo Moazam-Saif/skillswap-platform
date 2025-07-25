@@ -4,7 +4,7 @@ import UserProfile from "./UserProfile";
 
 export default function Nav() {
     return (
-        <nav className="w-full bg-[#FFFAFA] p-4 flex items-center justify-between relative">
+        <nav className="w-full bg-[#FFFAFA] bg-opacity-90 p-4 flex items-center justify-between relative sticky top-0 z-1000 backdrop-blur-sm">
             {/* Left Side - Search Bar (Hidden on mobile, visible on desktop) */}
             <div className="hidden md:block">
                 <SearchBar />
