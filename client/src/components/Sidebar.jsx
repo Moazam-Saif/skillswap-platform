@@ -58,36 +58,38 @@ const Sidebar = ({ hideOnDesktop = false }) => {
 
     return (
         <>
-            {/* Burger Menu Button */}
-            <button
-                onClick={toggleSidebar}
-                className={`
-                    fixed top-4 left-4 z-990
-                    bg-[#264653] text-white p-2 rounded-md
-                    hover:bg-[#1e4a4f] transition-colors
-                    ${hideOnDesktop ? '' : 'md:hidden'}
-                `}
-                style={{ fontFamily: "'Josefin Sans', sans-serif" }}
-            >
-                <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+            {/* Burger Menu Button - Hide when sidebar is open */}
+            {!isOpen && (
+                <button
+                    onClick={toggleSidebar}
+                    className={`
+                        fixed top-4 left-4 z-[1010]
+                        bg-[#264653] text-white p-2 rounded-md
+                        hover:bg-[#1e4a4f] transition-colors
+                        ${hideOnDesktop ? '' : 'md:hidden'}
+                    `}
+                    style={{ fontFamily: "'Josefin Sans', sans-serif" }}
                 >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
-                    />
-                </svg>
-            </button>
+                    <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 6h16M4 12h16M4 18h16"
+                        />
+                    </svg>
+                </button>
+            )}
 
             {/* Blur overlay when sidebar is open */}
             {isOpen && (
                 <div
-                    className={`fixed inset-0 backdrop-blur-sm z-900 ${hideOnDesktop ? '' : 'md:hidden'}`}
+                    className={`fixed inset-0 backdrop-blur-sm z-[950] ${hideOnDesktop ? '' : 'md:hidden'}`}
                     onClick={closeSidebar}
                 />
             )}
@@ -95,7 +97,7 @@ const Sidebar = ({ hideOnDesktop = false }) => {
             {/* Sidebar */}
             <aside 
                 className={`
-                    fixed top-0 left-0 z-990
+                    fixed top-0 left-0 z-[980]
                     w-[20%] min-w-[200px]
                     h-screen 
                     bg-[#264653] 
@@ -105,7 +107,7 @@ const Sidebar = ({ hideOnDesktop = false }) => {
                     rounded-tl-[30px] 
                     transform transition-transform duration-300 ease-in-out
                     ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-                    ${hideOnDesktop ? '' : 'md:sticky md:translate-x-0'}
+                    ${hideOnDesktop ? '' : 'md:sticky md:translate-x-0 md:top-[72px] md:h-[calc(100vh-72px)] md:pt-6'}
                 `}
                 style={{ fontFamily: "'Josefin Sans', sans-serif" }}
             >

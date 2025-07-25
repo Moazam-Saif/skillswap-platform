@@ -142,7 +142,7 @@ export default function SearchBar() {
                     <button
                         type="button"
                         onClick={handleDropdownToggle}
-                        className={`flex items-center justify-center px-2 sm:px-3 py-2 bg-white border border-gray-300 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-300 ${
+                        className={`flex items-center justify-center px-2 sm:px-3 py-2 bg-white border border-gray-300 rounded-full text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-300 ${
                             isExpanded ? 'opacity-100 visible' : 'opacity-0 invisible'
                         }`}
                     >

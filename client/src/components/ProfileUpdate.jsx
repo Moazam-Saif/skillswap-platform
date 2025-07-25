@@ -189,7 +189,7 @@ export default function ProfileUploadPage() {
               {/* Right Half - UserInfo */}
               <div className="w-1/2 h-screen border-gray-200 sticky top-0" style={{
                  background: 'linear-gradient(to right, #FFF8F8 0%, #E76F51 15%)',
-                opacity: 0.8,
+                opacity: 0.9,
               }}>
                 <UserInfo
                   name={userName}
