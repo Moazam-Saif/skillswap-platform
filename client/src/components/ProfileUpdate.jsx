@@ -116,9 +116,9 @@ export default function ProfileUploadPage() {
       <Nav />
       <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
         {/* Sidebar - Same pattern as Dashboard and SessionsPage */}
-        <Sidebar hideOnDesktop={true}/>
-        
-           <section className="w-full flex-1 overflow-y-auto bg-gray-50">
+        <Sidebar hideOnDesktop={true} />
+
+        <section className="w-full flex-1 overflow-y-auto bg-gray-50">
           {/* Add top padding on mobile to account for burger menu */}
           <div className="pt-16 md:pt-0">
             {/* Large Screen Layout - Horizontal Split */}
@@ -129,7 +129,7 @@ export default function ProfileUploadPage() {
                   {error}
                 </div>
               )}
-              
+
               {/* Floating Buttons */}
               <div className='absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[50%] w-[12%] flex flex-col justify-between'>
                 <span className='bg-[#E76F51] text-transparent relative px-3 py-2 rounded-full font-medium'>Set Availability</span>
@@ -139,14 +139,14 @@ export default function ProfileUploadPage() {
                 <button onClick={handleButtonClick} className='bg-transparent text-[#264653] relative px-3 py-2 rounded-full font-medium shadow-md'>Set Availability</button>
                 <button onClick={handleSave} className=' bg-transparent text-[#264653] font-medium relative px-3 py-2  rounded-full shadow-md'>Save Details</button>
               </div>
-              
+
               {/* Popup */}
               {isPopupOpen && (
                 <div className='backdrop-blur-lg z-50 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[80%] w-[50%] bg-[rgb(38,70,83,0.6)] rounded-2xl'>
                   <WeekBar timeSlots={timeSlots} setTimeSlots={setTimeSlots} />
                 </div>
               )}
-              
+
               {/* Left Half - Image and Skills */}
               <div className="w-1/2 p-8 flex flex-col gap-10 bg-[#fff8f8] overflow-y-auto">
                 <div className='relative h-1/2 w-full mx-auto border-b-1 border-black'>
@@ -182,13 +182,14 @@ export default function ProfileUploadPage() {
                   <SkillSearch
                     selectedSkills={activeSkillType === "want" ? skillsWant : skillsHave}
                     setSelectedSkills={activeSkillType === "want" ? setSkillsWant : setSkillsHave}
+                    activeSkillType={activeSkillType}
                   />
                 </div>
               </div>
 
               {/* Right Half - UserInfo */}
               <div className="w-1/2 h-screen border-gray-200 sticky top-0" style={{
-                 background: 'linear-gradient(to right, #FFF8F8 0%, #E76F51 15%)',
+                background: 'linear-gradient(to right, #FFF8F8 0%, #E76F51 15%)',
                 opacity: 0.9,
               }}>
                 <UserInfo
@@ -259,12 +260,13 @@ export default function ProfileUploadPage() {
                     <SkillSearch
                       selectedSkills={activeSkillType === "want" ? skillsWant : skillsHave}
                       setSelectedSkills={activeSkillType === "want" ? setSkillsWant : setSkillsHave}
+                      activeSkillType={activeSkillType}
                     />
 
                     {/* Availability Button integrated here */}
                     <div className="text-center mt-6">
-                      <button 
-                        onClick={handleButtonClick} 
+                      <button
+                        onClick={handleButtonClick}
                         className="w-full max-w-sm bg-[#E76F51] text-white px-6 py-3 rounded-full font-medium shadow-md hover:bg-[#d45d47] transition-colors"
                       >
                         Set Availability
@@ -275,8 +277,8 @@ export default function ProfileUploadPage() {
 
                 {/* Section 3: User Info + Save Button */}
                 <div className="pt-4" style={{
-                   background: 'linear-gradient(to bottom, rgba(255, 248, 248, 1) 0%, rgba(231, 111, 81, 0.9) 5%)',
-                  }}>
+                  background: 'linear-gradient(to bottom, rgba(255, 248, 248, 1) 0%, rgba(231, 111, 81, 0.9) 5%)',
+                }}>
                   <div className="p-4 md:p-6">
                     <UserInfo
                       name={userName}
@@ -289,8 +291,8 @@ export default function ProfileUploadPage() {
 
                     {/* Save Button integrated here */}
                     <div className="text-center mt-6">
-                      <button 
-                        onClick={handleSave} 
+                      <button
+                        onClick={handleSave}
                         className="w-full max-w-sm bg-[#264653] text-white px-6 py-3 rounded-full font-medium shadow-md hover:bg-[#1e4a4f] transition-colors"
                       >
                         Save Details
