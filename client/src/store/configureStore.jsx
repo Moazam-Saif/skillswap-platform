@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import animationReducer from './animationSlice'; // Your existing icon animation
-import lockReducer from './lockSlice'; // Card animation lock
+import animationReducer from './animationSlice';
+import lockReducer from './lockSlice';
 import popupReducer from './popupSlice';
+import sidebarReducer from './sidebarSlice'; // Add this import
 
 export default configureStore({
   reducer: {
-    animation: animationReducer,      // For icon animations
-    cardAnimation: lockReducer,       // For card animations
+    animation: animationReducer,
+    cardAnimation: lockReducer,
     popup: popupReducer,
+    sidebar: sidebarReducer, // Add this line
   },
 });

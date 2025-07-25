@@ -1,14 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from 'react-redux';
 import { AuthContext } from "../context/AuthContext";
 import { logout } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
+import { openMobileSidebar, closeMobileSidebar } from '../store/sidebarSlice';
 
 const Sidebar = ({ hideOnDesktop = false }) => {
     const { userId, setAccessToken, setUserId } = useContext(AuthContext);
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
+    const dispatch = useDispatch();
 
     const handleLogout = async () => {
         await logout();
@@ -18,20 +21,48 @@ const Sidebar = ({ hideOnDesktop = false }) => {
     };
 
     const toggleSidebar = () => {
-        setIsOpen(!isOpen);
+        const newState = !isOpen;
+        setIsOpen(newState);
+        
+        // Only dispatch Redux actions when it's mobile/burger menu usage
+        // (either hideOnDesktop is true, or screen is mobile size)
+        if (hideOnDesktop || window.innerWidth < 768) {
+            if (newState) {
+                dispatch(openMobileSidebar());
+            } else {
+                dispatch(closeMobileSidebar());
+            }
+        }
     };
 
     const closeSidebar = () => {
         setIsOpen(false);
+        
+        // Only dispatch Redux actions when it's mobile/burger menu usage
+        if (hideOnDesktop || window.innerWidth < 768) {
+            dispatch(closeMobileSidebar());
+        }
     };
+
+    // Handle window resize to reset Redux state if screen becomes large
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 768 && !hideOnDesktop) {
+                dispatch(closeMobileSidebar());
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [hideOnDesktop, dispatch]);
 
     return (
         <>
-            {/* Burger Menu Button - Always visible when hideOnDesktop is true, or only on mobile otherwise */}
+            {/* Burger Menu Button */}
             <button
                 onClick={toggleSidebar}
                 className={`
-                    fixed top-4 left-4 z-1000
+                    fixed top-4 left-4 z-990
                     bg-[#264653] text-white p-2 rounded-md
                     hover:bg-[#1e4a4f] transition-colors
                     ${hideOnDesktop ? '' : 'md:hidden'}
@@ -64,11 +95,11 @@ const Sidebar = ({ hideOnDesktop = false }) => {
             {/* Sidebar */}
             <aside 
                 className={`
-                    fixed top-0 left-0 z-1000
+                    fixed top-0 left-0 z-990
                     w-[20%] min-w-[200px]
                     h-screen 
                     bg-[#264653] 
-                    pt-16 md:pt-20 
+                    pt-20 lg:pt-16 
                     p-4 md:p-6 
                     text-white 
                     rounded-tl-[30px] 
@@ -78,8 +109,8 @@ const Sidebar = ({ hideOnDesktop = false }) => {
                 `}
                 style={{ fontFamily: "'Josefin Sans', sans-serif" }}
             >
-                {/* Search Bar - Only visible on mobile when sidebar is open */}
-                <div className={`mb-6 ${hideOnDesktop ? '' : 'md:hidden'}`}>
+                {/* Search Bar - Hidden on large screens, visible on mobile when sidebar is open */}
+                <div className="mb-6 lg:hidden">
                     <SearchBar />
                 </div>
                 
