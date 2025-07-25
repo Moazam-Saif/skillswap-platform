@@ -229,7 +229,7 @@ export default function UserProfileView() {
                 </div>
 
                 {/* Gap - 1.33% - Only on desktop */}
-                <div className="hidden lg:block" style={{ height: '1.33%' }}></div>
+               <div className="hidden lg:block" style={{ height: '3%' }}></div>
 
                 {/* Buttons Section - 28% height on desktop, auto height on mobile */}
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 lg:gap-10 px-4" style={{
