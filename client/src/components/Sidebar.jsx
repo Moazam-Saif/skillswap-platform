@@ -99,7 +99,7 @@ const Sidebar = ({ hideOnDesktop = false }) => {
                     w-[20%] min-w-[200px]
                     h-screen 
                     bg-[#264653] 
-                    pt-20 lg:pt-16 
+                    pt-20 lg:pt-20 
                     p-4 md:p-6 
                     text-white 
                     rounded-tl-[30px] 
