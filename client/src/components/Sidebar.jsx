@@ -5,7 +5,7 @@ import { logout } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
 
-const Sidebar = () => {
+const Sidebar = ({ hideOnDesktop = false }) => {
     const { userId, setAccessToken, setUserId } = useContext(AuthContext);
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
@@ -27,14 +27,15 @@ const Sidebar = () => {
 
     return (
         <>
-            {/* Burger Menu Button - Only visible on mobile */}
+            {/* Burger Menu Button - Always visible when hideOnDesktop is true, or only on mobile otherwise */}
             <button
                 onClick={toggleSidebar}
-                className="
-                    md:hidden fixed top-4 left-4 z-1000
+                className={`
+                    fixed top-4 left-4 z-1000
                     bg-[#264653] text-white p-2 rounded-md
                     hover:bg-[#1e4a4f] transition-colors
-                "
+                    ${hideOnDesktop ? '' : 'md:hidden'}
+                `}
                 style={{ fontFamily: "'Josefin Sans', sans-serif" }}
             >
                 <svg
@@ -52,10 +53,10 @@ const Sidebar = () => {
                 </svg>
             </button>
 
-            {/* Blur overlay for mobile when sidebar is open */}
+            {/* Blur overlay when sidebar is open */}
             {isOpen && (
                 <div
-                    className="md:hidden fixed inset-0 backdrop-blur-sm z-900"
+                    className={`fixed inset-0 backdrop-blur-sm z-900 ${hideOnDesktop ? '' : 'md:hidden'}`}
                     onClick={closeSidebar}
                 />
             )}
@@ -63,7 +64,7 @@ const Sidebar = () => {
             {/* Sidebar */}
             <aside 
                 className={`
-                    fixed md:sticky top-0 left-0 z-1000
+                    fixed top-0 left-0 z-1000
                     w-[20%] min-w-[200px]
                     h-screen 
                     bg-[#264653] 
@@ -72,12 +73,13 @@ const Sidebar = () => {
                     text-white 
                     rounded-tl-[30px] 
                     transform transition-transform duration-300 ease-in-out
-                    ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+                    ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+                    ${hideOnDesktop ? '' : 'md:sticky md:translate-x-0'}
                 `}
                 style={{ fontFamily: "'Josefin Sans', sans-serif" }}
             >
                 {/* Search Bar - Only visible on mobile when sidebar is open */}
-                <div className="md:hidden mb-6">
+                <div className={`mb-6 ${hideOnDesktop ? '' : 'md:hidden'}`}>
                     <SearchBar />
                 </div>
                 

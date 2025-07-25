@@ -116,9 +116,9 @@ export default function ProfileUploadPage() {
       <Nav />
       <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
         {/* Sidebar - Same pattern as Dashboard and SessionsPage */}
-        <Sidebar />
+        <Sidebar hideOnDesktop={true}/>
         
-        <section className="w-full md:w-[80%] flex-1 overflow-y-auto bg-gray-50">
+           <section className="w-full flex-1 overflow-y-auto bg-gray-50">
           {/* Add top padding on mobile to account for burger menu */}
           <div className="pt-16 md:pt-0">
             {/* Large Screen Layout - Horizontal Split */}
