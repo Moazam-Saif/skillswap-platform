@@ -102,9 +102,10 @@ export default function ProfileUploadPage() {
     }
   };
 
-  const handleImageChange = (file) => {
-    setSelectedImage(file);
-    setImagePreview(URL.createObjectURL(file));
+  const handleImageChange = (cloudinaryUrl) => {
+    // cloudinaryUrl is now the Cloudinary URL from your preset
+    setImagePreview(cloudinaryUrl);
+    // Remove setSelectedImage since we're not storing the file anymore
   };
 
   const handleButtonClick = () => {
