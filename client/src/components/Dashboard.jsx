@@ -52,17 +52,18 @@ const Dashboard = () => {
             });
         }
     };
+// ...existing code...
 
     // SwapCard container component with rounded corners option
     const SwapCardContainer = ({ users, containerId, title, hasRoundedCorners = false }) => (
         <div className="relative">
             <div className={`
-                w-full bg-[#fff8f8] p-4 md:pl-8 md:pt-[10px] md:pb-[10px]
+                w-full bg-[#fff8f8] p-4 md:pl-8 md:pt-[20px] md:pb-[20px]
                 ${hasRoundedCorners ? 'rounded-tl-[30px]' : ''}
                 /* Mobile: Grid layout 2 per row */ 
                 grid grid-cols-2 gap-4 auto-rows-auto justify-items-center
                 /* Desktop: Horizontal scroll with max 5 visible */
-                md:flex md:gap-6 md:overflow-x-auto md:h-[193px] md:scrollbar-hide
+                md:flex md:gap-8 md:overflow-x-auto md:h-[223px] md:scrollbar-hide
                 /* Hide scrollbar */
                 scrollbar-hide
             `} id={containerId}>
@@ -112,6 +113,8 @@ const Dashboard = () => {
             )}
         </div>
     );
+
+// ...existing code...
 
     return (
         <div className="flex flex-col min-h-screen" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>

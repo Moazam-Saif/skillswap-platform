@@ -27,33 +27,61 @@ export default function RequestsPage() {
     const requestsToShow = tab === "received" ? receivedRequests : sentRequests;
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
             <Nav />
-            <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
+            <main className="flex flex-1 md:rounded-tl-[30px] border-t-2 border-[#e76f51]">
                 <Sidebar />
-                <section className="relative w-[80%] flex flex-row bg-[#fff8f8] p-8">
-                    {/* Left: Rotated Tabs */}
-                    <div className="sticky top-70 h-fit w-[25%] flex items-center justify-start" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
+                <section className="relative w-full md:w-[80%] flex flex-col md:flex-row bg-[#fff8f8] p-4 md:p-8">
+                    
+                    {/* Mobile: Top Horizontal Tabs (visible only on small screens) */}
+                    <div className="md:hidden w-full flex justify-center mb-6">
+                        <div className="flex items-center justify-center bg-white rounded-full shadow-lg p-1">
+                            <button
+                                className={`px-4 py-2 rounded-l-full font-semibold text-sm transition-colors duration-150 ${
+                                    tab === "received"
+                                        ? "bg-[#e76f51] text-white"
+                                        : "bg-white text-gray-400 hover:bg-[#f4a26122]"
+                                }`}
+                                onClick={() => setTab("received")}
+                            >
+                                Received
+                            </button>
+                            <button
+                                className={`px-4 py-2 rounded-r-full font-semibold text-sm transition-colors duration-150 ${
+                                    tab === "sent"
+                                        ? "bg-[#e76f51] text-white"
+                                        : "bg-white text-gray-400 hover:bg-[#f4a26122]"
+                                }`}
+                                onClick={() => setTab("sent")}
+                            >
+                                Sent
+                            </button>
+                        </div>
+                    </div>
 
+                    {/* Desktop: Left Rotated Tabs (hidden on mobile) */}
+                    <div className="hidden md:flex sticky top-70 h-fit w-[25%] items-center justify-start">
                         <div
                             className="relative flex items-center justify-center"
                             style={{ transform: "rotate(-90deg)", width: "max-content" }}
                         >
                             <div className="relative flex items-center justify-center">
                                 <button
-                                    className={`px-6 py-1 rounded-l-full font-semibold text-lg shadow-lg transition-colors duration-150 ${tab === "received"
+                                    className={`px-6 py-1 rounded-l-full font-semibold text-lg shadow-lg transition-colors duration-150 ${
+                                        tab === "received"
                                             ? "bg-[#e76f51] text-white"
-                                    : "bg-white text-gray-400 hover:bg-[#f4a26122] opacity-80"
-                                        }`}
+                                            : "bg-white text-gray-400 hover:bg-[#f4a26122] opacity-80"
+                                    }`}
                                     onClick={() => setTab("received")}
                                 >
                                     Received
                                 </button>
                                 <button
-                                    className={`px-6 py-1 rounded-r-full font-semibold text-lg shadow-lg transition-colors duration-150 ${tab === "sent"
+                                    className={`px-6 py-1 rounded-r-full font-semibold text-lg shadow-lg transition-colors duration-150 ${
+                                        tab === "sent"
                                             ? "bg-[#e76f51] text-white"
                                             : "bg-white text-gray-400 hover:bg-[#f4a26122] opacity-80"
-                                        }`}
+                                    }`}
                                     onClick={() => setTab("sent")}
                                 >
                                     Sent
@@ -61,8 +89,9 @@ export default function RequestsPage() {
                             </div>
                         </div>
                     </div>
-                    {/* Right: Requests List */}
-                    <div className="w-[75%] flex flex-col items-start pl-8 gap-5">
+
+                    {/* Requests List */}
+                    <div className="w-full md:w-[75%] flex flex-col items-center md:items-start md:pl-8 gap-4 md:gap-5">
                         {requestsToShow.length === 0 ? (
                             <div className="text-gray-400 mt-8">No requests found.</div>
                         ) : (

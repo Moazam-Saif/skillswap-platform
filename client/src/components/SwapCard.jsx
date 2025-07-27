@@ -125,87 +125,93 @@ export const SwapCard = ({ userId, name, imageUrl, skillsTheyOffer = [], skillsT
         return idx === -1 ? str : str.slice(0, idx).trim();
     }
 
-   // ...existing code...
+// ...existing code...
 
    return (
     <div onClick={() => setShowRequest(true)}>
         {/* Scale down the entire card for mobile while maintaining layout */}
-        <div className="w-[140px] h-[135px] sm:w-[179px] sm:h-[173px] relative bg-transparent">
-            <div className="w-full h-[95px] sm:h-[122px] rounded-t-[17px] bg-[#E76F51] border-b-2 border-white relative overflow-hidden flex items-center justify-center">
-                <img
-                    src="/Arrows.svg"
-                    alt="Swap Taf"
-                    className="w-[25px] h-[12px] sm:w-[34px] sm:h-[17px] scale-[1.5]"
-                />
-
-                {/* Left: Skills They Offer */}
-                <div className="absolute left-1 top-2 sm:top-3 z-50 w-[24px] sm:w-[31px] h-[78px] sm:h-[100px] flex items-center justify-center overflow-hidden">
-                    <AnimatePresence mode="wait">
-                        <motion.span
-                            key={skillsTheyOffer?.[offerIndex]?.name}
-                            initial={{ x: -70, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            exit={{ x: 70, opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="text-center z-50 transform rotate-90 origin-center text-[0.7rem] sm:text-[min(0.9rem,100%)] text-[#264653] leading-3 font-bold"
-                            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
-                        >
-                            {getNameBeforeBracket(skillsTheyOffer?.[offerIndex]?.name) || ""}
-                        </motion.span>
-                    </AnimatePresence>
-                </div>
-
-                {/* Right: Skills They Want */}
-                <div className="absolute right-1 top-2 sm:top-3 z-50 w-[25px] sm:w-[32px] h-[78px] sm:h-[100px] flex items-center justify-center overflow-hidden">
-                    <AnimatePresence mode="wait">
-                        <motion.span
-                            key={skillsTheyWant?.[wantIndex]?.name}
-                            initial={{ x: -70, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            exit={{ x: 70, opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="text-center z-50 transform -rotate-90 origin-center text-[0.7rem] sm:text-[min(0.9rem,100%)] text-[#264653] leading-3 font-bold"
-                            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
-                        >
-                            {getNameBeforeBracket(skillsTheyWant?.[wantIndex]?.name) || ""}
-                        </motion.span>
-                    </AnimatePresence>
-                </div>
-
-                {/* Decorations - scaled proportionally */}
-                <div
-                    className="absolute left-[-52px] sm:left-[-67px] top-0 h-[95px] sm:h-[122px] w-[98px] sm:w-[128px] flex items-end"
-                    style={{
-                        backgroundImage: "url('/LeftEllipse.svg')",
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "contain",
-                    }}
-                />
-                <div className="absolute left-0 bottom-0 h-[6px] sm:h-[8px] w-[6px] sm:w-[8px] bg-[#F4A261]"></div>
-                <div
-                    className="absolute right-[-52px] sm:right-[-67px] top-0 h-[95px] sm:h-[122px] w-[98px] sm:w-[128px]"
-                    style={{
-                        backgroundImage: "url('/RightEllipse.svg')",
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "contain",
-                    }}
-                />
-                <div className="absolute right-0 bottom-0 h-[6px] sm:h-[8px] w-[6px] sm:w-[8px] bg-[#E9C46A]"></div>
-            </div>
-
-            <div className="w-full h-[40px] sm:h-[50px] flex bg-[#E76F51] rounded-b-[30px] overflow-hidden">
-                <div className="w-1/2 flex items-center justify-center border-r-2 border-white">
+        <div className="w-[140px] h-[135px] sm:w-[185px] sm:h-[180px] relative cursor-pointer">
+            {/* Shadow wrapper - separate from the card content */}
+            <div className="w-full h-full shadow-none sm:shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-[17px] sm:rounded-[17px_17px_30px_30px] absolute inset-0 bg-transparent"></div>
+            
+            {/* Card content */}
+            <div className="relative z-10">
+                <div className="w-full h-[95px] sm:h-[128px] rounded-t-[17px] bg-[#E76F51] border-b-2 border-white relative overflow-hidden flex items-center justify-center">
                     <img
-                        src={imageUrl || "/userImage.png"}
-                        alt="Profile"
-                        className="w-[28px] h-[28px] sm:w-[35px] sm:h-[35px] rounded-full object-cover"
+                        src="/Arrows.svg"
+                        alt="Swap Taf"
+                        className="w-[25px] h-[12px] sm:w-[36px] sm:h-[19px] scale-[1.5]"
                     />
+
+                    {/* Left: Skills They Offer */}
+                    <div className="absolute left-1 top-2 sm:top-3 z-50 w-[24px] sm:w-[33px] h-[78px] sm:h-[105px] flex items-center justify-center overflow-hidden">
+                        <AnimatePresence mode="wait">
+                            <motion.span
+                                key={skillsTheyOffer?.[offerIndex]?.name}
+                                initial={{ x: -70, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: 70, opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                                className="text-center z-50 transform rotate-90 origin-center text-[0.7rem] sm:text-[0.95rem] text-[#264653] leading-3 font-bold"
+                                style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+                            >
+                                {getNameBeforeBracket(skillsTheyOffer?.[offerIndex]?.name) || ""}
+                            </motion.span>
+                        </AnimatePresence>
+                    </div>
+
+                    {/* Right: Skills They Want */}
+                    <div className="absolute right-1 top-2 sm:top-3 z-50 w-[25px] sm:w-[34px] h-[78px] sm:h-[105px] flex items-center justify-center overflow-hidden">
+                        <AnimatePresence mode="wait">
+                            <motion.span
+                                key={skillsTheyWant?.[wantIndex]?.name}
+                                initial={{ x: -70, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: 70, opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                                className="text-center z-50 transform -rotate-90 origin-center text-[0.7rem] sm:text-[0.95rem] text-[#264653] leading-3 font-bold"
+                                style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+                            >
+                                {getNameBeforeBracket(skillsTheyWant?.[wantIndex]?.name) || ""}
+                            </motion.span>
+                        </AnimatePresence>
+                    </div>
+
+                    {/* Decorations - scaled proportionally */}
+                    <div
+                        className="absolute left-[-52px] sm:left-[-70px] top-0 h-[95px] sm:h-[128px] w-[98px] sm:w-[132px] flex items-end"
+                        style={{
+                            backgroundImage: "url('/LeftEllipse.svg')",
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "contain",
+                        }}
+                    />
+                    <div className="absolute left-0 bottom-0 h-[6px] sm:h-[8px] w-[6px] sm:w-[8px] bg-[#F4A261]"></div>
+                    <div
+                        className="absolute right-[-52px] sm:right-[-70px] top-0 h-[95px] sm:h-[128px] w-[98px] sm:w-[132px]"
+                        style={{
+                            backgroundImage: "url('/RightEllipse.svg')",
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "contain",
+                        }}
+                    />
+                    <div className="absolute right-0 bottom-0 h-[6px] sm:h-[8px] w-[6px] sm:w-[8px] bg-[#E9C46A]"></div>
                 </div>
-                <div
-                    className="w-1/2 flex flex-col items-center justify-center text-white text-xs sm:text-sm px-2 text-center"
-                    style={{ fontFamily: "'Josefin Sans', sans-serif" }}
-                >
-                    <p className="flex flex-wrap">{name || "User"}</p>
+
+                <div className="w-full h-[40px] sm:h-[52px] flex bg-[#E76F51] rounded-b-[30px] overflow-hidden">
+                    <div className="w-1/2 flex items-center justify-center border-r-2 border-white">
+                        <img
+                            src={imageUrl || "/userImage.png"}
+                            alt="Profile"
+                            className="w-[28px] h-[28px] sm:w-[37px] sm:h-[37px] rounded-full object-cover"
+                        />
+                    </div>
+                    <div
+                        className="w-1/2 flex flex-col items-center justify-center text-white text-xs sm:text-[0.9rem] px-2 text-center"
+                        style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+                    >
+                        <p className="flex flex-wrap">{name || "User"}</p>
+                    </div>
                 </div>
             </div>
         </div>
