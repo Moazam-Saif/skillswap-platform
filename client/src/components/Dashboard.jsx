@@ -44,11 +44,11 @@ const Dashboard = () => {
     return (
         <div className="flex flex-col min-h-screen" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
             <Nav />
-            <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
+           <main className="flex flex-1 md:rounded-tl-[30px] border-t-2 border-[#e76f51]">
                 <Sidebar />
                 <section className="w-full md:w-[80%] flex-1 overflow-y-auto bg-[#264653] md:ml-0">
                     {/* Add top padding on mobile to account for burger menu */}
-                    <div className="pt-16 md:pt-0">
+                    <div className="md:pt-0">
                         <div>
                             <img
                                 src="/Top.svg"

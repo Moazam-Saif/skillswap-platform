@@ -3,7 +3,7 @@ import {
   getUserProfile,
   updateUserProfile,
   setAvailability,
-  addRating,getAllUsers,getSkillInfo,sendSwapRequest,getAllSwapRequests,getUserById
+  addRating,getAllUsers,getSkillInfo,sendSwapRequest,getAllSwapRequests,getUserById,getUserImage
 } from '../controllers/userController.js';
 import { verifyToken } from '../middleware/authMiddleware.js';
 import { changePassword } from '../controllers/authController.js';
@@ -24,6 +24,7 @@ router.post('/create-session', verifyToken, createSession);
 router.get('/profile/show/:id', verifyToken, getUserById);
 
 router.get('/all', getAllUsers);
+router.get('/:id/image', getUserImage);
 router.get('/matches', verifyToken, getSkillMatches);
 router.get('/partial-matches', verifyToken, getPartialSkillMatches);
 router.get('/category-matches', verifyToken, getCategorySkillMatches);

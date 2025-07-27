@@ -122,3 +122,13 @@ export const getUserById = async (userId, accessToken) => {
   });
   return res.data;
 };
+
+export const getUserImage = async (userId) => {
+  try {
+    const response = await api.get(`/users/${userId}/image`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user image:', error);
+    throw error;
+  }
+};

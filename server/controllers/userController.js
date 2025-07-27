@@ -190,3 +190,14 @@ export const getUserById = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+export const getUserImage = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('imageUrl');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ imageUrl: user.imageUrl });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
