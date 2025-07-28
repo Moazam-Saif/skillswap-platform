@@ -115,13 +115,13 @@ export default function ProfileUploadPage() {
   return (
     <div className="flex flex-col min-h-screen" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
       <Nav />
-      <main className="flex flex-1 rounded-tl-[30px] border-t-2 border-[#e76f51]">
+      <main className="flex flex-1 lg:rounded-tl-[30px] border-t-2 border-[#e76f51]">
         {/* Sidebar - Same pattern as Dashboard and SessionsPage */}
         <Sidebar hideOnDesktop={true} />
 
         <section className="w-full flex-1 overflow-y-auto bg-gray-50">
           {/* Add top padding on mobile to account for burger menu */}
-          <div className="pt-16 md:pt-0">
+          <div className="md:pt-0">
             {/* Large Screen Layout - Horizontal Split */}
             <div className="hidden lg:flex h-full bg-gray-50">
               {/* Error Message */}
