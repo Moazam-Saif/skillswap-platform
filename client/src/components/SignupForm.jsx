@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
-import { signup } from '../api/auth';
+import { signup, googleAuth } from '../api/auth';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 export default function SignUpForm() {
   const [name, setName] = useState('');
@@ -12,6 +14,65 @@ export default function SignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  const { setAccessToken, setUserId } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // Google Auth Functions
+  const handleGoogleResponse = async (response) => {
+    try {
+      setIsLoading(true);
+      setError('');
+      const { accessToken, userId } = await googleAuth(response.credential);
+      setAccessToken(accessToken);
+      setUserId(userId);
+      navigate(`/dashboard/${userId}`);
+    } catch (err) {
+      console.error('Google auth error:', err);
+      setError('Google authentication failed. Please try again.');
+      setIsLoading(false);
+    }
+  };
+
+  const initializeGoogleSignIn = () => {
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+        callback: handleGoogleResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+
+      window.google.accounts.id.renderButton(
+        document.getElementById("google-signup-button"),
+        {
+          theme: "outline",
+          size: "large",
+          width: "100%",
+          text: 'signup_with',
+          shape: 'rounded',
+        }
+      );
+    }
+  };
+
+  // Load Google Sign-In script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = initializeGoogleSignIn;
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup
+      const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+      if (existingScript) {
+        document.body.removeChild(existingScript);
+      }
+    };
+  }, []);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -46,9 +107,7 @@ export default function SignUpForm() {
       
       // Redirect to login page after 2 seconds
       setTimeout(() => {
-        // Replace with your actual navigation logic
-        // navigate('/login'); // Uncomment this when using in your project
-        window.location.href = '/login'; // Or use your preferred routing method
+        navigate('/login');
       }, 2000);
       
     } catch (err) {
@@ -73,6 +132,23 @@ export default function SignUpForm() {
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-[#264653] mb-2">Create Account</h1>
             <p className="text-[#264653]">Join us today and get started</p>
+          </div>
+
+          {/* Google Sign Up Button */}
+          <div className="mb-6">
+            <div id="google-signup-button" className="w-full flex justify-center"></div>
+          </div>
+
+          {/* Divider */}
+          <div className="my-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-white/20"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-transparent text-white/70 font-medium">Or create account with email</span>
+              </div>
+            </div>
           </div>
 
           {/* Form */}
@@ -106,6 +182,7 @@ export default function SignUpForm() {
                   className="w-full bg-stone-100 rounded-lg px-11 py-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all duration-200"
                   placeholder="Enter your full name"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -124,6 +201,7 @@ export default function SignUpForm() {
                   className="w-full bg-stone-100 rounded-lg px-11 py-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all duration-200"
                   placeholder="Enter your email"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -143,11 +221,13 @@ export default function SignUpForm() {
                   placeholder="Create a password"
                   required
                   minLength="6"
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800 transition-colors"
+                  disabled={isLoading}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -177,11 +257,13 @@ export default function SignUpForm() {
                   } focus:border-transparent`}
                   placeholder="Confirm your password"
                   required
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800 transition-colors"
+                  disabled={isLoading}
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -217,7 +299,7 @@ export default function SignUpForm() {
           {/* Sign in link */}
           <p className="text-center text-white/70 text-sm mt-6">
             Already have an account?{' '}
-            <a href="#" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
+            <a href="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
               Sign in
             </a>
           </p>

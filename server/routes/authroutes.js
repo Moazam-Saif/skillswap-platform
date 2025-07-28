@@ -1,19 +1,14 @@
 import express from 'express';
-import {
-  registerUser,
-  loginUser,
-  refreshAccessToken,
-  logoutUser
-} from '../controllers/authController.js';
-
+import { registerUser, loginUser, refreshAccessToken, logoutUser, changePassword, googleAuth } from '../controllers/authController.js';
+import { verifyToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.post('/refresh', refreshAccessToken);
-router.post('/logout', logoutUser);
+router.post('/google', googleAuth); // New Google auth route
 router.post('/refresh-token', refreshAccessToken);
-
+router.post('/logout', logoutUser);
+router.put('/change-password', verifyToken, changePassword);
 
 export default router;

@@ -10,6 +10,11 @@ export const signup = async (data) => {
   return res.data;
 };
 
+export const googleAuth = async (credential) => {
+  const res = await api.post('/auth/google', { credential });
+  return res.data;
+};
+
 export const refreshToken = async () => {
   const res = await api.post('/auth/refresh-token');
   return res.data;

@@ -30,7 +30,19 @@ const swapRequestSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  passwordHash: { type: String, required: true },
+    googleId: {
+    type: String,
+    sparse: true, // Allows multiple null values
+    unique: true
+  },
+  isGoogleUser: {
+    type: Boolean,
+    default: false
+  },
+   passwordHash: {
+    type: String,
+    required: false // Changed from required: true
+  },
   contact:String,
   bio: String,
   rating: { type: Number, default: 0 },
@@ -50,5 +62,17 @@ const userSchema = new mongoose.Schema({
   sessions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Session" }],
   chats: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chat" }],
 }, { timestamps: true });
+
+userSchema.pre('save', function(next) {
+  if (this.isGoogleUser && !this.passwordHash) {
+    // Google users don't need password hash
+    next();
+  } else if (!this.isGoogleUser && !this.passwordHash) {
+    // Non-Google users must have password
+    return next(new Error('Password is required for non-Google users'));
+  } else {
+    next();
+  }
+});
 
 export default mongoose.model("User", userSchema);
