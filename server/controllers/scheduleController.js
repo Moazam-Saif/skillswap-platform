@@ -28,6 +28,7 @@ export const createSession = async (req, res) => {
       userB: request.to,
       skillFromA: request.offerSkill,
       skillFromB: request.wantSkill,
+      scheduledTime: request.timeSlots || [],
       duration,
       expiresAt,
       status: 'active',
