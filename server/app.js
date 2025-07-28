@@ -9,6 +9,7 @@ import userRoutes from './routes/userRoutes.js';
 import skillRoutes from './routes/skillRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import searchRoutes from './routes/searchRoutes.js';
+import "./services/cron.js";
 
 
 
