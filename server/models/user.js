@@ -43,6 +43,18 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false // Changed from required: true
   },
+    isEmailVerified: {
+    type: Boolean,
+    default: false
+  },
+  emailVerificationToken: {
+    type: String,
+    default: null
+  },
+  emailVerificationExpires: {
+    type: Date,
+    default: null
+  },
   contact:String,
   bio: String,
   rating: { type: Number, default: 0 },

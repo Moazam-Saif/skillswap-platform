@@ -11,6 +11,7 @@ import { getSkillMatches,getPartialSkillMatches,getCategorySkillMatches } from '
 import { createSession,getUserSessions } from '../controllers/scheduleController.js';
 
 
+
 const router = express.Router();
 
 router.get('/profile/:id', verifyToken, getUserProfile);
@@ -31,6 +32,7 @@ router.get('/category-matches', verifyToken, getCategorySkillMatches);
 router.get('/fetchCat/:skillId',getSkillInfo);
 router.get('/swap-requests', verifyToken, getAllSwapRequests);
 router.get('/sessions', verifyToken, getUserSessions);
+
 
 console.log(router.stack.map(r => r.route && r.route.path).filter(Boolean));
 

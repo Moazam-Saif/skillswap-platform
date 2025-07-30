@@ -12,6 +12,8 @@ import RequestsPage from './components/RequestsPage.jsx';
 import SessionsPage from './components/SessionsPage.jsx';
 import UserSearchPage from './components/SearchPage.jsx';
 import UserProfileView from './components/ProfilePage.jsx';
+import EmailVerification from './components/EmailVerification.jsx';
+
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<SignupForm />} />
+            <Route path="/verify-email" element={<EmailVerification />} />
 
             {/* Protected Routes */}
             <Route

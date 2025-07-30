@@ -5,6 +5,15 @@ export const login = async (credentials) => {
   return res.data;
 };
 
+export const verifyEmail = async (token) => {
+  try {
+    const response = await axios.get(`/auth/verify-email?token=${token}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const signup = async (data) => {
   const res = await api.post('/auth/register', data);
   return res.data;

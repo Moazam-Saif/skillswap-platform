@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import { OAuth2Client } from 'google-auth-library';
+import { sendVerificationEmail, generateVerificationToken } from '../services/emailService.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -43,14 +44,84 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
 
     const passwordHash = await argon2.hash(password);
-    const user = await User.create({ name, email, passwordHash });
 
-    res.status(201).json({ message: 'User registered successfully.' });
+    // Generate verification token
+    const verificationToken = generateVerificationToken();
+    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    // FIRST: Try to send verification email BEFORE creating user
+    try {
+      await sendVerificationEmail(email, name, verificationToken);
+    } catch (emailError) {
+      console.error('Failed to send verification email:', emailError);
+      return res.status(500).json({
+        message: 'Failed to send verification email. Please try again later or contact support.',
+        error: 'EMAIL_SEND_FAILED'
+      });
+    }
+
+    // ONLY create user if email was sent successfully
+    const user = await User.create({
+      name,
+      email,
+      passwordHash,
+      isEmailVerified: false,
+      emailVerificationToken: verificationToken,
+      emailVerificationExpires: verificationExpires
+    });
+
+    res.status(201).json({
+      message: 'Account created! Please check your email to verify your account.',
+      requiresVerification: true
+    });
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Registration error:', err);
+    res.status(500).json({
+      message: 'Registration failed. Please try again.',
+      error: err.message
+    });
   }
 };
 
+// Add the verifyEmail function
+export const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({ message: 'Verification token is required' });
+    }
+
+    const user = await User.findOne({
+      emailVerificationToken: token,
+      emailVerificationExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        message: 'Invalid or expired verification token. Please sign up again.'
+      });
+    }
+
+    // Verify the user
+    user.isEmailVerified = true;
+    user.emailVerificationToken = null;
+    user.emailVerificationExpires = null;
+    await user.save();
+
+    res.status(200).json({
+      message: 'Email verified successfully! You can now log in.',
+      verified: true
+    });
+
+  } catch (err) {
+    console.error('Email verification error:', err);
+    res.status(500).json({ message: 'Server error during email verification' });
+  }
+};
+
+// Update loginUser to check verification
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -59,6 +130,14 @@ export const loginUser = async (req, res) => {
     if (!user || !(await argon2.verify(user.passwordHash, password)))
       return res.status(401).json({ message: 'Invalid credentials' });
 
+    // Check if email is verified (skip for Google users)
+    if (!user.isGoogleUser && !user.isEmailVerified) {
+      return res.status(400).json({
+        message: 'Please verify your email before logging in. Check your inbox.',
+        requiresVerification: true
+      });
+    }
+
     const tokens = await generateTokensAndCookie(user, res);
     res.json(tokens);
   } catch (err) {
@@ -66,11 +145,11 @@ export const loginUser = async (req, res) => {
   }
 };
 
+// Update googleAuth to auto-verify
 export const googleAuth = async (req, res) => {
   try {
     const { credential } = req.body;
 
-    // Verify the Google token
     const ticket = await googleClient.verifyIdToken({
       idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -79,8 +158,7 @@ export const googleAuth = async (req, res) => {
     const payload = ticket.getPayload();
     const { sub: googleId, email, name, picture } = payload;
 
-    // Check if user exists
-    let user = await User.findOne({ 
+    let user = await User.findOne({
       $or: [
         { email: email },
         { googleId: googleId }
@@ -88,20 +166,20 @@ export const googleAuth = async (req, res) => {
     });
 
     if (user) {
-      // User exists, update Google ID if not set
       if (!user.googleId) {
         user.googleId = googleId;
+        user.isEmailVerified = true; // Auto-verify Google users
         await user.save();
       }
     } else {
-      // Create new user
       user = await User.create({
         name,
         email,
         googleId,
         imageUrl: picture,
-        passwordHash: null, // Google users don't need password
-        isGoogleUser: true
+        passwordHash: null,
+        isGoogleUser: true,
+        isEmailVerified: true  // Google users are auto-verified
       });
     }
 

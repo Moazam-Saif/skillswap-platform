@@ -74,30 +74,34 @@ export default function SignUpForm() {
     };
   }, []);
 
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-    setSuccess('');
-    
-    // Validate passwords match
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
-      setIsLoading(false);
-      return;
-    }
+ // Update only the handleSignUp function in your existing component
 
-    // Validate password length
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
-      setIsLoading(false);
-      return;
-    }
+const handleSignUp = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setError('');
+  setSuccess('');
+  
+  // Your existing validation
+  if (password !== confirmPassword) {
+    setError('Passwords do not match.');
+    setIsLoading(false);
+    return;
+  }
+
+  if (password.length < 6) {
+    setError('Password must be at least 6 characters long.');
+    setIsLoading(false);
+    return;
+  }
+  
+  try {
+    const response = await signup({ name, email, password });
+    setIsLoading(false);
     
-    try {
-      const response = await signup({ name, email, password });
-      setIsLoading(false);
-      setSuccess('Account created successfully! Redirecting to login...');
+    // UPDATED: Handle verification response
+    if (response.requiresVerification) {
+      setSuccess('Account created! Please check your email and click the verification link to complete registration.');
       
       // Reset form
       setName('');
@@ -105,17 +109,21 @@ export default function SignUpForm() {
       setPassword('');
       setConfirmPassword('');
       
-      // Redirect to login page after 2 seconds
+      // Don't redirect - let user know to check email
+    } else {
+      // Fallback for existing flow
+      setSuccess('Account created successfully!');
       setTimeout(() => {
         navigate('/login');
       }, 2000);
-      
-    } catch (err) {
-      setError(err.response?.data?.message || 'Sign up failed. Please try again.');
-      console.error('Sign up error:', err);
-      setIsLoading(false);
     }
-  };
+    
+  } catch (err) {
+    setError(err.response?.data?.message || 'Sign up failed. Please try again.');
+    console.error('Sign up error:', err);
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-stone-100 flex items-center justify-center p-4">
