@@ -186,3 +186,143 @@ export const sendVerificationEmail = async (email, name, token) => {
     }
   }
 };
+
+// Add this function to your existing emailService.js
+
+export const sendSessionReminderEmail = async (email, name, session, timeSlot) => {
+  const partnerName = session.userA.name === name ? session.userB.name : session.userA.name;
+  const skillExchange = `${session.skillFromA.name} ↔ ${session.skillFromB.name}`;
+  
+  const mailOptions = {
+    from: {
+      name: process.env.SENDER_NAME,
+      address: process.env.SENDER_EMAIL
+    },
+    to: email,
+    subject: "🔔 SkillSwap Session Reminder - Starting in 5 minutes!",
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { 
+            font-family: 'Arial', sans-serif; 
+            background-color: #f5f5f5; 
+            margin: 0; 
+            padding: 20px; 
+          }
+          .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1); 
+          }
+          .header { 
+            background: linear-gradient(135deg, #264653, #2a9d8f); 
+            padding: 30px; 
+            text-align: center; 
+          }
+          .header h1 { 
+            color: white; 
+            margin: 0; 
+            font-size: 28px; 
+            font-weight: bold;
+          }
+          .content { 
+            padding: 30px; 
+          }
+          .reminder-box {
+            background: #e76f51;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+          }
+          .session-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+          }
+          .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 8px;
+          }
+          .detail-label {
+            font-weight: bold;
+            color: #264653;
+          }
+          .footer { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            text-align: center; 
+            color: #666; 
+            font-size: 14px; 
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🔔 Session Reminder</h1>
+            <p style="color: white; margin: 10px 0 0 0; font-size: 16px;">Your SkillSwap session is starting soon!</p>
+          </div>
+          <div class="content">
+            <h2 style="color: #264653;">Hi ${name}! 👋</h2>
+            
+            <div class="reminder-box">
+              ⏰ Your session starts in 5 minutes!
+            </div>
+            
+            <div class="session-details">
+              <div class="detail-row">
+                <span class="detail-label">🤝 Partner:</span>
+                <span>${partnerName}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">📚 Skills:</span>
+                <span>${skillExchange}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">🕐 Time Slot:</span>
+                <span>${timeSlot}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">📅 Session ID:</span>
+                <span>${session._id}</span>
+              </div>
+            </div>
+            
+            <p style="color: #666; text-align: center; margin-top: 30px;">
+              Get ready to learn and share! 🚀<br>
+              <strong>Good luck with your session!</strong>
+            </p>
+          </div>
+          <div class="footer">
+            <p>© 2025 SkillSwap. All rights reserved.</p>
+            <p>📧 This is an automated reminder email.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `
+  };
+
+  try {
+    console.log("attempting mail");
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`✅ Session reminder sent to ${email} for slot ${timeSlot}`);
+    return info;
+  } catch (error) {
+    console.error(`❌ Failed to send reminder to ${email}:`, error);
+    throw error;
+  }
+};

@@ -1,5 +1,6 @@
 import Session from '../models/Session.js';
 import User from '../models/User.js';
+import { scheduleSessionReminders, clearSessionReminders } from '../services/reminderService.js';
 
 export const createSession = async (req, res) => {
   try {
@@ -34,6 +35,20 @@ export const createSession = async (req, res) => {
       status: 'active',
     });
 
+    // ✅ NEW: Schedule reminders for the new session
+    try {
+      if (session.scheduledTime && session.scheduledTime.length > 0) {
+        console.log("Calling await schedule session reminder");
+        await scheduleSessionReminders(session._id);
+        console.log(`✅ Reminders scheduled for session ${session._id}`);
+      } else {
+        console.log(`⚠️ No time slots provided for session ${session._id}, no reminders scheduled`);
+      }
+    } catch (reminderError) {
+      console.error('❌ Failed to schedule reminders:', reminderError);
+      // Don't fail the session creation if reminder scheduling fails
+    }
+
     // Add the session to both users
     await User.findByIdAndUpdate(request.from, { $push: { sessions: session._id } });
     await User.findByIdAndUpdate(request.to, { $push: { sessions: session._id } });
@@ -42,7 +57,11 @@ export const createSession = async (req, res) => {
     recipient.swapRequests = recipient.swapRequests.filter(req => req._id.toString() !== requestId);
     await recipient.save();
 
-    res.json({ message: 'Session created successfully', session });
+    res.json({ 
+      message: 'Session created successfully', 
+      session,
+      remindersScheduled: session.scheduledTime?.length || 0  // ✅ NEW: Info about reminders
+    });
   } catch (err) {
     console.error("Error in createSession:", err);
     res.status(500).json({ error: err.message });
