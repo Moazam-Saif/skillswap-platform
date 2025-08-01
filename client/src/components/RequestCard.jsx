@@ -84,7 +84,7 @@ export default function RequestCard({ request, type }) {
             {/* Days and Time Slots */}
             <div className="relative w-full h-[26%] flex flex-col">
                 <div className="w-full flex justify-center items-center" style={{ height: "25%" }}>
-                    <span className="text-shadow-custom text-[8px] sm:text-[9px] md:text-[10px] lg:text-[11px] font-semibold">{days} Days</span>
+                    <span className="text-shadow-custom text-[8px] sm:text-[9px] md:text-[10px] lg:text-[11px] font-semibold">{days} Number of Sessions:</span>
                 </div>
                 <div className="w-full text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-semibold flex items-center justify-center px-2 sm:px-3 md:px-4" style={{ height: "75%" }}>
                     <span className="px-2 sm:px-3 py-1 bg-[#FFE5E5] rounded-lg sm:rounded-xl md:rounded-2xl truncate max-w-[90%] text-center">

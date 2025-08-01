@@ -1,6 +1,9 @@
 import Session from '../models/Session.js';
 import User from '../models/User.js';
 import { scheduleSessionReminders, clearSessionReminders } from '../services/reminderService.js';
+import { getLastSlotDate } from '../services/sessionsService.js';
+import { scheduleSessionExpiry } from '../services/sessionQueue.js';
+import moment from 'moment-timezone';
 
 export const createSession = async (req, res) => {
   try {
@@ -21,7 +24,8 @@ export const createSession = async (req, res) => {
       return res.status(404).json({ error: "Swap request not found" });
     }
 
-    const expiresAt = new Date(Date.now() + duration * 24 * 60 * 60 * 1000);
+   const expiresAt = getLastSlotDate(request.timeSlots, duration);
+
     
     // Create a new session
     const session = await Session.create({
@@ -56,6 +60,7 @@ export const createSession = async (req, res) => {
     // Remove the request from the recipient's swapRequests
     recipient.swapRequests = recipient.swapRequests.filter(req => req._id.toString() !== requestId);
     await recipient.save();
+    await scheduleSessionExpiry(session._id, session.expiresAt);
 
     res.json({ 
       message: 'Session created successfully', 

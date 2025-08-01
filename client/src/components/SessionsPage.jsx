@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from "react";
 import Nav from "./Nav";
 import Sidebar from "./Sidebar";
 import { AuthContext } from "../context/AuthContext";
-import api from "../api/axios";
 import { getUserSessions } from "../api/auth";
 
 export default function SessionsPage() {
@@ -36,11 +35,11 @@ export default function SessionsPage() {
                     ) : sessions.length === 0 ? (
                         <div className="text-gray-400">No active sessions found.</div>
                     ) : (
-                        <div className="flex flex-col gap-4 md:gap-6 items-center md:items-start">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full">
                             {sessions.map((session) => (
                                 <div 
                                     key={session._id} 
-                                    className="bg-white rounded-xl shadow p-4 md:p-6 flex flex-col gap-2 w-full max-w-[350px] sm:max-w-[380px] md:max-w-[420px]"
+                                    className="bg-white rounded-xl shadow p-4 md:p-6 flex flex-col gap-2 w-full"
                                 >
                                     <div className="flex justify-between items-center flex-wrap gap-2">
                                         <span className="font-semibold text-[#264653] text-sm md:text-base truncate">
@@ -55,7 +54,7 @@ export default function SessionsPage() {
                                             <b>With:</b> {session.userA?.name === undefined || session.userA?._id === userId ? session.userB?.name : session.userA?.name}
                                         </span>
                                         <span>
-                                            <b>Duration:</b> {session.duration} days
+                                            <b>Duration:</b> {session.duration} weeks
                                         </span>
                                     </div>
                                     <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-xs text-gray-600">
@@ -63,9 +62,22 @@ export default function SessionsPage() {
                                             <b>Created:</b> {new Date(session.createdAt).toLocaleDateString()}
                                         </span>
                                         <span>
-                                            <b>Expires:</b> {session.duration ? new Date(new Date(session.createdAt).getTime() + session.duration * 24 * 60 * 60 * 1000).toLocaleDateString() : "-"}
+                                            <b>Expires:</b> {session.duration ? new Date(new Date(session.createdAt).getTime() + session.duration * 7 * 24 * 60 * 60 * 1000).toLocaleDateString() : "-"}
                                         </span>
                                     </div>
+                                    {/* Time slots */}
+                                    {session.scheduledTime && session.scheduledTime.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 mt-1">
+                                            {session.scheduledTime.map((slot, idx) => (
+                                                <span
+                                                    key={idx}
+                                                    className="bg-[#2a9d8f] text-white text-xs px-2 py-1 rounded"
+                                                >
+                                                    {slot}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
