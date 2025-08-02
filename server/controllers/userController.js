@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import { fetchSkill } from '../services/lightcast.js';
 import { clearSearchCache } from './searchController.js';
+import moment from 'moment-timezone';
 
 export const getUserProfile = async (req, res) => {
   try {
@@ -73,10 +74,68 @@ export const updateUserProfile = async (req, res) => {
 
 export const setAvailability = async (req, res) => {
   try {
-    const { availability } = req.body;
-    const user = await User.findByIdAndUpdate(req.userId, { availability }, { new: true });
-    res.json(user.availability);
+    const { availability, timezone } = req.body;
+
+    // Validate timezone
+    if (!moment.tz.zone(timezone)) {
+      return res.status(400).json({ error: 'Invalid timezone' });
+    }
+
+    // Convert user's local time to UTC while preserving context
+    const utcAvailability = availability.map(slot => {
+      const today = moment.tz(timezone);
+
+      // Create moments for start and end times
+      const startMoment = today.clone()
+        .day(slot.day)
+        .hour(moment(slot.startTime, 'HH:mm').hour())
+        .minute(moment(slot.startTime, 'HH:mm').minute())
+        .second(0)
+        .millisecond(0);
+
+      const endMoment = today.clone()
+        .day(slot.day)
+        .hour(moment(slot.endTime, 'HH:mm').hour())
+        .minute(moment(slot.endTime, 'HH:mm').minute())
+        .second(0)
+        .millisecond(0);
+
+      return {
+        // Original user input (semantic meaning)
+        originalDay: slot.day,
+        originalStartTime: slot.startTime,
+        originalEndTime: slot.endTime,
+
+        // UTC representation (for calculations)
+        utcDay: startMoment.utc().format('dddd'),
+        utcStartTime: startMoment.utc().format('HH:mm'),
+        utcEndTime: endMoment.utc().format('HH:mm'),
+
+        // Context preservation
+        userTimezone: timezone,
+
+        // Backward compatibility
+        day: slot.day,
+        startTime: slot.startTime,
+        endTime: slot.endTime
+      };
+    });
+
+    const user = await User.findByIdAndUpdate(
+      req.userId,
+      {
+        availability: utcAvailability,
+        timezone: timezone
+      },
+      { new: true }
+    );
+
+    res.json({
+      message: 'Availability updated successfully',
+      availability: user.availability
+    });
   } catch (err) {
+    console.error('Error setting availability:', err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -117,18 +176,30 @@ export const getSkillInfo = async (req, res) => {
 
 export const sendSwapRequest = async (req, res) => {
   try {
-    const { toUserId, offerSkill, wantSkill, days, timeSlots } = req.body;
+    const { toUserId, offerSkill, wantSkill, days, timeSlots, timezone } = req.body; // ✅ Add timezone
     const fromUserId = req.userId;
 
+    // ✅ Add validation
+    if (!toUserId || !offerSkill || !wantSkill || !days || !timeSlots) {
+      return res.status(400).json({
+        error: 'Missing required fields: toUserId, offerSkill, wantSkill, days, timeSlots'
+      });
+    }
+
+    // ✅ Validate that users are different
+    if (fromUserId === toUserId) {
+      return res.status(400).json({ error: 'Cannot send swap request to yourself' });
+    }
 
     const swapRequest = {
       from: fromUserId,
       to: toUserId,
       offerSkill,
       wantSkill,
-      days,
-      timeSlots,
+      days: Number(days), // ✅ Ensure it's a number
+      timeSlots: Array.isArray(timeSlots) ? timeSlots : [timeSlots], // ✅ Ensure array
       status: "pending",
+      timezone: timezone || 'UTC', // ✅ Add timezone field
       createdAt: new Date()
     };
 
@@ -138,7 +209,11 @@ export const sendSwapRequest = async (req, res) => {
       { $push: { swapRequests: swapRequest } },
       { new: true }
     );
- 
+
+    // ✅ Check if update was successful
+    if (!updatedRecipient) {
+      return res.status(404).json({ error: 'Recipient user not found' });
+    }
 
     // Add to sender's requestsSent
     const updatedSender = await User.findByIdAndUpdate(
@@ -147,9 +222,14 @@ export const sendSwapRequest = async (req, res) => {
       { new: true }
     );
 
+    // ✅ Check if update was successful
+    if (!updatedSender) {
+      return res.status(404).json({ error: 'Sender user not found' });
+    }
 
-    res.json({ message: "Swap request sent!" });
+    res.json({ message: "Swap request sent successfully!" });
   } catch (err) {
+    console.error('❌ Error in sendSwapRequest:', err); // ✅ Add logging
     res.status(500).json({ error: err.message });
   }
 };
@@ -168,25 +248,65 @@ export const getAllSwapRequests = async (req, res) => {
   }
 };
 
-// ...existing code...
-
-// ...existing code...
 
 export const getUserById = async (req, res) => {
   try {
+    const { viewerTimezone } = req.query;
     const user = await User.findById(req.params.id).select('-passwordHash');
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    
-    // Count completed sessions from user's sessions array
-    const swapCount = user.sessions ? user.sessions.filter(session => session.status === 'completed').length : 0;
-    
-    const userWithSwapCount = {
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Convert availability to viewer's timezone
+    const convertedAvailability = user.availability.map(slot => {
+      // Get the original timezone (fallback to user's stored timezone or UTC)
+      const originalTimezone = slot.userTimezone || user.timezone || 'UTC';
+
+      // If no viewer timezone provided, use original
+      const targetTimezone = viewerTimezone || originalTimezone;
+
+      // Use original data if available, fallback to old format
+      const originalDay = slot.originalDay || slot.day;
+      const originalStartTime = slot.originalStartTime || slot.startTime;
+      const originalEndTime = slot.originalEndTime || slot.endTime;
+
+      // Recreate the original moment
+      const today = moment.tz(originalTimezone);
+      const originalStartMoment = today.clone()
+        .day(originalDay)
+        .hour(moment(originalStartTime, 'HH:mm').hour())
+        .minute(moment(originalStartTime, 'HH:mm').minute())
+        .second(0)
+        .millisecond(0);
+
+      const originalEndMoment = today.clone()
+        .day(originalDay)
+        .hour(moment(originalEndTime, 'HH:mm').hour())
+        .minute(moment(originalEndTime, 'HH:mm').minute())
+        .second(0)
+        .millisecond(0);
+
+      // Convert to viewer's timezone
+      const viewerStartMoment = originalStartMoment.clone().tz(targetTimezone);
+      const viewerEndMoment = originalEndMoment.clone().tz(targetTimezone);
+
+      return {
+        day: viewerStartMoment.format('dddd'),
+        startTime: viewerStartMoment.format('HH:mm'),
+        endTime: viewerEndMoment.format('HH:mm')
+      };
+    });
+
+    const userWithConvertedTimes = {
       ...user.toObject(),
-      swapCount: swapCount
+      availability: convertedAvailability,
+      swapCount: user.sessions ? user.sessions.filter(session => session.status === 'completed').length : 0
     };
-    
-    res.json(userWithSwapCount);
+
+    res.json(userWithConvertedTimes);
   } catch (err) {
+    console.error('Error getting user:', err);
     res.status(500).json({ message: err.message });
   }
 };

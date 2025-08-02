@@ -19,20 +19,38 @@ export default function SignUpForm() {
   const navigate = useNavigate();
 
   // Google Auth Functions
-  const handleGoogleResponse = async (response) => {
-    try {
-      setIsLoading(true);
-      setError('');
-      const { accessToken, userId } = await googleAuth(response.credential);
-      setAccessToken(accessToken);
-      setUserId(userId);
-      navigate(`/dashboard/${userId}`);
-    } catch (err) {
-      console.error('Google auth error:', err);
-      setError('Google authentication failed. Please try again.');
-      setIsLoading(false);
-    }
-  };
+ // Update the handleGoogleResponse function
+
+const handleGoogleResponse = async (response) => {
+  try {
+    setIsLoading(true);
+    setError('');
+    setSuccess('');
+    
+    console.log('Google response received:', response.credential ? 'Yes' : 'No');
+    
+    const result = await googleAuth(response.credential);
+    console.log('Google auth result:', result);
+    
+    setAccessToken(result.accessToken);
+    setUserId(result.userId);
+    
+    setSuccess('Google authentication successful! Redirecting...');
+    
+    setTimeout(() => {
+      navigate(`/dashboard/${result.userId}`);
+    }, 1000);
+    
+  } catch (err) {
+    console.error('Google auth error:', err);
+    setError(
+      err.response?.data?.message || 
+      'Google authentication failed. Please try again.'
+    );
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const initializeGoogleSignIn = () => {
     if (window.google) {

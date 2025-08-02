@@ -7,7 +7,8 @@ export const login = async (credentials) => {
 
 export const verifyEmail = async (token) => {
   try {
-    const response = await axios.get(`/auth/verify-email?token=${token}`);
+    
+    const response = await api.get(`/auth/verify-email?token=${token}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -84,7 +85,15 @@ export const getCategorySkillMatches = async (accessToken) => {
 };
 
 export const sendSwapRequest = async (data, accessToken) => {
-  const res = await api.post('/users/swap-request', data, {
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  
+  const requestData = {
+    ...data,
+    timezone: data.timezone || userTimezone // Use provided timezone or detect it
+  };
+  console.log('🌐 Sending swap request with data:', requestData);
+  
+  const res = await api.post('/users/swap-request', requestData, {
     headers: { Authorization: `Bearer ${accessToken}` }
   });
   return res.data;
@@ -128,11 +137,23 @@ export const searchUsersByName = async (name) => {
   return res.data;
 };
 
-// ...existing code...
-
 export const getUserById = async (userId, accessToken) => {
- const res = await api.get(`/users/profile/show/${userId}`,{
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  
+  const res = await api.get(`/users/profile/show/${userId}?viewerTimezone=${userTimezone}`, {
     headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  return res.data;
+};
+
+export const setUserAvailability = async (availability, accessToken) => {
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  
+  const res = await api.post('/users/availability', {
+    availability,
+    timezone: userTimezone 
+  }, {
+    headers: { Authorization: `Bearer ${accessToken}` }
   });
   return res.data;
 };

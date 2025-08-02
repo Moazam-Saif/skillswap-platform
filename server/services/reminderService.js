@@ -2,6 +2,7 @@ import cron from 'node-cron';
 import Session from '../models/Session.js';
 import User from '../models/User.js';
 import { sendSessionReminderEmail } from './emailService.js';
+import moment from 'moment-timezone';
 
 // Store active reminder jobs
 const activeReminders = new Map();
@@ -47,7 +48,7 @@ const getNextReminderTime = (timeSlot) => {
 };
 
 // Function to create cron expression for reminder (5 minutes before)
-const createReminderCron = (timeSlot) => {
+const createReminderCron = (timeSlot, timezone = 'UTC') => {
   const [dayTime] = timeSlot.split(' - ');
   const [day, startTime] = dayTime.split(' ');
 
@@ -56,58 +57,39 @@ const createReminderCron = (timeSlot) => {
     'Friday': 5, 'Saturday': 6, 'Sunday': 0
   };
 
-  const [hours, minutes] = startTime.split(':').map(Number);
+  // Parse time in user's timezone, then convert to UTC for cron
+  const slotMoment = moment.tz(`${day} ${startTime}`, 'dddd HH:mm', timezone);
+  const reminderMoment = slotMoment.clone().subtract(5, 'minutes').utc();
 
-  // Calculate reminder time (5 minutes before)
-  let reminderHours = hours;
-  let reminderMinutes = minutes - 5;
+  const targetDay = reminderMoment.day();
+  const reminderHours = reminderMoment.hour();
+  const reminderMinutes = reminderMoment.minute();
 
-  if (reminderMinutes < 0) {
-    reminderMinutes += 60;
-    reminderHours -= 1;
-  }
-
-  if (reminderHours < 0) {
-    reminderHours += 24;
-  }
-
-  const targetDay = dayMap[day];
-
-  // Cron format: minute hour day-of-month month day-of-week
-  // For weekly recurring: minute hour * * day-of-week
   return `${reminderMinutes} ${reminderHours} * * ${targetDay}`;
 };
 
-// Function to schedule reminders for a session
-export const scheduleSessionReminders = async (sessionId) => {
+export const scheduleSessionReminders = async (sessionId, userTimezone = 'UTC') => {
   try {
     const session = await Session.findById(sessionId)
-      .populate('userA', 'name email')
-      .populate('userB', 'name email');
+      .populate('userA', 'name email timezone')
+      .populate('userB', 'name email timezone');
 
     if (!session || session.status !== 'active') {
-      console.log(`⚠️ Session ${sessionId} not found or not active`);
       return;
     }
 
-    console.log(`📅 Scheduling reminders for session: ${sessionId}`);
-
-    // Clear existing reminders for this session
     clearSessionReminders(sessionId);
 
-    // Schedule reminder for each time slot
     session.scheduledTime.forEach((timeSlot, index) => {
       try {
-     
-        // Existing cron job for future weeks
-        const cronExpression = createReminderCron(timeSlot);
+        const cronExpression = createReminderCron(timeSlot, userTimezone);
         const reminderKey = `${sessionId}_${index}`;
-        console.log(`⏰ Setting reminder for ${timeSlot} with cron: ${cronExpression}`);
+        
         const task = cron.schedule(cronExpression, async () => {
           await sendSessionReminder(session, timeSlot);
         }, {
           scheduled: true,
-          timezone: "Asia/Karachi" // Adjust to your timezone
+          timezone: "UTC" // Always use UTC for cron scheduling
         });
 
         activeReminders.set(reminderKey, task);
@@ -184,4 +166,47 @@ export const handleSessionStatusChange = async (sessionId, newStatus) => {
   } else if (newStatus === 'active') {
     await scheduleSessionReminders(sessionId);
   }
+};
+
+// Add these functions to your existing reminderService.js file
+
+export const clearAllReminders = () => {
+  const initialCount = activeReminders.size;
+  console.log(`🗑️ Clearing ${initialCount} active reminders...`);
+  
+  let successCount = 0;
+  let errorCount = 0;
+  
+  for (const [key, task] of activeReminders.entries()) {
+    try {
+      if (task && typeof task.stop === 'function') {
+        task.stop();
+      }
+      if (task && typeof task.destroy === 'function') {
+        task.destroy();
+      }
+      console.log(`✅ Cleared reminder: ${key}`);
+      successCount++;
+    } catch (error) {
+      console.error(`❌ Error clearing reminder ${key}:`, error);
+      errorCount++;
+    }
+  }
+
+  activeReminders.clear();
+  console.log(`✅ Reminder clearing complete: ${successCount} cleared, ${errorCount} errors`);
+  
+  return {
+    initialCount,
+    successCount,
+    errorCount,
+    finalCount: activeReminders.size
+  };
+};
+
+export const getReminderStatus = () => {
+  return {
+    activeCount: activeReminders.size,
+    reminderKeys: Array.from(activeReminders.keys())
+  };
 };

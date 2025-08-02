@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // ✅ Added useEffect import
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -20,6 +20,8 @@ export default function SwapRequest({
     const [days, setDays] = useState(1);
     const [offerIndex, setOfferIndex] = useState(0);
     const [wantIndex, setWantIndex] = useState(0);
+    const [userTimezone, setUserTimezone] = useState('UTC');
+    const [convertedAvailability, setConvertedAvailability] = useState([]);
 
     // Use real data with fallbacks
     const userData = {
@@ -31,6 +33,20 @@ export default function SwapRequest({
         skillsTheyWant: skillsTheyWant.length > 0 ? skillsTheyWant : []
     };
 
+    useEffect(() => {
+        // Detect user's timezone
+        const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        setUserTimezone(detectedTimezone);
+
+        // Convert availability to user's timezone
+        convertAvailabilityToUserTimezone(availability, detectedTimezone);
+    }, [availability]);
+
+    const convertAvailabilityToUserTimezone = (slots, timezone) => {
+        // Backend handles conversion, just pass through
+        setConvertedAvailability(slots);
+    };
+
     const handleRequestSwap = async () => {
         const data = {
             toUserId: userData.userId,
@@ -38,8 +54,9 @@ export default function SwapRequest({
             wantSkill: userData.skillsTheyWant[wantIndex],
             days: Number(days),
             timeSlots: selected, // selected is your array of chosen time slots
+            timezone: userTimezone
         };
-        
+
         try {
             const response = await sendSwapRequest(data, accessToken);
             alert("Swap request sent successfully!");
@@ -60,12 +77,14 @@ export default function SwapRequest({
         navigate(`/users/profile/show/${userData.userId}`);
     };
 
-    // Format slots for display using real data
-    const timeSlots = userData.availability.length
-        ? userData.availability.map(
+    // ✅ FIXED: Use convertedAvailability instead of userData.availability, and removed duplicate
+    const timeSlots = convertedAvailability.length
+        ? convertedAvailability.map(
             (slot) => `${slot.day} ${slot.startTime} - ${slot.endTime}`
         )
-        : [];
+        : userData.availability.map( // ✅ Fallback to original if conversion failed
+            (slot) => `${slot.day} ${slot.startTime} - ${slot.endTime}`
+        );
 
     // Carousel navigation
     const nextOffer = () => setOfferIndex((prev) => (prev + 1) % userData.skillsTheyOffer.length);
@@ -192,7 +211,7 @@ export default function SwapRequest({
                 <div className="relative w-full h-[50px] sm:h-[55px] md:h-[60px] flex gap-0 border-t-1 border-white">
                     <div className="flex items-center justify-center relative w-1/2 h-full rounded-bl-[15px] border-r-1 border-white">
                         <button className="px-2 sm:px-3 py-1 bg-white text-[#e76f51] text-xs sm:text-sm md:text-base rounded-[15px] shadow-[#2646531A] shadow-md cursor-pointer"
-                        onClick={handleRequestSwap}>Request Swap</button>
+                            onClick={handleRequestSwap}>Request Swap</button>
                     </div>
                     <div className="flex items-center justify-center relative w-1/2 h-full rounded-br-[15px]">
                         <button className="px-2 sm:px-3 py-1 bg-white text-[#e76f51] text-xs sm:text-sm md:text-base rounded-[15px] shadow-[#2646531A] shadow-md">CHAT</button>

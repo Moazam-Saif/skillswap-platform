@@ -1,17 +1,26 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { closePopup } from '../store/popupSlice';
+import { AuthContext } from '../context/AuthContext'; // ✅ Add this
+import { setUserAvailability } from '../api/auth'; // ✅ Add this
 
 const WeekScheduler = ({ timeSlots, setTimeSlots }) => {
     const dispatch = useDispatch();
-
+    const { accessToken } = useContext(AuthContext); // ✅ Add this
+    
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
     const [selectedDay, setSelectedDay] = useState(null);
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
+    const [userTimezone, setUserTimezone] = useState('UTC'); // ✅ Add this
 
     const scrollRef = useRef(null);
+
+    // ✅ Add timezone detection
+    useEffect(() => {
+        const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        setUserTimezone(detectedTimezone);
+    }, []);
 
     const handleAddTime = () => {
         if (!startTime || !endTime || !selectedDay) return;
@@ -27,6 +36,38 @@ const WeekScheduler = ({ timeSlots, setTimeSlots }) => {
         setEndTime('');
     };
 
+    // ✅ Add save function
+    const handleSaveAvailability = async () => {
+        try {
+            // Convert timeSlots object to array format expected by backend
+            const availability = [];
+            
+            Object.entries(timeSlots).forEach(([day, slots]) => {
+                if (slots && slots.length > 0) {
+                    slots.forEach(slot => {
+                        availability.push({
+                            day: day,
+                            startTime: slot.start,
+                            endTime: slot.end
+                        });
+                    });
+                }
+            });
+
+            if (availability.length === 0) {
+                alert('Please add at least one time slot');
+                return;
+            }
+
+            await setUserAvailability(availability, accessToken);
+            alert('Availability saved successfully!');
+            dispatch(closePopup());
+        } catch (error) {
+            console.error('Error saving availability:', error);
+            alert('Failed to save availability. Please try again.');
+        }
+    };
+
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -36,6 +77,13 @@ const WeekScheduler = ({ timeSlots, setTimeSlots }) => {
     return (
         <>
             <div className="p-4 sm:p-6 max-w-2xl mx-auto">
+                {/* ✅ Add timezone display */}
+                <div className="mb-4 text-center">
+                    <p className="text-sm text-gray-600">
+                        Your timezone: <span className="font-medium">{userTimezone}</span>
+                    </p>
+                </div>
+
                 {/* Day Selector Bar */}
                 <div className="flex flex-wrap justify-evenly bg-[rgb(255,255,255,0.7)] p-4 rounded-lg shadow-md mb-4 gap-y-2 sm:gap-3">
                     {daysOfWeek.map((day) => (
@@ -106,7 +154,6 @@ const WeekScheduler = ({ timeSlots, setTimeSlots }) => {
                                                     setTimeSlots((prev) => {
                                                         const updated = { ...prev };
                                                         updated[day] = updated[day].filter((_, i) => i !== index);
-                                                        // If the day's array becomes empty, remove the key entirely (optional)
                                                         if (updated[day].length === 0) delete updated[day];
                                                         return updated;
                                                     });
@@ -124,15 +171,21 @@ const WeekScheduler = ({ timeSlots, setTimeSlots }) => {
                     )}
                 </div>
 
-                <div className="mt-4 flex justify-end">
+                {/* ✅ Updated buttons */}
+                <div className="mt-4 flex flex-col sm:flex-row gap-2 justify-end">
+                    <button
+                        onClick={handleSaveAvailability}
+                        className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
+                    >
+                        Save Availability
+                    </button>
                     <button
                         onClick={() => dispatch(closePopup())}
-                        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition w-full sm:w-auto"
+                        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
                     >
                         Close
                     </button>
                 </div>
-
             </div>
         </>
     );

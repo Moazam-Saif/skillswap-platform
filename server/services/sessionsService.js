@@ -1,11 +1,12 @@
 import moment from 'moment-timezone';
 
-export function getLastSlotDate(timeSlots, weeks) {
+export function getLastSlotDate(timeSlots, weeks, userTimezone = 'UTC') {
   const dayMap = {
     'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3,
     'Thursday': 4, 'Friday': 5, 'Saturday': 6
   };
-  const now = moment.tz('Asia/Karachi');
+  
+  const now = moment.tz(userTimezone);
   let maxDate = null;
 
   timeSlots.forEach(slot => {
@@ -13,18 +14,28 @@ export function getLastSlotDate(timeSlots, weeks) {
     const [day, startTime] = dayTime.split(' ');
     const [endHour, endMinute] = endTime.split(':').map(Number);
 
-    // Find the next occurrence of this slot
-    const currentDay = now.day();
-    let daysUntil = dayMap[day] - currentDay;
-    if (daysUntil < 0) daysUntil += 7;
+    // Create the slot time in user's timezone
+    const slotMoment = moment.tz(userTimezone)
+      .day(dayMap[day])
+      .hour(endHour)
+      .minute(endMinute)
+      .second(0)
+      .millisecond(0);
 
-    // For each week, calculate the slot's date in Asia/Karachi
+    // If this slot is in the past this week, move to next week
+    if (slotMoment.isBefore(now)) {
+      slotMoment.add(1, 'week');
+    }
+
+    // For each week, calculate the slot's date
     for (let w = 0; w < weeks; w++) {
-      const slotDate = now.clone().add(daysUntil + w * 7, 'days').hour(endHour).minute(endMinute).second(0).millisecond(0);
-      if (!maxDate || slotDate.isAfter(maxDate)) maxDate = slotDate;
+      const weekSlot = slotMoment.clone().add(w, 'weeks');
+      if (!maxDate || weekSlot.isAfter(maxDate)) {
+        maxDate = weekSlot;
+      }
     }
   });
 
-  // Return as a JS Date in UTC
-  return maxDate ? maxDate.toDate() : null;
+  // Return as UTC Date object
+  return maxDate ? maxDate.utc().toDate() : null;
 }

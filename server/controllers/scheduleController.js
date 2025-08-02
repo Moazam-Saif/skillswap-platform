@@ -9,14 +9,8 @@ export const createSession = async (req, res) => {
   try {
     const { requestId, duration } = req.body;
 
-    console.log("Looking for requestId:", requestId);
-
     // Find the request in the recipient's swapRequests
     const recipient = await User.findById(req.userId);
-    console.log("Recipient ID:", req.userId);
-    console.log("Number of swapRequests:", recipient.swapRequests.length);
-    console.log("Request IDs:", recipient.swapRequests.map(r => r._id?.toString()));
-
     const request = recipient.swapRequests.find(req => req._id.toString() === requestId);
 
     if (!request) {
@@ -24,9 +18,9 @@ export const createSession = async (req, res) => {
       return res.status(404).json({ error: "Swap request not found" });
     }
 
-   const expiresAt = getLastSlotDate(request.timeSlots, duration);
+    const requester = await User.findById(request.from);
+    const expiresAt = getLastSlotDate(request.timeSlots, duration, requester.timezone);
 
-    
     // Create a new session
     const session = await Session.create({
       userA: request.from,
@@ -39,33 +33,42 @@ export const createSession = async (req, res) => {
       status: 'active',
     });
 
-    // ✅ NEW: Schedule reminders for the new session
+    // ✅ Schedule reminders
     try {
       if (session.scheduledTime && session.scheduledTime.length > 0) {
         console.log("Calling await schedule session reminder");
-        await scheduleSessionReminders(session._id);
+        await scheduleSessionReminders(session._id, requester.timezone);
         console.log(`✅ Reminders scheduled for session ${session._id}`);
       } else {
         console.log(`⚠️ No time slots provided for session ${session._id}, no reminders scheduled`);
       }
     } catch (reminderError) {
       console.error('❌ Failed to schedule reminders:', reminderError);
-      // Don't fail the session creation if reminder scheduling fails
     }
 
-    // Add the session to both users
-    await User.findByIdAndUpdate(request.from, { $push: { sessions: session._id } });
-    await User.findByIdAndUpdate(request.to, { $push: { sessions: session._id } });
+    // ✅ FIXED: Use updateOne with specific operations to avoid full document validation
+    await User.updateOne(
+      { _id: request.from },
+      { $push: { sessions: session._id } }
+    );
 
-    // Remove the request from the recipient's swapRequests
-    recipient.swapRequests = recipient.swapRequests.filter(req => req._id.toString() !== requestId);
-    await recipient.save();
+    await User.updateOne(
+      { _id: request.to },
+      { $push: { sessions: session._id } }
+    );
+
+    // ✅ FIXED: Remove the swap request using updateOne
+    await User.updateOne(
+      { _id: req.userId },
+      { $pull: { swapRequests: { _id: requestId } } }
+    );
+
     await scheduleSessionExpiry(session._id, session.expiresAt);
 
     res.json({ 
       message: 'Session created successfully', 
       session,
-      remindersScheduled: session.scheduledTime?.length || 0  // ✅ NEW: Info about reminders
+      remindersScheduled: session.scheduledTime?.length || 0
     });
   } catch (err) {
     console.error("Error in createSession:", err);

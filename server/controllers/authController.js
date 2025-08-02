@@ -35,6 +35,8 @@ async function generateTokensAndCookie(user, res) {
   return { accessToken, userId: user._id };
 }
 
+// Update your existing registerUser function:
+
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -65,7 +67,9 @@ export const registerUser = async (req, res) => {
       name,
       email,
       passwordHash,
+      isGoogleUser: false, // ✅ Explicitly set for regular users
       isEmailVerified: false,
+      isVerified: false, // ✅ Backward compatibility
       emailVerificationToken: verificationToken,
       emailVerificationExpires: verificationExpires
     });
@@ -85,6 +89,8 @@ export const registerUser = async (req, res) => {
 };
 
 // Add the verifyEmail function
+// Update your existing verifyEmail function:
+
 export const verifyEmail = async (req, res) => {
   try {
     const { token } = req.query;
@@ -106,6 +112,7 @@ export const verifyEmail = async (req, res) => {
 
     // Verify the user
     user.isEmailVerified = true;
+    user.isVerified = true; // ✅ Backward compatibility
     user.emailVerificationToken = null;
     user.emailVerificationExpires = null;
     await user.save();
@@ -122,13 +129,31 @@ export const verifyEmail = async (req, res) => {
 };
 
 // Update loginUser to check verification
+// Update your existing loginUser function:
+
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user || !(await argon2.verify(user.passwordHash, password)))
+    
+    // ✅ Check if user exists and handle Google users
+    if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
+    }
+    
+    // ✅ Handle Google users trying to login with password
+    if (user.isGoogleUser && !user.passwordHash) {
+      return res.status(400).json({ 
+        message: 'This account uses Google Sign-In. Please use the Google login button.',
+        isGoogleUser: true 
+      });
+    }
+    
+    // ✅ Verify password for regular users
+    if (!user.passwordHash || !(await argon2.verify(user.passwordHash, password))) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
     // Check if email is verified (skip for Google users)
     if (!user.isGoogleUser && !user.isEmailVerified) {
@@ -139,16 +164,31 @@ export const loginUser = async (req, res) => {
     }
 
     const tokens = await generateTokensAndCookie(user, res);
-    res.json(tokens);
+    res.json({
+      ...tokens,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        imageUrl: user.imageUrl,
+        isEmailVerified: user.isEmailVerified
+      }
+    });
   } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ error: err.message });
   }
 };
 
-// Update googleAuth to auto-verify
+// Replace your existing googleAuth function with this:
+
 export const googleAuth = async (req, res) => {
   try {
     const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({ message: 'Google credential is required' });
+    }
 
     const ticket = await googleClient.verifyIdToken({
       idToken: credential,
@@ -166,28 +206,52 @@ export const googleAuth = async (req, res) => {
     });
 
     if (user) {
-      if (!user.googleId) {
+      // Update existing user to be Google user if needed
+      if (!user.isGoogleUser) {
+        user.isGoogleUser = true;
         user.googleId = googleId;
-        user.isEmailVerified = true; // Auto-verify Google users
+        user.isEmailVerified = true;
+        user.isVerified = true; // Backward compatibility
+        user.passwordHash = null; // ✅ Clear password for Google users
+        if (picture) user.imageUrl = picture;
         await user.save();
       }
     } else {
-      user = await User.create({
-        name,
-        email,
-        googleId,
-        imageUrl: picture,
-        passwordHash: null,
-        isGoogleUser: true,
-        isEmailVerified: true  // Google users are auto-verified
+      // ✅ Create new Google user with all required fields
+      user = new User({
+        name: name,
+        email: email,
+        isGoogleUser: true, // ✅ Set this flag
+        googleId: googleId,
+        imageUrl: picture || '',
+        passwordHash: null, // ✅ Explicitly set to null
+        isEmailVerified: true, // ✅ Google users are verified
+        isVerified: true, // ✅ Backward compatibility
+        emailVerificationToken: null,
+        emailVerificationExpires: null
       });
+
+      await user.save();
     }
 
     const tokens = await generateTokensAndCookie(user, res);
-    res.json(tokens);
+    res.json({
+      ...tokens,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        imageUrl: user.imageUrl,
+        isEmailVerified: user.isEmailVerified
+      }
+    });
+
   } catch (err) {
     console.error('Google auth error:', err);
-    res.status(500).json({ error: 'Google authentication failed' });
+    res.status(500).json({
+      message: 'Google authentication failed',
+      error: err.message
+    });
   }
 };
 
