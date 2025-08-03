@@ -1,6 +1,7 @@
 import { Queue, Worker } from 'bullmq';
 import redis from './redisClient.js'; // Use your existing Redis client
 import Session from '../models/Session.js';
+import { clearSessionReminders } from './reminderService.js'; 
 
 export const sessionQueue = new Queue('session-expiry', { connection: redis });
 
