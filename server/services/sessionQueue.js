@@ -23,6 +23,7 @@ export function startSessionExpiryWorker() {
     if (job.name === 'expire-session') {
       await Session.findByIdAndUpdate(job.data.sessionId, { status: 'completed' });
       console.log(`Session ${job.data.sessionId} marked as completed by BullMQ`);
+      clearSessionReminders(job.data.sessionId);
     }
   }, { connection: redis });
 }
