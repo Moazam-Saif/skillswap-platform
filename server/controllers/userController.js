@@ -81,17 +81,44 @@ export const updateUserProfile = async (req, res) => {
 
 export const setAvailability = async (req, res) => {
   try {
+    console.log('🔍 BACKEND: Full request body:', JSON.stringify(req.body, null, 2));
+    
     const { availability, timezone } = req.body;
 
-    // Validate timezone
+    console.log('🔍 BACKEND: Extracted availability:', availability);
+    console.log('🔍 BACKEND: Extracted timezone:', timezone);
+    console.log('🔍 BACKEND: Availability type:', typeof availability);
+    console.log('🔍 BACKEND: Is availability array?', Array.isArray(availability));
+
+    // VALIDATE
+    if (!timezone) {
+      console.log('❌ BACKEND: No timezone provided');
+      return res.status(400).json({ error: 'Timezone is required' });
+    }
+
     if (!moment.tz.zone(timezone)) {
+      console.log('❌ BACKEND: Invalid timezone:', timezone);
       return res.status(400).json({ error: 'Invalid timezone' });
     }
 
-    // Convert user's local time to UTC while preserving context + ADD REAL MongoDB ObjectIds
-    const utcAvailability = availability.map((slot, index) => {
-      const today = moment.tz(timezone);
+    if (!availability || !Array.isArray(availability) || availability.length === 0) {
+      console.log('❌ BACKEND: Invalid availability array:', { availability, isArray: Array.isArray(availability), length: availability?.length });
+      return res.status(400).json({ error: 'Availability array is required' });
+    }
 
+    console.log('✅ BACKEND: Starting UTC conversion...');
+
+    const utcAvailability = availability.map((slot, index) => {
+      console.log(`🔄 BACKEND: Processing slot ${index}:`, slot);
+
+      if (!slot.day || !slot.startTime || !slot.endTime) {
+        console.log(`❌ BACKEND: Invalid slot ${index}:`, slot);
+        throw new Error(`Invalid slot at index ${index}: missing day, startTime, or endTime`);
+      }
+
+      // Create moments in user timezone
+      const today = moment.tz(timezone);
+      
       const startMoment = today.clone()
         .day(slot.day)
         .hour(moment(slot.startTime, 'HH:mm').hour())
@@ -106,26 +133,26 @@ export const setAvailability = async (req, res) => {
         .second(0)
         .millisecond(0);
 
-      return {
-        // ✅ FIXED: Use proper MongoDB ObjectId instead of timestamp-based ID
-        id: slot.id || new mongoose.Types.ObjectId().toString(),
-
-        // Original user input (semantic meaning)
+      const convertedSlot = {
+        id: new mongoose.Types.ObjectId().toString(),
         originalDay: slot.day,
         originalStartTime: slot.startTime,
         originalEndTime: slot.endTime,
-
-        // UTC representation (for calculations)
         utcDay: startMoment.utc().format('dddd'),
         utcStartTime: startMoment.utc().format('HH:mm'),
         utcEndTime: endMoment.utc().format('HH:mm'),
-
-        // Context preservation
         userTimezone: timezone,
-
-       
+        day: slot.day,
+        startTime: slot.startTime,
+        endTime: slot.endTime
       };
+
+      console.log(`✅ BACKEND: Converted slot ${index}:`, convertedSlot);
+      return convertedSlot;
     });
+
+    console.log('✅ BACKEND: All slots converted, saving to database...');
+    console.log('✅ BACKEND: Final UTC availability:', JSON.stringify(utcAvailability, null, 2));
 
     const user = await User.findByIdAndUpdate(
       req.userId,
@@ -136,14 +163,19 @@ export const setAvailability = async (req, res) => {
       { new: true }
     );
 
-    console.log(`✅ Availability updated with ${utcAvailability.length} slots with MongoDB ObjectIds`);
+    console.log('✅ BACKEND: User updated, availability saved');
 
     res.json({
       message: 'Availability updated successfully',
-      availability: user.availability
+      availability: user.availability,
+      debug: {
+        slotsProcessed: utcAvailability.length,
+        userTimezone: timezone
+      }
     });
+
   } catch (err) {
-    console.error('Error setting availability:', err);
+    console.error('❌ BACKEND: Error setting availability:', err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -312,55 +344,22 @@ export const getUserById = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Convert availability to viewer's timezone
-    const convertedAvailability = user.availability.map(slot => {
-      // Get the original timezone (fallback to user's stored timezone or UTC)
-      const originalTimezone = slot.userTimezone || user.timezone || 'UTC';
+    console.log(`🔍 Getting user ${req.params.id}, viewer timezone: ${viewerTimezone}`);
+    console.log(`📊 User has ${user.availability?.length || 0} availability slots`);
 
-      // If no viewer timezone provided, use original
-      const targetTimezone = viewerTimezone || originalTimezone;
-
-      // Use original data if available, fallback to old format
-      const originalDay = slot.originalDay || slot.day;
-      const originalStartTime = slot.originalStartTime || slot.startTime;
-      const originalEndTime = slot.originalEndTime || slot.endTime;
-
-      // Recreate the original moment
-      const today = moment.tz(originalTimezone);
-      const originalStartMoment = today.clone()
-        .day(originalDay)
-        .hour(moment(originalStartTime, 'HH:mm').hour())
-        .minute(moment(originalStartTime, 'HH:mm').minute())
-        .second(0)
-        .millisecond(0);
-
-      const originalEndMoment = today.clone()
-        .day(originalDay)
-        .hour(moment(originalEndTime, 'HH:mm').hour())
-        .minute(moment(originalEndTime, 'HH:mm').minute())
-        .second(0)
-        .millisecond(0);
-
-      // Convert to viewer's timezone
-      const viewerStartMoment = originalStartMoment.clone().tz(targetTimezone);
-      const viewerEndMoment = originalEndMoment.clone().tz(targetTimezone);
-
-      return {
-        day: viewerStartMoment.format('dddd'),
-        startTime: viewerStartMoment.format('HH:mm'),
-        endTime: viewerEndMoment.format('HH:mm')
-      };
-    });
-
-    const userWithConvertedTimes = {
+    // ✅ ALWAYS return the full availability data (with UTC fields)
+    const userWithFullData = {
       ...user.toObject(),
-      availability: convertedAvailability,
+      // ✅ KEEP FULL AVAILABILITY: Don't convert, let frontend handle it
+      availability: user.availability || [],
       swapCount: user.sessions ? user.sessions.filter(session => session.status === 'completed').length : 0
     };
 
-    res.json(userWithConvertedTimes);
+    console.log('✅ Sending user data with availability slots:', userWithFullData.availability.length);
+
+    res.json(userWithFullData);
   } catch (err) {
-    console.error('Error getting user:', err);
+    console.error('❌ Error getting user:', err);
     res.status(500).json({ message: err.message });
   }
 };

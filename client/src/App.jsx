@@ -13,6 +13,7 @@ import SessionsPage from './components/SessionsPage.jsx';
 import UserSearchPage from './components/SearchPage.jsx';
 import UserProfileView from './components/ProfilePage.jsx';
 import EmailVerification from './components/EmailVerification.jsx';
+import MeetingRoom from './components/MeetingRoom';
 
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
         <AuthProvider>
           <Routes>
             {/* Public Routes */}
-            <Route path="/search" element={<UserSearchPage/>} />
+            <Route path="/search" element={<UserSearchPage />} />
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<SignupForm />} />
@@ -56,23 +57,30 @@ function App() {
             <Route
               path="/active-requests"
               element={
-              <PrivateRoute>
-                <SessionsPage/>
-              </PrivateRoute>
+                <PrivateRoute>
+                  <SessionsPage />
+                </PrivateRoute>
               }
             />
             <Route
               path="/users/profile/show/:userId"
               element={
+                <PrivateRoute>
+                  <UserProfileView />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/meeting/:sessionId/:slotIndex"
+              element={
               <PrivateRoute>
-                <UserProfileView/>
+                <MeetingRoom />
               </PrivateRoute>
               }
             />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
-    </Provider> 
+    </Provider>
   );
 }
 

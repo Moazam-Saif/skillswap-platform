@@ -189,13 +189,12 @@ export const getUserById = async (userId, accessToken) => {
   return res.data;
 };
 
-export const setUserAvailability = async (availability, accessToken) => {
-  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+// Replace the existing setUserAvailability function with this:
+
+export const setUserAvailability = async (availabilityData, accessToken) => {
+  console.log('📡 Sending availability data to backend:', availabilityData);
   
-  const res = await api.post('/users/availability', {
-    availability,
-    timezone: userTimezone 
-  }, {
+  const res = await api.post('/users/availability', availabilityData, {
     headers: { Authorization: `Bearer ${accessToken}` }
   });
   return res.data;
@@ -210,3 +209,4 @@ export const getUserImage = async (userId) => {
     throw error;
   }
 };
+
