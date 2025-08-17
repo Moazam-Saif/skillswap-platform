@@ -2,6 +2,7 @@ import User from '../models/User.js';
 import { fetchSkill } from '../services/lightcast.js';
 import { clearSearchCache } from './searchController.js';
 import moment from 'moment-timezone';
+import mongoose from 'mongoose'
 
 export const getUserProfile = async (req, res) => {
   try {
@@ -72,6 +73,12 @@ export const updateUserProfile = async (req, res) => {
   }
 };
 
+// ...existing imports...
+
+// Update the setAvailability function only:
+
+// Update the setAvailability function only:
+
 export const setAvailability = async (req, res) => {
   try {
     const { availability, timezone } = req.body;
@@ -81,11 +88,10 @@ export const setAvailability = async (req, res) => {
       return res.status(400).json({ error: 'Invalid timezone' });
     }
 
-    // Convert user's local time to UTC while preserving context
-    const utcAvailability = availability.map(slot => {
+    // Convert user's local time to UTC while preserving context + ADD REAL MongoDB ObjectIds
+    const utcAvailability = availability.map((slot, index) => {
       const today = moment.tz(timezone);
 
-      // Create moments for start and end times
       const startMoment = today.clone()
         .day(slot.day)
         .hour(moment(slot.startTime, 'HH:mm').hour())
@@ -101,6 +107,9 @@ export const setAvailability = async (req, res) => {
         .millisecond(0);
 
       return {
+        // ✅ FIXED: Use proper MongoDB ObjectId instead of timestamp-based ID
+        id: slot.id || new mongoose.Types.ObjectId().toString(),
+
         // Original user input (semantic meaning)
         originalDay: slot.day,
         originalStartTime: slot.startTime,
@@ -114,10 +123,7 @@ export const setAvailability = async (req, res) => {
         // Context preservation
         userTimezone: timezone,
 
-        // Backward compatibility
-        day: slot.day,
-        startTime: slot.startTime,
-        endTime: slot.endTime
+       
       };
     });
 
@@ -130,6 +136,8 @@ export const setAvailability = async (req, res) => {
       { new: true }
     );
 
+    console.log(`✅ Availability updated with ${utcAvailability.length} slots with MongoDB ObjectIds`);
+
     res.json({
       message: 'Availability updated successfully',
       availability: user.availability
@@ -139,6 +147,7 @@ export const setAvailability = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 export const addRating = async (req, res) => {
   try {
@@ -174,15 +183,17 @@ export const getSkillInfo = async (req, res) => {
   }
 }
 
+// ...existing functions...
+
 export const sendSwapRequest = async (req, res) => {
   try {
-    const { toUserId, offerSkill, wantSkill, days, timeSlots, timezone } = req.body; // ✅ Add timezone
+    const { toUserId, offerSkill, wantSkill, days, selectedAvailabilityIds } = req.body; // ✅ CHANGED: selectedAvailabilityIds instead of timeSlots
     const fromUserId = req.userId;
 
-    // ✅ Add validation
-    if (!toUserId || !offerSkill || !wantSkill || !days || !timeSlots) {
+    // ✅ UPDATED: Validate required fields
+    if (!toUserId || !offerSkill || !wantSkill || !days || !selectedAvailabilityIds || !Array.isArray(selectedAvailabilityIds)) {
       return res.status(400).json({
-        error: 'Missing required fields: toUserId, offerSkill, wantSkill, days, timeSlots'
+        error: 'Missing required fields: toUserId, offerSkill, wantSkill, days, selectedAvailabilityIds (array)'
       });
     }
 
@@ -191,15 +202,49 @@ export const sendSwapRequest = async (req, res) => {
       return res.status(400).json({ error: 'Cannot send swap request to yourself' });
     }
 
+    // ✅ STEP 1: Look up recipient's availability to get real UTC times
+    const recipient = await User.findById(toUserId).select('availability');
+    if (!recipient) {
+      return res.status(404).json({ error: 'Recipient user not found' });
+    }
+
+    // ✅ STEP 2: Find selected availability slots by ID
+    const selectedSlots = recipient.availability.filter(slot =>
+      selectedAvailabilityIds.includes(slot.id)
+    );
+
+    // ✅ STEP 3: Validate all slot IDs were found
+    if (selectedSlots.length !== selectedAvailabilityIds.length) {
+      const foundIds = selectedSlots.map(slot => slot.id);
+      const missingIds = selectedAvailabilityIds.filter(id => !foundIds.includes(id));
+      return res.status(400).json({
+        error: 'Some availability slots not found',
+        missingIds
+      });
+    }
+
+    // ✅ STEP 4: Extract UTC times from availability database (single source of truth)
+    const utcTimeSlots = selectedSlots.map(slot =>
+      `${slot.utcDay} ${slot.utcStartTime}-${slot.utcEndTime}`
+    );
+
+    console.log(`✅ Found ${selectedSlots.length} availability slots for UTC conversion:`);
+    selectedSlots.forEach((slot, index) => {
+      console.log(`  ${index + 1}. Original: ${slot.originalDay} ${slot.originalStartTime}-${slot.originalEndTime} (${slot.userTimezone})`);
+      console.log(`     UTC: ${utcTimeSlots[index]}`);
+    });
+
+    // ✅ STEP 5: Create swap request with UTC times from availability lookup
     const swapRequest = {
       from: fromUserId,
       to: toUserId,
       offerSkill,
       wantSkill,
-      days: Number(days), // ✅ Ensure it's a number
-      timeSlots: Array.isArray(timeSlots) ? timeSlots : [timeSlots], // ✅ Ensure array
+      days: Number(days),
+      timeSlots: utcTimeSlots, // ✅ UTC times from availability database
+      selectedAvailabilityIds, // ✅ Keep reference to original availability
       status: "pending",
-      timezone: timezone || 'UTC', // ✅ Add timezone field
+      timezone: selectedSlots[0]?.userTimezone || 'UTC', // ✅ Use recipient's timezone for context
       createdAt: new Date()
     };
 
@@ -210,9 +255,8 @@ export const sendSwapRequest = async (req, res) => {
       { new: true }
     );
 
-    // ✅ Check if update was successful
     if (!updatedRecipient) {
-      return res.status(404).json({ error: 'Recipient user not found' });
+      return res.status(404).json({ error: 'Failed to update recipient' });
     }
 
     // Add to sender's requestsSent
@@ -222,17 +266,27 @@ export const sendSwapRequest = async (req, res) => {
       { new: true }
     );
 
-    // ✅ Check if update was successful
     if (!updatedSender) {
-      return res.status(404).json({ error: 'Sender user not found' });
+      return res.status(404).json({ error: 'Failed to update sender' });
     }
 
-    res.json({ message: "Swap request sent successfully!" });
+    console.log(`✅ Swap request created with ${utcTimeSlots.length} UTC time slots from availability lookup`);
+
+    res.json({
+      message: "Swap request sent successfully!",
+      debug: {
+        utcTimeSlots,
+        selectedSlots: selectedSlots.length,
+        originalTimezone: selectedSlots[0]?.userTimezone
+      }
+    });
   } catch (err) {
-    console.error('❌ Error in sendSwapRequest:', err); // ✅ Add logging
+    console.error('❌ Error in sendSwapRequest:', err);
     res.status(500).json({ error: err.message });
   }
 };
+
+
 
 export const getAllSwapRequests = async (req, res) => {
   try {

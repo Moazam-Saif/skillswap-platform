@@ -7,7 +7,6 @@ export const login = async (credentials) => {
 
 export const verifyEmail = async (token) => {
   try {
-    
     const response = await api.get(`/auth/verify-email?token=${token}`);
     return response.data;
   } catch (error) {
@@ -49,6 +48,7 @@ export const getUser = async (userId, accessToken) => {
   });
   return res.data;
 };
+
 export const updateUser = async (userId, data, accessToken) => {
   const res = await api.put(`/users/profile/${userId}`, data, {
     headers: {
@@ -84,19 +84,47 @@ export const getCategorySkillMatches = async (accessToken) => {
   return res.data;
 };
 
+// ✅ UPDATED: Support both old approach (timeSlots) and new approach (selectedAvailabilityIds)
 export const sendSwapRequest = async (data, accessToken) => {
-  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  // ✅ APPROACH 2: Send availability slot IDs instead of converting times
+  if (data.selectedAvailabilityIds) {
+    console.log('🎯 Sending swap request with availability slot IDs:', data.selectedAvailabilityIds);
+    
+    const requestData = {
+      toUserId: data.toUserId,
+      offerSkill: data.offerSkill,
+      wantSkill: data.wantSkill,
+      days: data.days,
+      selectedAvailabilityIds: data.selectedAvailabilityIds // ✅ Send slot IDs
+      // ✅ No timezone needed - backend looks up UTC from availability
+    };
+    
+    const res = await api.post('/users/swap-request', requestData, {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    return res.data;
+  }
   
-  const requestData = {
-    ...data,
-    timezone: data.timezone || userTimezone // Use provided timezone or detect it
-  };
-  console.log('🌐 Sending swap request with data:', requestData);
+  // ✅ FALLBACK: Support old approach for backward compatibility
+  else if (data.timeSlots) {
+    console.log('🌐 Sending swap request with time slots (old approach):', data.timeSlots);
+    
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const requestData = {
+      ...data,
+      timezone: data.timezone || userTimezone
+    };
+    
+    const res = await api.post('/users/swap-request', requestData, {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    return res.data;
+  }
   
-  const res = await api.post('/users/swap-request', requestData, {
-    headers: { Authorization: `Bearer ${accessToken}` }
-  });
-  return res.data;
+  // ✅ ERROR: Neither approach provided
+  else {
+    throw new Error('Must provide either selectedAvailabilityIds or timeSlots');
+  }
 };
 
 export const getUserRequests = async (accessToken) => {
@@ -120,7 +148,22 @@ export const createSession = async (data, accessToken) => {
   return res.data;
 };
 
-// ...existing code...
+// ✅ NEW: API functions for meeting access
+export const getMeetingAccess = async (sessionId, slotIndex, accessToken) => {
+  const res = await api.get(`/users/meeting/${sessionId}/${slotIndex}`, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  return res.data;
+};
+
+export const validateMeetingAccess = async (sessionId, slotIndex, accessToken) => {
+  const res = await api.get(`/users/meeting/${sessionId}/${slotIndex}/validate`, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  return res.data;
+};
+
+// ...existing functions unchanged...
 
 export const searchUsersBySkill = async (skillName) => {
   const res = await api.get(`/search/skill/${encodeURIComponent(skillName)}`);

@@ -18,26 +18,32 @@ export const createSession = async (req, res) => {
       return res.status(404).json({ error: "Swap request not found" });
     }
 
-    const requester = await User.findById(request.from);
-    const expiresAt = getLastSlotDate(request.timeSlots, duration, requester.timezone);
+    // ✅ APPROACH 2: Times are already in UTC from availability lookup!
+    const utcTimeSlots = request.timeSlots; // Already UTC from sendSwapRequest lookup
+    console.log(`✅ Using UTC time slots from availability lookup:`, utcTimeSlots);
 
-    // Create a new session
+    // ✅ Process expiry calculation in UTC
+    const expiresAt = getLastSlotDate(utcTimeSlots, duration, 'UTC');
+
+    // Create session with UTC times
     const session = await Session.create({
       userA: request.from,
       userB: request.to,
       skillFromA: request.offerSkill,
       skillFromB: request.wantSkill,
-      scheduledTime: request.timeSlots || [],
+      scheduledTime: utcTimeSlots, // ✅ Pure UTC times from availability database
       duration,
       expiresAt,
       status: 'active',
     });
 
-    // ✅ Schedule reminders
+    console.log(`✅ Session created with ${utcTimeSlots.length} UTC time slots`);
+
+    // ✅ Schedule reminders in UTC (no timezone conversion needed)
     try {
       if (session.scheduledTime && session.scheduledTime.length > 0) {
-        console.log("Calling await schedule session reminder");
-        await scheduleSessionReminders(session._id, requester.timezone);
+        console.log("Scheduling reminders for UTC time slots");
+        await scheduleSessionReminders(session._id, 'UTC'); // ✅ Pure UTC processing
         console.log(`✅ Reminders scheduled for session ${session._id}`);
       } else {
         console.log(`⚠️ No time slots provided for session ${session._id}, no reminders scheduled`);
@@ -46,7 +52,7 @@ export const createSession = async (req, res) => {
       console.error('❌ Failed to schedule reminders:', reminderError);
     }
 
-    // ✅ FIXED: Use updateOne with specific operations to avoid full document validation
+    // Update users (unchanged)
     await User.updateOne(
       { _id: request.from },
       { $push: { sessions: session._id } }
@@ -57,7 +63,6 @@ export const createSession = async (req, res) => {
       { $push: { sessions: session._id } }
     );
 
-    // ✅ FIXED: Remove the swap request using updateOne
     await User.updateOne(
       { _id: req.userId },
       { $pull: { swapRequests: { _id: requestId } } }
@@ -68,7 +73,11 @@ export const createSession = async (req, res) => {
     res.json({ 
       message: 'Session created successfully', 
       session,
-      remindersScheduled: session.scheduledTime?.length || 0
+      remindersScheduled: session.scheduledTime?.length || 0,
+      debug: {
+        utcSlots: utcTimeSlots,
+        selectedAvailabilityIds: request.selectedAvailabilityIds
+      }
     });
   } catch (err) {
     console.error("Error in createSession:", err);
@@ -76,7 +85,7 @@ export const createSession = async (req, res) => {
   }
 };
 
-
+// getUserSessions unchanged
 export const getUserSessions = async (req, res) => {
   try {
     const sessions = await Session.find({

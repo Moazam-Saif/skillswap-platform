@@ -7,103 +7,84 @@ import moment from 'moment-timezone';
 // Store active reminder jobs
 const activeReminders = new Map();
 
-// Function to parse time slot and get next occurrence
-const getNextReminderTime = (timeSlot) => {
-  // Example timeSlot: "Thursday 17:30 - 18:30"
-  const [dayTime, endTime] = timeSlot.split(' - ');
-  const [day, startTime] = dayTime.split(' ');
-
-  const dayMap = {
-    'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3,
-    'Thursday': 4, 'Friday': 5, 'Saturday': 6
-  };
-
-  const [hours, minutes] = startTime.split(':').map(Number);
-  const targetDay = dayMap[day];
-
-  const now = new Date();
-  const nextOccurrence = new Date(now);
-
-  // Set to target time
-  nextOccurrence.setHours(hours, minutes, 0, 0);
-
-  // Calculate days until target day
-  const currentDay = now.getDay();
-  let daysUntil = targetDay - currentDay;
-
-  if (daysUntil < 0) {
-    // Target day is in the future (next week)
-    daysUntil += 7;
+// ✅ FIXED: Proper UTC cron expression creation
+const createReminderCron = (timeSlot) => {
+  console.log(`⏰ Processing UTC time slot: "${timeSlot}"`);
+  
+  // Handle format: "Monday 14:00-15:00" (UTC from availability)
+  let dayTime, endTime, day, startTime;
+  
+  if (timeSlot.includes(' - ')) {
+    [dayTime, endTime] = timeSlot.split(' - ');
+    [day, startTime] = dayTime.split(' ');
+  } else {
+    [dayTime, endTime] = timeSlot.split('-');
+    [day, startTime] = dayTime.trim().split(' ');
   }
-
-  nextOccurrence.setDate(now.getDate() + daysUntil);
-
-  // If today is the target day and the target time is still in the future, use today
-  // If today is the target day and the target time has passed, schedule for next week
-  if (daysUntil === 0 && now.getTime() > nextOccurrence.getTime()) {
-    nextOccurrence.setDate(nextOccurrence.getDate() + 7);
-  }
-
-  return nextOccurrence;
-};
-
-// Function to create cron expression for reminder (5 minutes before)
-const createReminderCron = (timeSlot, timezone = 'UTC') => {
-  const [dayTime] = timeSlot.split(' - ');
-  const [day, startTime] = dayTime.split(' ');
 
   const dayMap = {
     'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4,
     'Friday': 5, 'Saturday': 6, 'Sunday': 0
   };
 
-  // Parse time in user's timezone, then convert to UTC for cron
-  const slotMoment = moment.tz(`${day} ${startTime}`, 'dddd HH:mm', timezone);
-  const reminderMoment = slotMoment.clone().subtract(5, 'minutes').utc();
-
-  const targetDay = reminderMoment.day();
+  // Parse UTC time and subtract 5 minutes for reminder
+  const [hours, minutes] = startTime.split(':').map(Number);
+  const reminderMoment = moment.utc().hour(hours).minute(minutes).subtract(5, 'minutes');
+  
+  const targetDay = dayMap[day];
   const reminderHours = reminderMoment.hour();
   const reminderMinutes = reminderMoment.minute();
+
+  console.log(`✅ Reminder scheduled: ${day} ${startTime} UTC -> reminder at ${reminderMoment.format('dddd HH:mm')} UTC`);
 
   return `${reminderMinutes} ${reminderHours} * * ${targetDay}`;
 };
 
-export const scheduleSessionReminders = async (sessionId, userTimezone = 'UTC') => {
+export const scheduleSessionReminders = async (sessionId, timezone = 'UTC') => {
   try {
     const session = await Session.findById(sessionId)
       .populate('userA', 'name email timezone')
       .populate('userB', 'name email timezone');
 
     if (!session || session.status !== 'active') {
+      console.log(`⚠️ Session ${sessionId} not found or not active, skipping reminders`);
       return;
     }
 
+    // Clear existing reminders first
     clearSessionReminders(sessionId);
+
+    console.log(`📅 Scheduling reminders for session ${sessionId} with ${session.scheduledTime.length} UTC time slots`);
 
     session.scheduledTime.forEach((timeSlot, index) => {
       try {
-        const cronExpression = createReminderCron(timeSlot, userTimezone);
+        const cronExpression = createReminderCron(timeSlot);
         const reminderKey = `${sessionId}_${index}`;
         
+        console.log(`⏰ Creating cron job: "${cronExpression}" for UTC slot: "${timeSlot}"`);
+        
         const task = cron.schedule(cronExpression, async () => {
+          console.log(`🔔 Reminder triggered for session ${sessionId}, UTC slot: ${timeSlot}`);
           await sendSessionReminder(session, timeSlot);
         }, {
           scheduled: true,
-          timezone: "UTC" // Always use UTC for cron scheduling
+          timezone: "UTC" // Always UTC
         });
 
         activeReminders.set(reminderKey, task);
-        console.log(`✅ Reminder scheduled for session ${sessionId}, slot: ${timeSlot}`);
+        console.log(`✅ Reminder scheduled for session ${sessionId}, UTC slot: ${timeSlot}`);
       } catch (error) {
         console.error(`❌ Error scheduling reminder for ${timeSlot}:`, error);
       }
     });
+
+    console.log(`✅ Total reminders scheduled: ${session.scheduledTime.length} for session ${sessionId}`);
   } catch (error) {
     console.error('❌ Error scheduling session reminders:', error);
   }
 };
 
-// Function to send session reminder
+// ✅ FIXED: Send reminder with proper timezone conversion for users
 const sendSessionReminder = async (session, timeSlot) => {
   try {
     console.log(`🔔 Sending reminder for session ${session._id}, slot: ${timeSlot}`);
@@ -111,10 +92,14 @@ const sendSessionReminder = async (session, timeSlot) => {
     const userA = session.userA;
     const userB = session.userB;
 
-    // Send reminder to both users
+    // Convert UTC time slot to each user's timezone for display in email
+    const convertedSlotA = convertTimeSlotToUserTimezone(timeSlot, userA.timezone || 'UTC');
+    const convertedSlotB = convertTimeSlotToUserTimezone(timeSlot, userB.timezone || 'UTC');
+
+    // Send reminder to both users with their local times
     await Promise.all([
-      sendSessionReminderEmail(userA.email, userA.name, session, timeSlot),
-      sendSessionReminderEmail(userB.email, userB.name, session, timeSlot)
+      sendSessionReminderEmail(userA.email, userA.name, session, convertedSlotA, userA.timezone),
+      sendSessionReminderEmail(userB.email, userB.name, session, convertedSlotB, userB.timezone)
     ]);
 
     console.log(`✅ Reminders sent for session ${session._id}`);
@@ -123,6 +108,44 @@ const sendSessionReminder = async (session, timeSlot) => {
     console.error('❌ Error sending session reminder:', error);
   }
 };
+
+// ✅ NEW: Helper function to convert UTC time slot to user's timezone
+const convertTimeSlotToUserTimezone = (utcTimeSlot, userTimezone) => {
+  try {
+    // Parse: "Monday 14:00-15:00"
+    let dayTime, endTime, day, startTime;
+    
+    if (utcTimeSlot.includes(' - ')) {
+      [dayTime, endTime] = utcTimeSlot.split(' - ');
+      [day, startTime] = dayTime.split(' ');
+    } else {
+      [dayTime, endTime] = utcTimeSlot.split('-');
+      [day, startTime] = dayTime.trim().split(' ');
+    }
+
+    // Create UTC moment
+    const utcMoment = moment.utc().day(day).hour(
+      parseInt(startTime.split(':')[0])
+    ).minute(
+      parseInt(startTime.split(':')[1])
+    );
+
+    // Convert to user's timezone
+    const localMoment = utcMoment.tz(userTimezone);
+    const localEndMoment = moment.utc().day(day).hour(
+      parseInt(endTime.split(':')[0])
+    ).minute(
+      parseInt(endTime.split(':')[1])
+    ).tz(userTimezone);
+
+    return `${localMoment.format('dddd HH:mm')} - ${localEndMoment.format('HH:mm')} (${userTimezone})`;
+  } catch (error) {
+    console.error('Error converting time slot:', error);
+    return `${utcTimeSlot} (UTC)`;
+  }
+};
+
+// ...rest of your reminderService functions remain unchanged
 
 // Function to clear reminders for a session
 export const clearSessionReminders = (sessionId) => {
