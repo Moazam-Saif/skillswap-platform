@@ -3,6 +3,7 @@ import AnimationStroke from "../animations/animationstroke.jsx";
 import IconAnimation from "../animations/iconAnimation.jsx";
 import SearchResultCard from './SearchResultCard.jsx';
 import UserProfileView from './ProfilePage.jsx';
+import SessionsPage from './SessionsPage.jsx';
 
 
 export default function LandingPage() {
@@ -76,7 +77,7 @@ export default function LandingPage() {
     </div>
     <div className="relative w-full h-screen overflow-hidden" style={{ backgroundImage: "url('/background3.svg')" }}>
         {/* Left Circle */}
-  <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-full md:-translate-x-3/4 lg:-translate-x-1/2 animate-slide-in-left">
+  {/* <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-full md:-translate-x-3/4 lg:-translate-x-1/2 animate-slide-in-left">
     <div
       className="flex items-center justify-center w-[13rem] h-[13rem] rounded-full shadow-md"
       style={{
@@ -87,7 +88,7 @@ export default function LandingPage() {
   </div>
 
   {/* Right Circle */}
-  <div className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-full md:translate-x-3/4 lg:translate-x-1/2 animate-slide-in-right">
+  {/* <div className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-full md:translate-x-3/4 lg:translate-x-1/2 animate-slide-in-right">
     <div
       className="flex items-center justify-center w-[13rem] h-[13rem] rounded-full shadow-md"
       style={{
@@ -96,12 +97,12 @@ export default function LandingPage() {
       }}
     />
      
+  </div> */}
+{/* <SessionsPage/> */}
   </div>
-
-  </div>
-    <div className="flex items-center justify-center min-h-screen bg-gray-200 w-[100vw]">
-      < UserProfileView/>
-    </div>
+    
+      
+   
 
 
     </>
