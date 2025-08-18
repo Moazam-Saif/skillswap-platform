@@ -1,51 +1,22 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { closePopup } from '../store/popupSlice';
-import { AuthContext } from '../context/AuthContext';
-import { getUserById, setUserAvailability } from '../api/auth';
 
-const WeekScheduler = () => {
+const WeekScheduler = ({ currentUser, timeSlots, setTimeSlots }) => {
     const dispatch = useDispatch();
-    const { accessToken, user } = useContext(AuthContext);
 
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     const [selectedDay, setSelectedDay] = useState(null);
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [userTimezone, setUserTimezone] = useState('UTC');
-    const [timeSlots, setTimeSlots] = useState({});
     const scrollRef = useRef(null);
 
-    // Detect timezone and fetch existing availability on mount
-useEffect(() => {
-    const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    setUserTimezone(detectedTimezone);
-
-    if (!user || !user._id) return;
-
-    const fetchAvailability = async () => {
-        try {
-            const userData = await getUserById(user._id, accessToken);
-            const slotsByDay = {};
-            (userData.availability || []).forEach(slot => {
-                // Use originalDay if present, otherwise fallback to day
-                const day = slot.originalDay || slot.day;
-                const start = slot.originalStartTime || slot.startTime;
-                const end = slot.originalEndTime || slot.endTime;
-                if (!slotsByDay[day]) slotsByDay[day] = [];
-                slotsByDay[day].push({
-                    start,
-                    end,
-                    id: slot.id
-                });
-            });
-            setTimeSlots(slotsByDay);
-        } catch (err) {
-            console.error('Error fetching availability:', err);
-        }
-    };
-    fetchAvailability();
-}, [user?._id, accessToken]);
+    // Only detect timezone on mount
+    useEffect(() => {
+        const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        setUserTimezone(detectedTimezone);
+    }, []);
 
     const handleAddTime = () => {
         if (!startTime || !endTime || !selectedDay) return;
@@ -65,40 +36,6 @@ useEffect(() => {
         setEndTime('');
     };
 
-    const handleSaveAvailability = async () => {
-        try {
-            const availability = [];
-            Object.entries(timeSlots).forEach(([day, slots]) => {
-                if (slots && slots.length > 0) {
-                    slots.forEach(slot => {
-                        availability.push({
-                            day: day,
-                            startTime: slot.start,
-                            endTime: slot.end,
-                            id: slot.id
-                        });
-                    });
-                }
-            });
-
-            if (availability.length === 0) {
-                alert('Please add at least one time slot');
-                return;
-            }
-
-            const availabilityData = {
-                availability,
-                timezone: userTimezone
-            };
-
-            const response = await setUserAvailability(availabilityData, accessToken);
-            alert('Availability saved successfully!');
-            dispatch(closePopup());
-        } catch (error) {
-            alert('Failed to save availability. Please try again.');
-        }
-    };
-
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -111,6 +48,12 @@ useEffect(() => {
                 <div className="mb-4 text-center">
                     <p className="text-sm text-gray-600">
                         Your timezone: <span className="font-medium">{userTimezone}</span>
+                    </p>
+                    <p className="text-sm text-blue-600">
+                        Editing availability for: <span className="font-medium">{currentUser?.name}</span>
+                    </p>
+                    <p className="text-sm text-orange-600 mt-2">
+                        💡 Changes will be saved when you click "Save Profile" below
                     </p>
                 </div>
 
@@ -198,18 +141,12 @@ useEffect(() => {
                     )}
                 </div>
 
-                <div className="mt-4 flex flex-col sm:flex-row gap-2 justify-end">
-                    <button
-                        onClick={handleSaveAvailability}
-                        className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
-                    >
-                        Save Availability
-                    </button>
+                <div className="mt-4 flex justify-end">
                     <button
                         onClick={() => dispatch(closePopup())}
-                        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+                        className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition"
                     >
-                        Close
+                        Done Editing
                     </button>
                 </div>
             </div>

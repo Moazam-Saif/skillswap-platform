@@ -19,6 +19,7 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
+
 export const updateUserProfile = async (req, res) => {
   try {
     if (req.userId !== req.params.id) {
@@ -27,11 +28,10 @@ export const updateUserProfile = async (req, res) => {
       throw err;
     }
 
-    // Fetch categories and add to each skill object
+    // Handle skills enrichment (existing code)
     const skillsHave = req.body.skillsHave || [];
     const skillsWant = req.body.skillsWant || [];
 
-    // Use Set to avoid duplicate categories
     const categoriesHaveSet = new Set();
     const enrichedSkillsHave = await Promise.all(
       skillsHave.map(async (skill) => {
@@ -56,19 +56,79 @@ export const updateUserProfile = async (req, res) => {
       })
     );
 
-    // Prepare the update payload
+    // ✅ ALWAYS process availability if provided - ENSURE UTC + IDs
+   // Replace the updateUserProfile availability processing section:
+
+// ✅ ALWAYS process availability if provided - ENSURE UTC + IDs
+let processedAvailability = [];
+
+if (req.body.availability && Array.isArray(req.body.availability) && req.body.availability.length > 0) {
+  console.log('🔄 BACKEND: Processing availability in updateUserProfile');
+  
+  // Get user's timezone
+  const userTimezone = req.body.timezone || 'UTC';
+  console.log('🔄 BACKEND: Using timezone:', userTimezone);
+
+  // ALWAYS convert to UTC format with IDs
+  processedAvailability = req.body.availability.map((slot, index) => {
+    if (!slot.day || !slot.startTime || !slot.endTime) {
+      throw new Error(`Invalid slot at index ${index}: missing required fields`);
+    }
+
+    // Create moments in user timezone
+    const today = moment.tz(userTimezone);
+    
+    const startMoment = today.clone()
+      .day(slot.day)
+      .hour(moment(slot.startTime, 'HH:mm').hour())
+      .minute(moment(slot.startTime, 'HH:mm').minute())
+      .second(0)
+      .millisecond(0);
+
+    const endMoment = today.clone()
+      .day(slot.day)
+      .hour(moment(slot.endTime, 'HH:mm').hour())
+      .minute(moment(slot.endTime, 'HH:mm').minute())
+      .second(0)
+      .millisecond(0);
+
+    return {
+    id: slot.id || new mongoose.Types.ObjectId().toString(),
+    // ✅ ONLY use the schema field names:
+    originalDay: slot.day,
+    originalStartTime: slot.startTime,
+    originalEndTime: slot.endTime,
+    utcDay: startMoment.utc().format('dddd'),
+    utcStartTime: startMoment.utc().format('HH:mm'),
+    utcEndTime: endMoment.utc().format('HH:mm'),
+    userTimezone: userTimezone
+  };
+});
+
+  console.log('✅ BACKEND: Processed', processedAvailability.length, 'availability slots with UTC + IDs');
+}
+
+    // Prepare update payload
     const updatePayload = {
       ...req.body,
       skillsHave: enrichedSkillsHave,
       skillsWant: enrichedSkillsWant,
       categoriesHave: Array.from(categoriesHaveSet),
       categoriesWant: Array.from(categoriesWantSet),
+      availability: processedAvailability, // ✅ ALWAYS UTC format with IDs
     };
+
+    if (req.body.timezone) {
+      updatePayload.timezone = req.body.timezone;
+    }
 
     const user = await User.findByIdAndUpdate(req.params.id, updatePayload, { new: true });
     await clearSearchCache();
+    
+    console.log('✅ BACKEND: Profile updated with', processedAvailability.length, 'availability slots');
     res.json(user);
   } catch (err) {
+    console.error('❌ BACKEND: Error updating profile:', err);
     res.status(err.status || 500).json({ message: err.message });
   }
 };
@@ -133,19 +193,19 @@ export const setAvailability = async (req, res) => {
         .second(0)
         .millisecond(0);
 
-      const convertedSlot = {
-        id: new mongoose.Types.ObjectId().toString(),
-        originalDay: slot.day,
-        originalStartTime: slot.startTime,
-        originalEndTime: slot.endTime,
-        utcDay: startMoment.utc().format('dddd'),
-        utcStartTime: startMoment.utc().format('HH:mm'),
-        utcEndTime: endMoment.utc().format('HH:mm'),
-        userTimezone: timezone,
-        day: slot.day,
-        startTime: slot.startTime,
-        endTime: slot.endTime
-      };
+      // In the setAvailability function, update the return format:
+
+const convertedSlot = {
+  id: new mongoose.Types.ObjectId().toString(),
+  // ✅ ONLY use the schema field names:
+  originalDay: slot.day,
+  originalStartTime: slot.startTime,
+  originalEndTime: slot.endTime,
+  utcDay: startMoment.utc().format('dddd'),
+  utcStartTime: startMoment.utc().format('HH:mm'),
+  utcEndTime: endMoment.utc().format('HH:mm'),
+  userTimezone: timezone
+};
 
       console.log(`✅ BACKEND: Converted slot ${index}:`, convertedSlot);
       return convertedSlot;
