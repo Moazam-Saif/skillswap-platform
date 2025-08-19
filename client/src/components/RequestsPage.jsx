@@ -60,7 +60,7 @@ export default function RequestsPage() {
                     </div>
 
                     {/* Desktop: Left Rotated Tabs (hidden on mobile) */}
-                    <div className="hidden md:flex sticky top-70 h-fit w-[25%] items-center justify-start">
+                    <div className="hidden md:flex sticky top-70 h-fit w-[20%] items-center justify-start">
                         <div
                             className="relative flex items-center justify-center"
                             style={{ transform: "rotate(-90deg)", width: "max-content" }}
@@ -91,7 +91,7 @@ export default function RequestsPage() {
                     </div>
 
                     {/* Requests List */}
-                    <div className="w-full md:w-[75%] flex flex-col items-center md:items-start md:pl-8 gap-4 md:gap-5">
+                    <div className="w-full md:w-[80%] flex flex-col items-center md:items-start md:pl-8 gap-4 md:gap-5">
                         {requestsToShow.length === 0 ? (
                             <div className="text-gray-400 mt-8">No requests found.</div>
                         ) : (
