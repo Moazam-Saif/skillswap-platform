@@ -157,14 +157,14 @@ function convertAvailabilityToTimeSlots(availabilityArray) {
     dispatch(openPopup());
   };
 
-  return (
-    <div className="flex flex-col min-h-screen" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
+    return (
+    <div className="flex flex-col h-screen" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
       <Nav />
-      <main className="flex flex-1 lg:rounded-tl-[30px] border-t-2 border-[#e76f51]">
+      <main className="flex flex-1 lg:rounded-tl-[30px] border-t-2 border-[#e76f51] overflow-hidden">
         <Sidebar hideOnDesktop={true} />
 
-        <section className="w-full flex-1 overflow-y-auto bg-gray-50">
-          <div className="md:pt-0">
+        <section className="w-full flex-1 bg-gray-50">
+          <div className="h-full">
             {/* Large Screen Layout */}
             <div className="hidden lg:flex h-full bg-gray-50">
               {error && (
@@ -195,7 +195,7 @@ function convertAvailabilityToTimeSlots(availabilityArray) {
               )}
 
               {/* Left Half - Image and Skills */}
-              <div className="w-1/2 p-8 flex flex-col gap-10 bg-[#fff8f8] overflow-y-auto">
+              <div className="w-1/2 h-full p-8 flex flex-col gap-10 bg-[#fff8f8] overflow-y-auto">
                 <div className='relative h-1/2 w-full mx-auto border-b-1 border-black'>
                   <ImageUploader image={imagePreview} onChange={handleImageChange} />
                 </div>
@@ -235,7 +235,7 @@ function convertAvailabilityToTimeSlots(availabilityArray) {
               </div>
 
               {/* Right Half - UserInfo */}
-              <div className="w-1/2 h-screen border-gray-200 sticky top-0" style={{
+              <div className="w-1/2 h-full overflow-y-auto border-gray-200" style={{
                 background: 'linear-gradient(to right, #FFF8F8 0%, #E76F51 15%)',
                 opacity: 0.9,
               }}>
@@ -252,6 +252,7 @@ function convertAvailabilityToTimeSlots(availabilityArray) {
 
             {/* Mobile Layout */}
             <div className="lg:hidden bg-gray-50">
+              {/* ...existing mobile layout code remains unchanged... */}
               {error && (
                 <div className="w-full text-center py-2 bg-red-100 text-red-700 font-semibold rounded mb-4 mx-4">
                   {error}
