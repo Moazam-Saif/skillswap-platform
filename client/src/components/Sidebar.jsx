@@ -2,7 +2,6 @@ import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { AuthContext } from "../context/AuthContext";
-import { logout } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import { openMobileSidebar, closeMobileSidebar } from '../store/sidebarSlice';
@@ -13,12 +12,7 @@ const Sidebar = ({ hideOnDesktop = false }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dispatch = useDispatch();
 
-    const handleLogout = async () => {
-        await logout();
-        setAccessToken(null);
-        setUserId(null);
-        navigate("/login");
-    };
+
 
     const toggleSidebar = () => {
         const newState = !isOpen;
@@ -185,29 +179,7 @@ const Sidebar = ({ hideOnDesktop = false }) => {
                         </Link>
                         <hr className="border-white border-t-1 border-dotted my-2 opacity-40" />
                     </li>
-                    <li className="mt-4">
-                        <button
-                            onClick={() => {
-                                handleLogout();
-                                closeSidebar();
-                            }}
-                            className="
-                                w-full
-                                bg-[#e76f51] 
-                                text-white 
-                                px-4 
-                                py-2 
-                                rounded-full 
-                                font-semibold
-                                hover:bg-[#d45d47] 
-                                transition-colors
-                                text-sm md:text-base
-                            "
-                            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
-                        >
-                            Logout
-                        </button>
-                    </li>
+                    
                 </ul>
             </aside>
         </>

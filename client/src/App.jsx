@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux'; // Add this import
-import store from './store/configureStore'; // Add this import
+import { Provider } from 'react-redux';
+import store from './store/configureStore';
 import { AuthProvider } from './context/AuthContext.jsx';
+import Layout from './components/Layout.jsx'; // Add this import
 import LandingPage from './components/LandingPage.jsx';
 import LoginForm from './components/LoginForm.jsx';
 import SignupForm from './components/SignupForm.jsx';
@@ -15,26 +16,27 @@ import UserProfileView from './components/ProfilePage.jsx';
 import EmailVerification from './components/EmailVerification.jsx';
 import MeetingRoom from './components/MeetingRoom';
 
-
 function App() {
   return (
-    <Provider store={store}> {/* Add Redux Provider */}
+    <Provider store={store}>
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            {/* Public Routes */}
+            {/* Public Routes - NO FOOTER */}
             <Route path="/search" element={<UserSearchPage />} />
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<SignupForm />} />
             <Route path="/verify-email" element={<EmailVerification />} />
 
-            {/* Protected Routes */}
+            {/* Protected Routes - WITH FOOTER */}
             <Route
               path="/dashboard/:userId"
               element={
                 <PrivateRoute>
-                  <Dashboard />
+                  <Layout>
+                    <Dashboard />
+                  </Layout>
                 </PrivateRoute>
               }
             />
@@ -42,7 +44,9 @@ function App() {
               path="/profile/:userId"
               element={
                 <PrivateRoute>
-                  <ProfileUpdate />
+                  <Layout>
+                    <ProfileUpdate />
+                  </Layout>
                 </PrivateRoute>
               }
             />
@@ -50,7 +54,9 @@ function App() {
               path="/users/swap-requests"
               element={
                 <PrivateRoute>
-                  <RequestsPage />
+                  <Layout>
+                    <RequestsPage />
+                  </Layout>
                 </PrivateRoute>
               }
             />
@@ -58,7 +64,9 @@ function App() {
               path="/active-requests"
               element={
                 <PrivateRoute>
-                  <SessionsPage />
+                  <Layout>
+                    <SessionsPage />
+                  </Layout>
                 </PrivateRoute>
               }
             />
@@ -66,15 +74,20 @@ function App() {
               path="/users/profile/show/:userId"
               element={
                 <PrivateRoute>
-                  <UserProfileView />
+                  <Layout>
+                    <UserProfileView />
+                  </Layout>
                 </PrivateRoute>
               }
             />
-            <Route path="/meeting/:sessionId/:slotIndex"
+            <Route 
+              path="/meeting/:sessionId/:slotIndex"
               element={
-              <PrivateRoute>
-                <MeetingRoom />
-              </PrivateRoute>
+                <PrivateRoute>
+                  <Layout>
+                    <MeetingRoom />
+                  </Layout>
+                </PrivateRoute>
               }
             />
           </Routes>
