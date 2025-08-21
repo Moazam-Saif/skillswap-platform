@@ -210,3 +210,10 @@ export const getUserImage = async (userId) => {
   }
 };
 
+export const rejectSwapRequest = async (requestId, accessToken) => {
+    const res = await api.post(`/users/swap-requests/${requestId}/reject`, {}, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    return res.data;
+};
+

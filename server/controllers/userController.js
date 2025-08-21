@@ -326,8 +326,11 @@ export const sendSwapRequest = async (req, res) => {
       console.log(`     UTC: ${utcTimeSlots[index]}`);
     });
 
+    const sharedRequestId = new mongoose.Types.ObjectId();
+
     // ✅ STEP 5: Create swap request with UTC times from availability lookup
     const swapRequest = {
+      _id: sharedRequestId,
       from: fromUserId,
       to: toUserId,
       offerSkill,
@@ -366,6 +369,7 @@ export const sendSwapRequest = async (req, res) => {
 
     res.json({
       message: "Swap request sent successfully!",
+      requestId: sharedRequestId, // ✅ Return the shared ID
       debug: {
         utcTimeSlots,
         selectedSlots: selectedSlots.length,
@@ -432,5 +436,51 @@ export const getUserImage = async (req, res) => {
     res.json({ imageUrl: user.imageUrl });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+export const rejectSwapRequest = async (req, res) => {
+  try {
+    const requestId = req.params.id;
+    console.log('🔍 Rejecting request ID:', requestId);
+
+    // Find the user and the specific request
+    const userA = await User.findById(req.userId);
+    if (!userA) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Find the request in swapRequests subdocuments
+    const request = userA.swapRequests.id(requestId);
+    if (!request) {
+      console.log('❌ Request not found in swapRequests');
+      return res.status(404).json({ error: "Swap request not found" });
+    }
+
+    const fromUserId = request.from;
+    console.log('🔍 Request found, fromUserId:', fromUserId);
+
+    // Remove from User A's swapRequests using pull
+    await User.updateOne(
+      { _id: req.userId },
+      { $pull: { swapRequests: { _id: requestId } } }
+    );
+    console.log('✅ Removed from User A swapRequests');
+
+    // Update status in User B's (sender's) requestsSent
+    const updateResult = await User.updateOne(
+      { _id: fromUserId, "requestsSent._id": requestId },
+      { $set: { "requestsSent.$.status": "rejected" } }
+    );
+    console.log('🔍 Update result for User B requestsSent:', updateResult);
+
+    if (updateResult.matchedCount === 0) {
+      console.log('⚠️ No matching request found in User B requestsSent');
+    }
+
+    res.json({ message: "Request rejected" });
+  } catch (err) {
+    console.error('❌ Error in rejectSwapRequest:', err);
+    res.status(500).json({ error: err.message });
   }
 };

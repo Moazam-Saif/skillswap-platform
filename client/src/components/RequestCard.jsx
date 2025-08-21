@@ -1,12 +1,13 @@
 import React, { useContext } from "react";
-import { createSession } from "../api/auth";
+import { createSession, rejectSwapRequest } from "../api/auth";
+import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 
-export default function RequestCard({ request, type }) {
+export default function RequestCard({ request, type, onRemove }) {
     const { offerSkill, wantSkill, days, timeSlots, status, from, to, _id } = request || {};
     const { accessToken } = useContext(AuthContext);
 
-    // Function to truncate skill names
+    // Truncate skill names for display
     const truncateSkillName = (skillName, maxLength = 15) => {
         if (!skillName) return "";
         return skillName.length > maxLength ? skillName.substring(0, maxLength) + "..." : skillName;
@@ -18,17 +19,31 @@ export default function RequestCard({ request, type }) {
     const lastName = user?.name?.split(" ").slice(1).join(" ") || "You";
     const imageUrl = user?.imageUrl || "/userImage.png";
 
+    // Accept (Swap) handler
     const handleSwap = async () => {
         try {
             const duration = days;
             const data = { requestId: _id, duration };
             await createSession(data, accessToken);
+            if (onRemove) onRemove(_id); // Remove from received list in parent
             alert('Session created successfully!');
         } catch (err) {
             console.error('Failed to create session', err);
             alert('Failed to create session');
         }
     };
+
+    // Reject handler
+    const handleReject = async () => {
+    try {
+        await rejectSwapRequest(_id, accessToken);
+        if (onRemove) onRemove(_id);
+        alert('Request rejected!');
+    } catch (err) {
+        console.error('Failed to reject request', err);
+        alert('Failed to reject request');
+    }
+};
 
     return (
         <div
@@ -118,7 +133,10 @@ export default function RequestCard({ request, type }) {
                                 </button>
                             </div>
                             <div className="w-1/2 flex items-center justify-center">
-                                <button className="bg-[#fff8f4] text-xs md:text-sm px-3 py-1 rounded-lg flex items-center justify-center shadow-md hover:bg-[#f0f0f0] transition-colors text-black">
+                                <button 
+                                    onClick={handleReject}
+                                    className="bg-[#fff8f4] text-xs md:text-sm px-3 py-1 rounded-lg flex items-center justify-center shadow-md hover:bg-[#f0f0f0] transition-colors text-black"
+                                >
                                     Reject
                                 </button>
                             </div>

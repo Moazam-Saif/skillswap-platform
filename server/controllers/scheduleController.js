@@ -68,10 +68,22 @@ export const createSession = async (req, res) => {
       { $pull: { swapRequests: { _id: requestId } } }
     );
 
+    console.log('✅ Removed from User A swapRequests');
+
+    // Update status in User B's requestsSent
+    const updateResult = await User.updateOne(
+      { _id: request.from, "requestsSent._id": requestId },
+      { $set: { "requestsSent.$.status": "accepted" } }
+    );
+    console.log('🔍 Update result for User B requestsSent:', updateResult);
+
+
     await scheduleSessionExpiry(session._id, session.expiresAt);
 
-    res.json({ 
-      message: 'Session created successfully', 
+
+
+    res.json({
+      message: 'Session created successfully',
       session,
       remindersScheduled: session.scheduledTime?.length || 0,
       debug: {
@@ -91,8 +103,8 @@ export const getUserSessions = async (req, res) => {
     const sessions = await Session.find({
       $or: [{ userA: req.userId }, { userB: req.userId }]
     })
-    .populate('userA', 'name')
-    .populate('userB', 'name');
+      .populate('userA', 'name')
+      .populate('userB', 'name');
     res.json(sessions);
   } catch (err) {
     res.status(500).json({ error: err.message });

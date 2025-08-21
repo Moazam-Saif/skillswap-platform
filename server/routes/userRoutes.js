@@ -10,6 +10,7 @@ import { changePassword } from '../controllers/authController.js';
 import { getSkillMatches,getPartialSkillMatches,getCategorySkillMatches } from '../controllers/matchController.js';
 import { createSession,getUserSessions } from '../controllers/scheduleController.js';
 import { getMeetingAccess, validateMeetingAccess } from '../controllers/meetingController.js';
+import { rejectSwapRequest } from '../controllers/userController.js';
 
 
 
@@ -22,6 +23,7 @@ router.post('/rating', verifyToken, addRating);
 router.post('/change-password', verifyToken, changePassword);
 router.post('/swap-request', verifyToken, sendSwapRequest);
 router.post('/create-session', verifyToken, createSession);
+router.post('/swap-requests/:id/reject', verifyToken, rejectSwapRequest);
 
 router.get('/profile/show/:id', verifyToken, getUserById);
 
