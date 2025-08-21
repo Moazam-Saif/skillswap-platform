@@ -110,12 +110,15 @@ if (req.body.availability && Array.isArray(req.body.availability) && req.body.av
 
     // Prepare update payload
     const updatePayload = {
-      ...req.body,
+      name: req.body.name,
+      bio: req.body.bio,
+      contact: req.body.contact, // ✅ EXPLICITLY include contact
+      imageUrl: req.body.imageUrl,
       skillsHave: enrichedSkillsHave,
       skillsWant: enrichedSkillsWant,
       categoriesHave: Array.from(categoriesHaveSet),
       categoriesWant: Array.from(categoriesWantSet),
-      availability: processedAvailability, // ✅ ALWAYS UTC format with IDs
+      availability: processedAvailability,
     };
 
     if (req.body.timezone) {

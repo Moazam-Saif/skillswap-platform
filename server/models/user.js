@@ -56,9 +56,12 @@ const userSchema = new mongoose.Schema({
       return !this.isGoogleUser;
     }
   },
+
   isGoogleUser: { type: Boolean, default: false },
   googleId: { type: String },
   imageUrl: { type: String },
+  contact: { type: String }, // ✅ ADD THIS FIELD
+  bio: { type: String }, // ✅ ADD THIS FIELD TOO (if not already there)
   isEmailVerified: { type: Boolean, default: false },
   emailVerificationToken: { type: String },
   emailVerificationExpires: { type: Date },
