@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { createSession, rejectSwapRequest } from "../api/auth";
-import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
+import { convertTimeSlotToLocal } from "../utils/timeUtils";
 
 export default function RequestCard({ request, type, onRemove }) {
     const { offerSkill, wantSkill, days, timeSlots, status, from, to, _id } = request || {};
@@ -25,7 +25,7 @@ export default function RequestCard({ request, type, onRemove }) {
             const duration = days;
             const data = { requestId: _id, duration };
             await createSession(data, accessToken);
-            if (onRemove) onRemove(_id); // Remove from received list in parent
+            if (onRemove) onRemove(_id);
             alert('Session created successfully!');
         } catch (err) {
             console.error('Failed to create session', err);
@@ -35,15 +35,15 @@ export default function RequestCard({ request, type, onRemove }) {
 
     // Reject handler
     const handleReject = async () => {
-    try {
-        await rejectSwapRequest(_id, accessToken);
-        if (onRemove) onRemove(_id);
-        alert('Request rejected!');
-    } catch (err) {
-        console.error('Failed to reject request', err);
-        alert('Failed to reject request');
-    }
-};
+        try {
+            await rejectSwapRequest(_id, accessToken);
+            if (onRemove) onRemove(_id);
+            alert('Request rejected!');
+        } catch (err) {
+            console.error('Failed to reject request', err);
+            alert('Failed to reject request');
+        }
+    };
 
     return (
         <div
@@ -106,7 +106,7 @@ export default function RequestCard({ request, type, onRemove }) {
                     </span>
                     <div className="flex flex-row gap-1 mt-1 w-full justify-center">
                         <span className="bg-[#ec8b73] px-2 py-1 rounded-full">
-                            {timeSlots && timeSlots.length > 0 ? timeSlots[0] : "No time slot"}
+                            {convertTimeSlotToLocal(timeSlots && timeSlots.length > 0 ? timeSlots[0] : null)}
                         </span>
                     </div>
                     {/* Action Buttons */}

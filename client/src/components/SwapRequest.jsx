@@ -241,7 +241,7 @@ const convertAvailabilityToUserTimezone = (slots, timezone) => {
                     <div className="relative w-1/2 h-full border-r-1 border-white">
                         <div className="relative w-full h-[100%] flex flex-col items-center justify-between">
                             <label className="mt-2 text-sm sm:text-base md:text-lg font-medium" htmlFor="days">
-                                Days:
+                                Weeks:
                             </label>
                             <input
                                 id="days"

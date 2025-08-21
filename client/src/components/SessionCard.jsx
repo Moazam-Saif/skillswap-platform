@@ -1,20 +1,5 @@
 import React from "react";
-import moment from "moment-timezone";
-
-function isMeetingOngoing(slot) {
-    let dayTime, endTime, day, startTime;
-    if (slot.includes(' - ')) {
-        [dayTime, endTime] = slot.split(' - ');
-        [day, startTime] = dayTime.split(' ');
-    } else {
-        [dayTime, endTime] = slot.split('-');
-        [day, startTime] = dayTime.trim().split(' ');
-    }
-    const now = moment.utc();
-    const slotStart = moment.utc().day(day).hour(Number(startTime.split(':')[0])).minute(Number(startTime.split(':')[1]));
-    const slotEnd = moment.utc().day(day).hour(Number(endTime.split(':')[0])).minute(Number(endTime.split(':')[1]));
-    return now.isBetween(slotStart.clone().subtract(5, 'minutes'), slotEnd.clone().add(5, 'minutes'));
-}
+import { convertTimeSlotToLocal, isMeetingOngoing } from "../utils/timeUtils";
 
 export default function SessionCard({ session, userId, viewType }) {
     const otherUser = session.userA?._id === userId ? session.userB : session.userA;
@@ -24,7 +9,7 @@ export default function SessionCard({ session, userId, viewType }) {
     const skillA = session.skillFromA?.name || "";
     const skillB = session.skillFromB?.name || "";
 
-    const showJoinSession = viewType === "active" && session.scheduledTime && session.scheduledTime.some(isMeetingOngoing);
+    const showJoinSession = viewType === "active" && session.scheduledTime && session.scheduledTime.some(slot => isMeetingOngoing(slot));
 
     return (
         <div
@@ -88,7 +73,7 @@ export default function SessionCard({ session, userId, viewType }) {
                     <div className="flex flex-row gap-1 mt-1 w-full justify-center">
                         {session.scheduledTime && session.scheduledTime.map((slot, i) => (
                             <span key={i} className="bg-[#ec8b73] px-2 py-1 rounded-full">
-                                {slot}
+                                {convertTimeSlotToLocal(slot)}
                             </span>
                         ))}
                     </div>
