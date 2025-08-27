@@ -24,7 +24,7 @@ function getTwoRandomIndices(prevIndices) {
   return [first, second];
 }
 
-export default function IconAnimation({ direction }) {
+export default function IconAnimation({ direction, isMobile = false }) {
   // iconIndices: [left, right]
   const [iconIndices, setIconIndices] = useState([0, 1]);
   const prevIndices = useRef([0, 1]);
@@ -32,10 +32,13 @@ export default function IconAnimation({ direction }) {
   const dispatch = useDispatch();
   const iconAnimationActive = useSelector(state => state.animation.iconAnimationActive);
 
-  useEffect(() => {
+   useEffect(() => {
     if (!iconAnimationActive) return;
 
     let timeout1, timeout2;
+    
+    // Different movement distances for mobile vs desktop
+    const moveDistance = isMobile ? 40 : 80;
 
     const runSequence = () => {
       // 1. Pop out (scale 0)
@@ -55,12 +58,12 @@ export default function IconAnimation({ direction }) {
           // 4. Wait, then swipe out
           timeout1 = setTimeout(() => {
             gsap.to(iconRef.current, {
-              x: direction === "left" ? 80 : -80,
+              x: direction === "left" ? moveDistance : -moveDistance,
               opacity: 0,
               duration: 0.4,
               ease: "power2.in",
               onComplete: () => {
-                // 5. Pick two new random icons for swipe in (NOT EQUAL TO EACH OTHER OR PREVIOUS)
+                // 5. Pick two new random icons for swipe in
                 const newIndices = getTwoRandomIndices(prevIndices.current);
                 setIconIndices(newIndices);
                 prevIndices.current = newIndices;
@@ -68,7 +71,7 @@ export default function IconAnimation({ direction }) {
                 // 6. Swipe in
                 gsap.fromTo(
                   iconRef.current,
-                  { x: direction === "left" ? -80 : 80, opacity: 0 },
+                  { x: direction === "left" ? -moveDistance : moveDistance, opacity: 0 },
                   {
                     x: 0,
                     opacity: 1,
@@ -95,8 +98,7 @@ export default function IconAnimation({ direction }) {
       clearTimeout(timeout1);
       clearTimeout(timeout2);
     };
-  }, [iconAnimationActive, direction, dispatch]);
-
+  }, [iconAnimationActive, direction, dispatch, isMobile]);
   // Pick icon for this side
   const icon = direction === "left"
     ? iconList[iconIndices[0]]

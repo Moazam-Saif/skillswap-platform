@@ -38,7 +38,7 @@ export default function LandingPage() {
                   boxShadow: "0 8px 24px 0 rgba(0,0,0,0.25), 0 1.5px 4px 0 rgba(244,162,97,0.25) inset"
                 }}
               >
-                <IconAnimation direction="left" key="mobile-left" />
+                <IconAnimation direction="left" key="mobile-left" isMobile={true} />
               </div>
 
               {/* Animation Stroke */}
@@ -54,7 +54,7 @@ export default function LandingPage() {
                   boxShadow: "0 8px 24px 0 rgba(0,0,0,0.25), 0 1.5px 4px 0 rgba(244,162,97,0.25) inset"
                 }}
               >
-                <IconAnimation direction="right" key="mobile-right" />
+                <IconAnimation direction="right" key="mobile-right" isMobile={true} />
               </div>
             </div>
 
@@ -98,7 +98,7 @@ export default function LandingPage() {
                   boxShadow: "0 8px 24px 0 rgba(0,0,0,0.25), 0 1.5px 4px 0 rgba(244,162,97,0.25) inset"
                 }}
               >
-                <IconAnimation direction="left" key="desktop-left" />
+                <IconAnimation direction="left" key="desktop-left" isMobile={false} />
               </div>
             </div>
 
@@ -115,7 +115,7 @@ export default function LandingPage() {
                   boxShadow: "0 8px 24px 0 rgba(0,0,0,0.25), 0 1.5px 4px 0 rgba(244,162,97,0.25) inset"
                 }}
               >
-                <IconAnimation direction="right" key="desktop-right" />
+                <IconAnimation direction="right" key="desktop-right" isMobile={false} />
               </div>
             </div>
 
