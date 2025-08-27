@@ -42,7 +42,7 @@ export default function LandingPage() {
               </div>
 
               {/* Animation Stroke */}
-              <div className="w-58 sm:w-56 h-52 sm:h-56 flex items-center justify-center">
+              <div className="w-40 sm:w-40 h-36 sm:h-36 flex items-center justify-center">
                 <AnimationStroke key="mobile" id="mobile" />
               </div>
 

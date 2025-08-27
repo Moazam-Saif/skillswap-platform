@@ -104,12 +104,13 @@ export default function IconAnimation({ direction, isMobile = false }) {
     ? iconList[iconIndices[0]]
     : iconList[iconIndices[1]];
 
-  return (
-    <FontAwesomeIcon
-      ref={iconRef}
-      icon={icon}
-      className="text-white text-7xl"
-      style={{ transform: "scale(1)" }}
-    />
-  );
+  
+return (
+  <FontAwesomeIcon
+    ref={iconRef}
+    icon={icon}
+    className={`text-white ${isMobile ? 'text-5xl' : 'text-7xl'}`}
+    style={{ transform: "scale(1)" }}
+  />
+);
 }
