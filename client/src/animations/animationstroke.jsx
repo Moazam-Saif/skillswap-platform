@@ -95,18 +95,18 @@ const DrawingLines = () => {
         className="absolute top-0 left-0"
       >
         <defs>
-          <linearGradient id="mainGradient" x1="0" y1="0" x2="256" y2="0" gradientUnits="userSpaceOnUse">
+          <linearGradient id={`mainGradient-${id}`} x1="0" y1="0" x2="256" y2="0" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#f4a261" />
             <stop offset="50%" stopColor="#ebbe69" />
             <stop offset="75%" stopColor="#edb967" />
             <stop offset="100%" stopColor="#e9c46a" />
           </linearGradient>
         </defs>
-        <path ref={path1Ref} d={paths[1]} fill="none" stroke="url(#mainGradient)" strokeWidth="1" />
-        <path ref={path2Ref} d={paths[2]} fill="none" stroke="url(#mainGradient)" strokeWidth="1" />
-        <path ref={path3Ref} d={paths[3]} fill="none" stroke="url(#mainGradient)" strokeWidth="1" />
-        <path ref={path4Ref} d={paths[4]} fill="none" stroke="url(#mainGradient)" strokeWidth="1" />
-        <path ref={path5Ref} d={paths[5]} fill="none" stroke="url(#mainGradient)" strokeWidth="1" />
+        <path ref={path1Ref} d={paths[1]} fill="none" stroke={`url(#mainGradient-${id})`} strokeWidth="1" />
+        <path ref={path2Ref} d={paths[2]} fill="none" stroke={`url(#mainGradient-${id})`} strokeWidth="1" />
+        <path ref={path3Ref} d={paths[3]} fill="none" stroke={`url(#mainGradient-${id})`} strokeWidth="1" />
+        <path ref={path4Ref} d={paths[4]} fill="none" stroke={`url(#mainGradient-${id})`} strokeWidth="1" />
+        <path ref={path5Ref} d={paths[5]} fill="none" stroke={`url(#mainGradient-${id})`} strokeWidth="1" />
       </svg>
 
       <svg
@@ -115,26 +115,21 @@ const DrawingLines = () => {
         viewBox="0 0 256 63"
         xmlns="http://www.w3.org/2000/svg"
         className="absolute top-0 left-0"
-        style={{
-          transform: "scale(-1, -1)"
-        }}
+        style={{ transform: "scale(-1, -1)" }}
       >
         <defs>
-          <linearGradient id="mirrorGradient" x1="0" y1="0" x2="256" y2="0" gradientUnits="userSpaceOnUse">
+          <linearGradient id={`mirrorGradient-${id}`} x1="0" y1="0" x2="256" y2="0" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#e9c46a" />
             <stop offset="25%" stopColor="#edb967" />
             <stop offset="50%" stopColor="#ebbe69" />
             <stop offset="100%" stopColor="#f4a261" />
-
-
-
           </linearGradient>
         </defs>
-        <path ref={mPath2Ref} d={paths[2]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
-        <path ref={mPath4Ref} d={paths[4]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
-        <path ref={mPath5Ref} d={paths[5]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
-        <path ref={mPath1Ref} d={paths[1]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
-        <path ref={mPath3Ref} d={paths[3]} fill="none" stroke="url(#mirrorGradient)" strokeWidth="1" />
+        <path ref={mPath2Ref} d={paths[2]} fill="none" stroke={`url(#mirrorGradient-${id})`} strokeWidth="1" />
+        <path ref={mPath4Ref} d={paths[4]} fill="none" stroke={`url(#mirrorGradient-${id})`} strokeWidth="1" />
+        <path ref={mPath5Ref} d={paths[5]} fill="none" stroke={`url(#mirrorGradient-${id})`} strokeWidth="1" />
+        <path ref={mPath1Ref} d={paths[1]} fill="none" stroke={`url(#mirrorGradient-${id})`} strokeWidth="1" />
+        <path ref={mPath3Ref} d={paths[3]} fill="none" stroke={`url(#mirrorGradient-${id})`} strokeWidth="1" />
       </svg>
     </div>
   );
