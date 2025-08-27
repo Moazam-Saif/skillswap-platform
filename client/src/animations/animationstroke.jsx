@@ -12,7 +12,7 @@ const paths = [
   "M253.331 62.9705C253.591 63.0639 253.877 62.9291 253.971 62.6692L255.493 58.4347C255.587 58.1749 255.452 57.8884 255.192 57.795C254.932 57.7016 254.646 57.8364 254.552 58.0963L253.199 61.8603L249.435 60.5067C249.175 60.4132 248.888 60.5481 248.795 60.808C248.702 61.0678 248.836 61.3542 249.096 61.4477L253.331 62.9705Z"
 ];
 
-const DrawingLines = () => {
+const DrawingLines = ({ id = "default" }) => {
 
   const dispatch = useDispatch();
   const iconAnimationActive = useSelector(state => state.animation.iconAnimationActive);
