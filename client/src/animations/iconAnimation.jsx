@@ -8,7 +8,8 @@ import { gsap } from "gsap";
 import { useDispatch, useSelector } from "react-redux";
 import { 
   setIconAnimationActive, 
-  swapIconIndices, 
+  prepareSwap,
+  clearSwapCommunication,
   setNewRandomIcons 
 } from "../store/animationSlice.jsx";
 
@@ -24,6 +25,8 @@ export default function IconAnimation({ direction, isMobile = false }) {
   const dispatch = useDispatch();
   const iconAnimationActive = useSelector(state => state.animation.iconAnimationActive);
   const iconIndices = useSelector(state => state.animation.iconIndices);
+  const leftPopInIndex = useSelector(state => state.animation.leftPopInIndex);
+  const rightPopInIndex = useSelector(state => state.animation.rightPopInIndex);
 
   useEffect(() => {
     if (!iconAnimationActive) return;
@@ -41,15 +44,20 @@ export default function IconAnimation({ direction, isMobile = false }) {
         duration: 0.4,
         ease: "power2.in",
         onComplete: () => {
-          // 2. Swap the shared icon indices
-          dispatch(swapIconIndices());
+          // 2. Prepare the swap - store what each side should show
+          dispatch(prepareSwap());
           
           // 3. Pop in with swapped icons (scale 1)
           setTimeout(() => {
             gsap.fromTo(
               ".icon-animation",
               { scale: 0 },
-              { scale: 1, duration: 0.4, ease: "back.out(1.7)" }
+              { 
+                scale: 1, 
+                duration: 0.4, 
+                ease: "back.out(1.7)"
+                // Removed the onComplete with applySwap
+              }
             );
             
             // 4. Wait, then swipe out
@@ -63,7 +71,8 @@ export default function IconAnimation({ direction, isMobile = false }) {
                 duration: 0.4,
                 ease: "power2.in",
                 onComplete: () => {
-                  // 5. Set new random icons
+                  // 5. Clear communication and set new random icons
+                  dispatch(clearSwapCommunication());
                   dispatch(setNewRandomIcons());
 
                   // 6. Swipe in with new icons
@@ -105,10 +114,17 @@ export default function IconAnimation({ direction, isMobile = false }) {
     };
   }, [iconAnimationActive, direction, dispatch, isMobile]);
 
-  // Pick icon for this side from shared state
-  const icon = direction === "left"
-    ? iconList[iconIndices[0]]
-    : iconList[iconIndices[1]];
+  // Determine which icon to show
+  let iconIndex;
+  if (leftPopInIndex !== null && rightPopInIndex !== null) {
+    // During pop-in phase, use the communicated indices
+    iconIndex = direction === "left" ? leftPopInIndex : rightPopInIndex;
+  } else {
+    // Normal phase, use current indices
+    iconIndex = direction === "left" ? iconIndices[0] : iconIndices[1];
+  }
+
+  const icon = iconList[iconIndex];
 
   return (
     <FontAwesomeIcon

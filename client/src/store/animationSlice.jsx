@@ -14,8 +14,11 @@ const animationSlice = createSlice({
   name: 'animation',
   initialState: {
     iconAnimationActive: false,
-    iconIndices: [0, 1], // [left, right] shared state
+    iconIndices: [0, 1], // [left, right] current icons
     prevIndices: [0, 1],
+    // Store indices before swap for communication
+    leftPopInIndex: null,
+    rightPopInIndex: null,
   },
   reducers: {
     setIconAnimationActive: (state, action) => {
@@ -24,8 +27,20 @@ const animationSlice = createSlice({
     setIconIndices: (state, action) => {
       state.iconIndices = action.payload;
     },
-    swapIconIndices: (state) => {
-      state.iconIndices = [state.iconIndices[1], state.iconIndices[0]];
+    // Store current indices and set what each side should pop-in with
+    prepareSwap: (state) => {
+      const currentLeft = state.iconIndices[0];
+      const currentRight = state.iconIndices[1];
+      
+      // Left side will pop-in with what right side currently has
+      state.leftPopInIndex = currentRight;
+      // Right side will pop-in with what left side currently has
+      state.rightPopInIndex = currentLeft;
+    },
+    // Clear the communication variables
+    clearSwapCommunication: (state) => {
+      state.leftPopInIndex = null;
+      state.rightPopInIndex = null;
     },
     setNewRandomIcons: (state) => {
       const newIndices = getTwoRandomIndices(state.prevIndices);
@@ -41,7 +56,8 @@ const animationSlice = createSlice({
 export const { 
   setIconAnimationActive, 
   setIconIndices, 
-  swapIconIndices, 
+  prepareSwap,
+  clearSwapCommunication,
   setNewRandomIcons,
   setPrevIndices 
 } = animationSlice.actions;
