@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGuitar, faTableTennisPaddleBall, faBicycle, faBook, faCamera, faChess, faCode, faDrum,
@@ -6,7 +6,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { gsap } from "gsap";
 import { useDispatch, useSelector } from "react-redux";
-import { setIconAnimationActive } from "../store/animationSlice.jsx";
+import { 
+  setIconAnimationActive, 
+  swapIconIndices, 
+  setNewRandomIcons 
+} from "../store/animationSlice.jsx";
 
 const iconList = [
   faGuitar, faTableTennisPaddleBall, faBicycle, faBook,
@@ -15,79 +19,80 @@ const iconList = [
   faPaintBrush, faRocket, faSwimmer, faUtensils
 ];
 
-// Helper to get two new random indices, not equal to each other or the previous two
-function getTwoRandomIndices(prevIndices) {
-  let available = iconList.map((_, i) => i).filter(i => !prevIndices.includes(i));
-  let first = available[Math.floor(Math.random() * available.length)];
-  let available2 = available.filter(i => i !== first);
-  let second = available2[Math.floor(Math.random() * available2.length)];
-  return [first, second];
-}
-
 export default function IconAnimation({ direction, isMobile = false }) {
-  // iconIndices: [left, right]
-  const [iconIndices, setIconIndices] = useState([0, 1]);
-  const prevIndices = useRef([0, 1]);
   const iconRef = useRef(null);
   const dispatch = useDispatch();
   const iconAnimationActive = useSelector(state => state.animation.iconAnimationActive);
+  const iconIndices = useSelector(state => state.animation.iconIndices);
 
-   useEffect(() => {
+  useEffect(() => {
     if (!iconAnimationActive) return;
+    
+    // Only the left icon controls the sequence to avoid duplication
+    if (direction !== "left") return;
 
     let timeout1, timeout2;
-    
-    // Different movement distances for mobile vs desktop
     const moveDistance = isMobile ? 40 : 80;
 
     const runSequence = () => {
-      // 1. Pop out (scale 0)
-      gsap.to(iconRef.current, {
+      // 1. Pop out both icons (scale 0)
+      gsap.to(".icon-animation", {
         scale: 0,
         duration: 0.4,
         ease: "power2.in",
         onComplete: () => {
-          // 2. Swap left/right icons (ALWAYS swap, not random)
-          setIconIndices(([left, right]) => [right, left]);
-          // 3. Pop in (scale 1)
-          gsap.fromTo(
-            iconRef.current,
-            { scale: 0 },
-            { scale: 1, duration: 0.4, ease: "back.out(1.7)" }
-          );
-          // 4. Wait, then swipe out
-          timeout1 = setTimeout(() => {
-            gsap.to(iconRef.current, {
-              x: direction === "left" ? moveDistance : -moveDistance,
-              opacity: 0,
-              duration: 0.4,
-              ease: "power2.in",
-              onComplete: () => {
-                // 5. Pick two new random icons for swipe in
-                const newIndices = getTwoRandomIndices(prevIndices.current);
-                setIconIndices(newIndices);
-                prevIndices.current = newIndices;
+          // 2. Swap the shared icon indices
+          dispatch(swapIconIndices());
+          
+          // 3. Pop in with swapped icons (scale 1)
+          setTimeout(() => {
+            gsap.fromTo(
+              ".icon-animation",
+              { scale: 0 },
+              { scale: 1, duration: 0.4, ease: "back.out(1.7)" }
+            );
+            
+            // 4. Wait, then swipe out
+            timeout1 = setTimeout(() => {
+              gsap.to(".icon-animation", {
+                x: (index, target) => {
+                  const isLeft = target.classList.contains('icon-left');
+                  return isLeft ? moveDistance : -moveDistance;
+                },
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.in",
+                onComplete: () => {
+                  // 5. Set new random icons
+                  dispatch(setNewRandomIcons());
 
-                // 6. Swipe in
-                gsap.fromTo(
-                  iconRef.current,
-                  { x: direction === "left" ? -moveDistance : moveDistance, opacity: 0 },
-                  {
-                    x: 0,
-                    opacity: 1,
-                    duration: 0.4,
-                    ease: "back.out(1.7)",
-                    onComplete: () => {
-                      // 7. Wait, then end animation
-                      timeout2 = setTimeout(() => {
-                        dispatch(setIconAnimationActive(false));
-                      }, 2000);
+                  // 6. Swipe in with new icons
+                  gsap.fromTo(
+                    ".icon-animation",
+                    { 
+                      x: (index, target) => {
+                        const isLeft = target.classList.contains('icon-left');
+                        return isLeft ? -moveDistance : moveDistance;
+                      }, 
+                      opacity: 0 
+                    },
+                    {
+                      x: 0,
+                      opacity: 1,
+                      duration: 0.4,
+                      ease: "back.out(1.7)",
+                      onComplete: () => {
+                        // 7. Wait, then end animation
+                        timeout2 = setTimeout(() => {
+                          dispatch(setIconAnimationActive(false));
+                        }, 2000);
+                      }
                     }
-                  }
-                );
-              }
-            });
-          }, 2000);
+                  );
+                }
+              });
+            }, 2000);
+          }, 0);
         }
       });
     };
@@ -99,18 +104,18 @@ export default function IconAnimation({ direction, isMobile = false }) {
       clearTimeout(timeout2);
     };
   }, [iconAnimationActive, direction, dispatch, isMobile]);
-  // Pick icon for this side
+
+  // Pick icon for this side from shared state
   const icon = direction === "left"
     ? iconList[iconIndices[0]]
     : iconList[iconIndices[1]];
 
-  
-return (
-  <FontAwesomeIcon
-    ref={iconRef}
-    icon={icon}
-    className={`text-white ${isMobile ? 'text-5xl' : 'text-7xl'}`}
-    style={{ transform: "scale(1)" }}
-  />
-);
+  return (
+    <FontAwesomeIcon
+      ref={iconRef}
+      icon={icon}
+      className={`icon-animation icon-${direction} text-white ${isMobile ? 'text-5xl' : 'text-7xl'}`}
+      style={{ transform: "scale(1)" }}
+    />
+  );
 }
