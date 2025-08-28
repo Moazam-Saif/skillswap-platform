@@ -17,22 +17,22 @@ export default function LandingPage() {
         {/* Single Responsive Layout */}
         <div className="relative z-10 h-screen w-full">
           {/* Mobile Layout */}
-          <div className="flex flex-col items-center justify-center h-full px-4 md:hidden">
+          <div className="relative flex flex-col items-center justify-center min-h-screen w-full px-2 py-0 overflow-y-auto md:hidden">
             {/* Title Section */}
-            <div className="text-center mb-8">
-              <h1 style={{ fontFamily: "Kranky, cursive" }} className="text-[12vw] sm:text-[10vw] text-white tracking-wider mb-2">
+            <div className="absolute top-[3vh] text-center mb-6">
+              <h1 style={{ fontFamily: "Kranky, cursive" }} className="text-[7vh] sm:text-[5vh] text-white tracking-wider mb-2">
                 SKILL
               </h1>
-              <h1 style={{ fontFamily: "Lemon, serif" }} className="text-[12vw] sm:text-[10vw] text-white tracking-wider">
+              <h1 style={{ fontFamily: "Lemon, serif" }} className="text-[7vh] sm:text-[5vh] text-white tracking-wider">
                 SWAP
               </h1>
             </div>
 
             {/* Circles Section - Vertical Stack */}
-            <div className="flex flex-col items-center space-y-6 mb-12">
+            <div className="flex flex-col items-center space-y-4 w-full mt-5">
               {/* Top Circle */}
               <div
-                className="flex items-center justify-center w-32 h-32 sm:w-36 sm:h-36 rounded-full"
+                className="flex items-center justify-center w-[17vh] h-[17vh] max-w-[150px] max-h-[150px] rounded-full"
                 style={{
                   backgroundColor: "#F4A261",
                   boxShadow: "0 8px 24px 0 rgba(0,0,0,0.25), 0 1.5px 4px 0 rgba(244,162,97,0.25) inset"
@@ -42,13 +42,13 @@ export default function LandingPage() {
               </div>
 
               {/* Animation Stroke */}
-              <div className="w-40 sm:w-40 h-36 sm:h-36 flex items-center justify-center">
+              <div className="w-[32vw] h-[24vw] max-w-[140px] max-h-[90px] flex items-center justify-center">
                 <AnimationStroke key="mobile" id="mobile" />
               </div>
 
               {/* Bottom Circle */}
               <div
-                className="flex items-center justify-center w-32 h-32 sm:w-36 sm:h-36 rounded-full"
+                className="flex items-center justify-center w-[17vh] h-[17vh] max-w-[150px] max-h-[150px] rounded-full"
                 style={{
                   backgroundColor: "#E9C46A",
                   boxShadow: "0 8px 24px 0 rgba(0,0,0,0.25), 0 1.5px 4px 0 rgba(244,162,97,0.25) inset"
@@ -59,14 +59,14 @@ export default function LandingPage() {
             </div>
 
             {/* Buttons Section - Stacked */}
-            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 w-full max-w-xs sm:max-w-sm">
+            <div className="absolute bottom-[3vh] flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 w-full max-w-xs">
               <Link to="/login" className="flex-1">
-                <button className="w-full bg-[#E76F51] text-white px-6 py-3 rounded-3xl text-lg font-medium transition-all duration-300 border border-white/20 shadow-md hover:border-white hover:shadow-lg">
+                <button className="w-full bg-[#E76F51] text-white px-4 py-2 rounded-3xl text-base font-medium transition-all duration-300 border border-white/20 shadow-md hover:border-white hover:shadow-lg">
                   Login
                 </button>
               </Link>
               <Link to="/register" className="flex-1">
-                <button className="w-full bg-[#264653] text-white px-6 py-3 rounded-3xl text-lg font-medium transition-all duration-300 border border-white/20 shadow-md hover:border-white hover:shadow-lg">
+                <button className="w-full bg-[#264653] text-white px-4 py-2 rounded-3xl text-base font-medium transition-all duration-300 border border-white/20 shadow-md hover:border-white hover:shadow-lg">
                   Sign Up
                 </button>
               </Link>
