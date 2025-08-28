@@ -52,7 +52,7 @@ export default function LoginForm() {
 
           {/* Google Sign In Button */}
           <div className="mb-6">
-            <GoogleAuthButton mode="signin" />
+            <GoogleAuthButton mode="signin"/>
           </div>
 
           {/* Divider */}
