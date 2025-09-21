@@ -1,6 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { startAnimation, setIntersected, startFadeOut, completeAnimation } from '../store/circleAnimationSlice';
+import { 
+  startAnimation, 
+  setIntersected, 
+  startLetterAnimation,
+  showNextLetter,
+  startFadeOut, 
+  completeAnimation 
+} from '../store/circleAnimationSlice';
 
 export default function CircleIntersectionAnimation() {
   const canvasRef = useRef(null);
@@ -8,9 +15,24 @@ export default function CircleIntersectionAnimation() {
   const animationRef = useRef(null);
   const dispatch = useDispatch();
   
-  const { animationPhase, circlesVisible } = useSelector(state => state.circleAnimation);
+  const { animationPhase, lettersVisible, showContent } = useSelector(state => state.circleAnimation);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [animationStarted, setAnimationStarted] = useState(false);
+  
+  // Use refs to track current state without causing re-renders
+  const currentPhaseRef = useRef('idle');
+  const currentLettersRef = useRef(0);
+  
+  // Update refs when Redux state changes
+  useEffect(() => {
+    currentPhaseRef.current = animationPhase;
+    console.log('Phase updated to:', animationPhase);
+  }, [animationPhase]);
+  
+  useEffect(() => {
+    currentLettersRef.current = lettersVisible;
+    console.log('Letters visible:', lettersVisible);
+  }, [lettersVisible]);
   
   const CIRCLE_RADIUS = 150;
   const TARGET_INTERSECTION_PERCENT = 20;
@@ -55,13 +77,6 @@ export default function CircleIntersectionAnimation() {
     return (minDistance + maxDistance) / 2;
   };
 
-  // Check if point is in circle intersection
-  const isPointInIntersection = (x, y, circle1, circle2) => {
-    const dist1 = calculateDistance(x, y, circle1.x, circle1.y);
-    const dist2 = calculateDistance(x, y, circle2.x, circle2.y);
-    return dist1 <= circle1.radius && dist2 <= circle2.radius;
-  };
-
   // Handle resize
   useEffect(() => {
     const handleResize = () => {
@@ -82,6 +97,7 @@ export default function CircleIntersectionAnimation() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !animationStarted) {
+            console.log('🚀 Starting animation...');
             setAnimationStarted(true);
             dispatch(startAnimation());
           }
@@ -104,6 +120,7 @@ export default function CircleIntersectionAnimation() {
     };
   }, [animationStarted, dispatch]);
 
+  // Main animation effect - ONLY depends on canvas setup
   useEffect(() => {
     if (!animationStarted || !canvasSize.width || !canvasSize.height) return;
 
@@ -127,22 +144,22 @@ export default function CircleIntersectionAnimation() {
     const finalCircle1X = finalCenterX - halfTargetDistance;
     const finalCircle2X = finalCenterX + halfTargetDistance;
 
-    // SKILLSWAP letters arranged in columns
-    const letters = [
-      ['S', 'K', 'I', 'L', 'L'],
-      ['S', 'W', 'A', 'P']
-    ];
+    // SKILLSWAP letters in single column
+    const letters = ['S', 'K', 'I', 'L', 'L', 'S', 'W', 'A', 'P'];
 
     let animationComplete = false;
-    let intersectionComplete = false;
     let fadeStartTime = null;
     let circleAlpha = 1;
+    let hasTriggered = false;
 
     const animate = () => {
+      const currentPhase = currentPhaseRef.current;
+      const currentLetters = currentLettersRef.current;
+      
       ctx.clearRect(0, 0, canvasSize.width, canvasSize.height);
 
       // Phase 1: Move circles towards intersection
-      if (animationPhase === 'moving' && !animationComplete) {
+      if (currentPhase === 'moving' && !animationComplete) {
         const moveSpeed = 8;
         
         if (circle1.x < finalCircle1X) {
@@ -154,102 +171,94 @@ export default function CircleIntersectionAnimation() {
         }
 
         if (circle1.x >= finalCircle1X && circle2.x <= finalCircle2X) {
+          console.log('🎯 Circles intersected at 20%');
           animationComplete = true;
           circle1.x = finalCircle1X;
           circle2.x = finalCircle2X;
-          dispatch(setIntersected());
+          
+          if (!hasTriggered) {
+            hasTriggered = true;
+            
+            console.log('🔄 Setting intersected phase');
+            dispatch(setIntersected());
+            
+            // Start letter animation immediately
+            setTimeout(() => {
+              console.log('📝 Starting letter animation');
+              dispatch(startLetterAnimation());
+              
+              letters.forEach((letter, index) => {
+                setTimeout(() => {
+                  console.log(`📝 Showing letter: ${letter}`);
+                  dispatch(showNextLetter());
+                }, index * 300);
+              });
+            }, 100);
+
+            // Start fade after 5 seconds
+            setTimeout(() => {
+              console.log('🌅 Starting fade out');
+              dispatch(startFadeOut());
+            }, 5000);
+          }
         }
       }
 
-      // Phase 2: Hold intersection for 1 second, then start fade
-      if (animationPhase === 'intersected' && !intersectionComplete) {
-        setTimeout(() => {
-          intersectionComplete = true;
-          dispatch(startFadeOut());
-        }, 1000);
-      }
-
-      // Phase 3: Fade out circles
-      if (animationPhase === 'fading') {
+      // Fade out phase
+      if (currentPhase === 'fading') {
         if (!fadeStartTime) {
+          console.log('🌅 Fade animation started');
           fadeStartTime = Date.now();
         }
         
-        const fadeProgress = (Date.now() - fadeStartTime) / 1000; // 1 second fade
+        const fadeProgress = (Date.now() - fadeStartTime) / 1500;
         circleAlpha = Math.max(0, 1 - fadeProgress);
         
         if (circleAlpha <= 0) {
+          console.log('✨ Animation completed');
           dispatch(completeAnimation());
-          return; // Stop animation
+          return;
         }
       }
 
-      // Only draw if circles should be visible
-      if (circlesVisible && animationPhase !== 'completed') {
-        // Calculate current intersection area and percentage
-        const distance = calculateDistance(circle1.x, circle1.y, circle2.x, circle2.y);
-        const currentIntersectionArea = calculateIntersectionArea(distance, CIRCLE_RADIUS, CIRCLE_RADIUS);
-        const circleArea = Math.PI * CIRCLE_RADIUS ** 2;
-        const intersectionPercent = (currentIntersectionArea / circleArea) * 100;
-
-        // Draw circles with transparency and fade
+      // ALWAYS draw circles until completed
+      if (currentPhase !== 'completed') {
         ctx.globalAlpha = 0.3 * circleAlpha;
         
-        // Circle 1 (only if visible)
-        if (circle1.x + CIRCLE_RADIUS > 0) {
-          ctx.beginPath();
-          ctx.arc(circle1.x, circle1.y, circle1.radius, 0, 2 * Math.PI);
-          ctx.fillStyle = '#F4A261';
-          ctx.fill();
-        }
+        // Circle 1
+        ctx.beginPath();
+        ctx.arc(circle1.x, circle1.y, circle1.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = '#F4A261';
+        ctx.fill();
         
-        // Circle 2 (only if visible)
-        if (circle2.x - CIRCLE_RADIUS < canvasSize.width) {
-          ctx.beginPath();
-          ctx.arc(circle2.x, circle2.y, circle2.radius, 0, 2 * Math.PI);
-          ctx.fillStyle = '#E9C46A';
-          ctx.fill();
-        }
-
-        // Draw letters only in intersection area
-        if (intersectionPercent >= 15) {
-          ctx.globalAlpha = 1 * circleAlpha;
-          ctx.font = 'bold 48px Arial';
-          ctx.fillStyle = '#264653';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-
-          const intersectionCenterX = (circle1.x + circle2.x) / 2;
-          const intersectionCenterY = (circle1.y + circle2.y) / 2;
-
-          // Draw SKILL column
-          const skillStartX = intersectionCenterX - 50;
-          letters[0].forEach((letter, index) => {
-            const letterX = skillStartX;
-            const letterY = intersectionCenterY - 80 + (index * 40);
-            
-            if (isPointInIntersection(letterX, letterY, circle1, circle2)) {
-              ctx.fillText(letter, letterX, letterY);
-            }
-          });
-
-          // Draw SWAP column
-          const swapStartX = intersectionCenterX + 50;
-          letters[1].forEach((letter, index) => {
-            const letterX = swapStartX;
-            const letterY = intersectionCenterY - 60 + (index * 40);
-            
-            if (isPointInIntersection(letterX, letterY, circle1, circle2)) {
-              ctx.fillText(letter, letterX, letterY);
-            }
-          });
-        }
-
-        ctx.globalAlpha = 1;
+        // Circle 2
+        ctx.beginPath();
+        ctx.arc(circle2.x, circle2.y, circle2.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = '#E9C46A';
+        ctx.fill();
       }
 
-      // Continue animation if not completed
-      if (animationPhase !== 'completed') {
+      // Draw letters
+      if (currentLetters > 0 && (currentPhase === 'letterAnimation' || currentPhase === 'fading')) {
+        const intersectionCenterX = (circle1.x + circle2.x) / 2;
+        const intersectionCenterY = (circle1.y + circle2.y) / 2;
+
+        ctx.globalAlpha = 1 * circleAlpha;
+        ctx.font = 'bold 48px Arial';
+        ctx.fillStyle = '#264653';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        for (let i = 0; i < currentLetters && i < letters.length; i++) {
+          const letterY = intersectionCenterY - 160 + (i * 40);
+          ctx.fillText(letters[i], intersectionCenterX, letterY);
+        }
+      }
+
+      ctx.globalAlpha = 1;
+
+      // Continue animation
+      if (currentPhase !== 'completed') {
         animationRef.current = requestAnimationFrame(animate);
       }
     };
@@ -261,7 +270,7 @@ export default function CircleIntersectionAnimation() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [animationStarted, canvasSize, animationPhase, circlesVisible, dispatch]);
+  }, [animationStarted, canvasSize, dispatch]); // NO phase dependencies!
 
   return (
     <div ref={containerRef} className="absolute inset-0 w-full h-full">

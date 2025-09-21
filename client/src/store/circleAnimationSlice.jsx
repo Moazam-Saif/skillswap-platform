@@ -3,18 +3,26 @@ import { createSlice } from '@reduxjs/toolkit';
 const circleAnimationSlice = createSlice({
   name: 'circleAnimation',
   initialState: {
-    animationPhase: 'idle', // 'idle' → 'moving' → 'intersected' → 'fading' → 'completed'
+    animationPhase: 'idle', // 'idle' → 'moving' → 'intersected' → 'letterAnimation' → 'fading' → 'completed'
     showContent: false,
-    circlesVisible: true,
+    lettersVisible: 0, // Number of letters currently visible in SKILLSWAP
   },
   reducers: {
     startAnimation: (state) => {
       state.animationPhase = 'moving';
       state.showContent = false;
-      state.circlesVisible = true;
+      state.lettersVisible = 0;
     },
     setIntersected: (state) => {
       state.animationPhase = 'intersected';
+    },
+    startLetterAnimation: (state) => {
+      state.animationPhase = 'letterAnimation';
+    },
+    showNextLetter: (state) => {
+      if (state.lettersVisible < 9) { // SKILLSWAP has 9 letters
+        state.lettersVisible += 1;
+      }
     },
     startFadeOut: (state) => {
       state.animationPhase = 'fading';
@@ -22,10 +30,18 @@ const circleAnimationSlice = createSlice({
     completeAnimation: (state) => {
       state.animationPhase = 'completed';
       state.showContent = true;
-      state.circlesVisible = false;
+      state.lettersVisible = 0;
     },
   },
 });
 
-export const { startAnimation, setIntersected, startFadeOut, completeAnimation } = circleAnimationSlice.actions;
+export const { 
+  startAnimation, 
+  setIntersected, 
+  startLetterAnimation,
+  showNextLetter,
+  startFadeOut, 
+  completeAnimation 
+} = circleAnimationSlice.actions;
+
 export default circleAnimationSlice.reducer;
