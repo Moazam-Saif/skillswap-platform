@@ -77,6 +77,19 @@ export default function CircleIntersectionAnimation() {
     return (minDistance + maxDistance) / 2;
   };
 
+  // Easing function for smooth animations
+  const easeOutBack = (t) => {
+    const c1 = 1.70158;
+    const c3 = c1 + 1;
+    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+  };
+
+  const easeInBack = (t) => {
+    const c1 = 1.70158;
+    const c3 = c1 + 1;
+    return c3 * t * t * t - c1 * t * t;
+  };
+
   // Handle resize
   useEffect(() => {
     const handleResize = () => {
@@ -148,8 +161,9 @@ export default function CircleIntersectionAnimation() {
     const letters = ['S', 'K', 'I', 'L', 'L', 'S', 'W', 'A', 'P'];
 
     let animationComplete = false;
-    let fadeStartTime = null;
-    let circleAlpha = 1;
+    let popOutStartTime = null;
+    let circleScale = 1;
+    let textScale = 1;
     let hasTriggered = false;
 
     const animate = () => {
@@ -182,77 +196,97 @@ export default function CircleIntersectionAnimation() {
             console.log('🔄 Setting intersected phase');
             dispatch(setIntersected());
             
-            // Start letter animation immediately
+            // Show all text at once after a short delay
             setTimeout(() => {
-              console.log('📝 Starting letter animation');
+              console.log('📝 Showing SKILLSWAP text');
               dispatch(startLetterAnimation());
-              
-              letters.forEach((letter, index) => {
-                setTimeout(() => {
-                  console.log(`📝 Showing letter: ${letter}`);
-                  dispatch(showNextLetter());
-                }, index * 300);
-              });
+              // Set all letters visible at once
+              for (let i = 0; i < letters.length; i++) {
+                dispatch(showNextLetter());
+              }
             }, 100);
 
-            // Start fade after 5 seconds
+            // Start pop-out after 5 seconds
             setTimeout(() => {
-              console.log('🌅 Starting fade out');
+              console.log('🌅 Starting pop out');
               dispatch(startFadeOut());
             }, 5000);
           }
         }
       }
 
-      // Fade out phase
+      // Pop-out phase
       if (currentPhase === 'fading') {
-        if (!fadeStartTime) {
-          console.log('🌅 Fade animation started');
-          fadeStartTime = Date.now();
+        if (!popOutStartTime) {
+          console.log('🌅 Pop-out animation started');
+          popOutStartTime = Date.now();
         }
         
-        const fadeProgress = (Date.now() - fadeStartTime) / 1500;
-        circleAlpha = Math.max(0, 1 - fadeProgress);
+        const popOutProgress = Math.min((Date.now() - popOutStartTime) / 800, 1); // 800ms pop-out
         
-        if (circleAlpha <= 0) {
-          console.log('✨ Animation completed');
+        // Scale down with ease-in-back for smooth pop-out effect
+        circleScale = 1 - easeInBack(popOutProgress);
+        textScale = 1 - easeInBack(popOutProgress);
+        
+        if (popOutProgress >= 1) {
+          console.log('✨ Pop-out completed, showing content');
           dispatch(completeAnimation());
           return;
         }
       }
 
-      // ALWAYS draw circles until completed
+      // Draw circles with scaling
       if (currentPhase !== 'completed') {
-        ctx.globalAlpha = 0.3 * circleAlpha;
+        ctx.globalAlpha = 0.3;
         
-        // Circle 1
+        // Save context for transformation
+        ctx.save();
+        
+        // Circle 1 - scale from center
+        ctx.translate(circle1.x, circle1.y);
+        ctx.scale(circleScale, circleScale);
         ctx.beginPath();
-        ctx.arc(circle1.x, circle1.y, circle1.radius, 0, 2 * Math.PI);
+        ctx.arc(0, 0, circle1.radius, 0, 2 * Math.PI);
         ctx.fillStyle = '#F4A261';
         ctx.fill();
         
-        // Circle 2
+        ctx.restore();
+        
+        // Circle 2 - scale from center
+        ctx.save();
+        ctx.translate(circle2.x, circle2.y);
+        ctx.scale(circleScale, circleScale);
         ctx.beginPath();
-        ctx.arc(circle2.x, circle2.y, circle2.radius, 0, 2 * Math.PI);
+        ctx.arc(0, 0, circle2.radius, 0, 2 * Math.PI);
         ctx.fillStyle = '#E9C46A';
         ctx.fill();
+        
+        ctx.restore();
       }
 
-      // Draw letters
+      // Draw letters with scaling
       if (currentLetters > 0 && (currentPhase === 'letterAnimation' || currentPhase === 'fading')) {
         const intersectionCenterX = (circle1.x + circle2.x) / 2;
         const intersectionCenterY = (circle1.y + circle2.y) / 2;
 
-        ctx.globalAlpha = 1 * circleAlpha;
-        ctx.font = 'bold 48px Arial';
+        ctx.globalAlpha = 1;
         ctx.fillStyle = '#264653';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
+        // Save context for text scaling
+        ctx.save();
+        ctx.translate(intersectionCenterX, intersectionCenterY);
+        ctx.scale(textScale, textScale);
+        
+        ctx.font = 'bold 28px Arial'; // Made even smaller
+        
         for (let i = 0; i < currentLetters && i < letters.length; i++) {
-          const letterY = intersectionCenterY - 160 + (i * 40);
-          ctx.fillText(letters[i], intersectionCenterX, letterY);
+          const letterY = -100 + (i * 25); // Adjusted for smaller text: -100 start, 25px spacing
+          ctx.fillText(letters[i], 0, letterY);
         }
+        
+        ctx.restore();
       }
 
       ctx.globalAlpha = 1;
