@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import AnimationStroke from "../animations/animationstroke.jsx";
 import IconAnimation from "../animations/iconAnimation.jsx";
 import TestUserLogin from './TestUserLogin.jsx';
@@ -10,6 +11,9 @@ import { useNavigate } from 'react-router-dom';
 export default function LandingPage() {
   const { setAccessToken, setUserId } = useContext(AuthContext);
   const navigate = useNavigate();
+  
+  // Get animation state from Redux
+  const { showContent } = useSelector(state => state.circleAnimation);
 
   return (
     <>
@@ -144,43 +148,41 @@ export default function LandingPage() {
         </div>
       </div>
 
-    
+      {/* Second Section - About SkillSwap */}
+      <div
+        className="relative min-h-screen w-full bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/landing-bg2.png')" }}
+      >
+        {/* Circle Intersection Animation - Full Section Overlay */}
+        <CircleIntersectionAnimation />
+        
+        {/* Content - Only show after circles disappear */}
+        <div className={`relative z-10 container mx-auto px-4 py-16 lg:py-24 transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-6xl font-bold text-[#264653] mb-6" style={{ fontFamily: "Lemon, serif" }}>
+              What is SkillSwap?
+            </h2>
+            <p className="text-lg lg:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+              A revolutionary platform where people exchange skills instead of money. 
+              Learn something new while teaching what you already know.
+            </p>
+          </div>
 
-{/* Second Section - About SkillSwap */}
-<div
-  className="relative min-h-screen w-full bg-cover bg-center bg-no-repeat"
-  style={{ backgroundImage: "url('/landing-bg2.png')" }}
->
-  {/* Circle Intersection Animation - Full Section Overlay */}
-  <CircleIntersectionAnimation />
-  
-  <div className="relative z-10 container mx-auto px-4 py-16 lg:py-24">
-    {/* Section Header */}
-    <div className="text-center mb-16">
-      <h2 className="text-4xl lg:text-6xl font-bold text-[#264653] mb-6" style={{ fontFamily: "Lemon, serif" }}>
-        What is SkillSwap?
-      </h2>
-      <p className="text-lg lg:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-        A revolutionary platform where people exchange skills instead of money. 
-        Learn something new while teaching what you already know.
-      </p>
-    </div>
-
-    {/* Test User Section */}
-    <div className="text-center">
-      <div className="bg-white rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
-        <h3 className="text-2xl font-bold text-[#264653] mb-4">
-          Try SkillSwap Now!
-        </h3>
-        <p className="text-gray-600 mb-6">
-          Explore the platform with our test user account. No registration required!
-        </p>
-        <TestUserLogin />
+          {/* Test User Section */}
+          <div className="text-center">
+            <div className="bg-white rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
+              <h3 className="text-2xl font-bold text-[#264653] mb-4">
+                Try SkillSwap Now!
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Explore the platform with our test user account. No registration required!
+              </p>
+              <TestUserLogin />
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-
     </>
   );
 }
