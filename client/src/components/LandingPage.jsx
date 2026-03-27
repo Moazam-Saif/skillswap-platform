@@ -158,27 +158,43 @@ export default function LandingPage() {
         
         {/* Content - Only show after circles disappear */}
         <div className={`relative z-10 container mx-auto px-4 py-16 lg:py-24 transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
-          {/* Section Header */}
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-6xl font-bold text-[#264653] mb-6" style={{ fontFamily: "Lemon, serif" }}>
-              What is SkillSwap?
-            </h2>
-            <p className="text-lg lg:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-              A revolutionary platform where people exchange skills instead of money. 
-              Learn something new while teaching what you already know.
-            </p>
-          </div>
-
-          {/* Test User Section */}
-          <div className="text-center">
-            <div className="bg-white rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
-              <h3 className="text-2xl font-bold text-[#264653] mb-4">
-                Try SkillSwap Now!
+          {/* Two Container Layout */}
+          <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
+            {/* Info Container */}
+            <div 
+              className="flex-1 p-8 lg:p-12 text-white shadow-lg"
+              style={{ 
+                backgroundColor: "#E76F51",
+                borderRadius: "20px"
+              }}
+            >
+              <h3 className="text-2xl lg:text-3xl font-bold mb-6" style={{ fontFamily: "Josefin Sans, sans-serif" }}>
+                What is SkillSwap?
               </h3>
-              <p className="text-gray-600 mb-6">
-                Explore the platform with our test user account. No registration required!
+              <p className="text-lg lg:text-xl leading-relaxed" style={{ fontFamily: "Josefin Sans, sans-serif" }}>
+                A revolutionary platform where people exchange skills instead of money. 
+                Learn something new while teaching what you already know. Connect with others, 
+                build meaningful relationships, and grow your abilities through skill trading.
               </p>
-              <TestUserLogin />
+            </div>
+
+            {/* Login Container */}
+            <div 
+              className="flex-1 p-8 lg:p-12 text-white shadow-lg flex flex-col justify-center"
+              style={{ 
+                backgroundColor: "#264653",
+                borderRadius: "20px"
+              }}
+            >
+              <div className="text-center">
+                <h3 className="text-2xl lg:text-3xl font-bold mb-6" style={{ fontFamily: "Josefin Sans, sans-serif" }}>
+                  Try SkillSwap Now!
+                </h3>
+                <p className="text-lg mb-8" style={{ fontFamily: "Josefin Sans, sans-serif" }}>
+                  Explore the platform with our test user account. No registration required!
+                </p>
+                <TestUserLogin />
+              </div>
             </div>
           </div>
         </div>

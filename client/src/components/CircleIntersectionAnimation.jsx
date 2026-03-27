@@ -162,9 +162,11 @@ export default function CircleIntersectionAnimation() {
 
     let animationComplete = false;
     let popOutStartTime = null;
+    let textPopInStartTime = null;
     let circleScale = 1;
-    let textScale = 1;
+    let textScale = 0; // Start text at scale 0 for pop-in effect
     let hasTriggered = false;
+    let hasTextTriggered = false;
 
     const animate = () => {
       const currentPhase = currentPhaseRef.current;
@@ -198,12 +200,14 @@ export default function CircleIntersectionAnimation() {
             
             // Show all text at once after a short delay
             setTimeout(() => {
-              console.log('📝 Showing SKILLSWAP text');
+              console.log('📝 Showing SKILLSWAP text with pop-in');
               dispatch(startLetterAnimation());
               // Set all letters visible at once
               for (let i = 0; i < letters.length; i++) {
                 dispatch(showNextLetter());
               }
+              // Start text pop-in animation
+              textPopInStartTime = Date.now();
             }, 100);
 
             // Start pop-out after 5 seconds
@@ -213,6 +217,12 @@ export default function CircleIntersectionAnimation() {
             }, 5000);
           }
         }
+      }
+
+      // Text pop-in animation
+      if (currentLetters > 0 && textPopInStartTime && currentPhase !== 'fading') {
+        const textPopInProgress = Math.min((Date.now() - textPopInStartTime) / 600, 1); // 600ms pop-in
+        textScale = easeOutBack(textPopInProgress);
       }
 
       // Pop-out phase
@@ -265,7 +275,7 @@ export default function CircleIntersectionAnimation() {
       }
 
       // Draw letters with scaling
-      if (currentLetters > 0 && (currentPhase === 'letterAnimation' || currentPhase === 'fading')) {
+      if (currentLetters > 0 && (currentPhase === 'letterAnimation' || currentPhase === 'fading') && textScale > 0) {
         const intersectionCenterX = (circle1.x + circle2.x) / 2;
         const intersectionCenterY = (circle1.y + circle2.y) / 2;
 
@@ -279,10 +289,10 @@ export default function CircleIntersectionAnimation() {
         ctx.translate(intersectionCenterX, intersectionCenterY);
         ctx.scale(textScale, textScale);
         
-        ctx.font = 'bold 28px Arial'; // Made even smaller
+        ctx.font = '400 18px Lemon'; // Changed to Lemon font and made smaller (18px)
         
         for (let i = 0; i < currentLetters && i < letters.length; i++) {
-          const letterY = -100 + (i * 25); // Adjusted for smaller text: -100 start, 25px spacing
+          const letterY = -72 + (i * 18); // Adjusted for smaller text: -72 start, 18px spacing
           ctx.fillText(letters[i], 0, letterY);
         }
         

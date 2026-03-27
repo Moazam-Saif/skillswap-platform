@@ -57,8 +57,7 @@ export default function TestUserLogin() {
             Logging in as Test User...
           </div>
         ) : (
-          <div className="flex items-center justify-center">
-            <span className="mr-2">🚀</span>
+          <div className="textflex items-center justify-center bg-[#E76f51] py-2 rounded-2xl" style={{ fontFamily: "Josefin Sans, sans-serif" }}>
             Login as Test User
           </div>
         )}
