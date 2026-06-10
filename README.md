@@ -1,5 +1,9 @@
 # SkillSwap
 
+Live URL: http://skill-swap.social/
+
+Jitsi Meet URL: https://skillswap-meeting.social/
+
 A peer-to-peer skill exchange platform where users trade skills instead of money. User A teaches User B something they know; User B teaches User A something they know. The platform handles matching, scheduling, meeting rooms, and reminders.
 
 ---
